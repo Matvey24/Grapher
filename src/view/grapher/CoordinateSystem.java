@@ -1,9 +1,12 @@
 package view.grapher;
 
+import sun.misc.FloatingDecimal;
 import view.MainPanel;
 
 import java.awt.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Formatter;
 
 import static view.MainPanel.GRAPH_WIDTH;
 import static view.MainPanel.HEIGHT;
@@ -21,8 +24,6 @@ public class CoordinateSystem {
     private double deltaY = 1;
     private int deltaXpow = 0;
     private int deltaYpow = 0;
-    private StringBuilder sb = new StringBuilder();
-
     public void resize(double offsetX, double offsetY, double scaleX, double scaleY) {
         this.offsetX = offsetX;
         this.offsetY = offsetY;
@@ -123,20 +124,13 @@ public class CoordinateSystem {
     }
 
     private String dts(double d) {
-        if (d % 1 == 0) {
-            return "" + (int) d;
+        if(d % 1 == 0){
+            return String.valueOf((long)d);
         }
-        sb.setLength(0);
-        sb.append(d);
-        sb.setLength(Math.min(sb.length(), 16));
-        for (int i = sb.length() - 1; i >= 1; --i) {
-            if (sb.charAt(i) == '0') {
-                sb.setLength(i);
-            } else {
-                break;
-            }
-        }
-        return sb.toString();
+        return BigDecimal.valueOf(d)
+                .setScale(15, RoundingMode.HALF_UP)
+                .stripTrailingZeros()
+                .toPlainString();
     }
 
     private static double mod(double a, double b) {
