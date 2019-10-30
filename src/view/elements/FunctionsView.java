@@ -1,4 +1,4 @@
-package view;
+package view.elements;
 import controller.ViewElement;
 
 import javax.swing.*;

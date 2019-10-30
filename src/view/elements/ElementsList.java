@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class ElementsList extends ViewElement {
     private JLabel name;
+    private JTextPane state;
     private JButton btn_make_element;
     private ArrayList<TextElement> elements;
     private int height;
@@ -25,6 +26,9 @@ public class ElementsList extends ViewElement {
         this.name = new JLabel(name);
         this.name.setFont(name_font);
         btn_make_element = new JButton("+");
+        state = new JTextPane();
+        state.setEditable(false);
+        state.setFont(new Font("arial", Font.PLAIN, 12));
         setBounds(x,y);
         btn_make_element.addActionListener((e)->{
             int y2 = height - OFFSET - TextElement.HEIGHT;
@@ -51,15 +55,16 @@ public class ElementsList extends ViewElement {
     }
     public void addTo(Container c){
         c.add(name);
-        for(TextElement e: elements){
+        c.add(state);
+        for(TextElement e: elements)
             e.addTo(c);
-        }
         c.add(btn_make_element);
         this.c = c;
     }
     public void setBounds(int x, int y){
         pos.setLocation(x,y);
         name.setBounds(x + OFFSET,y + OFFSET, TextElement.WIDTH, NAME_HEIGHT);
+        state.setBounds(x + 2 * OFFSET + TextElement.WIDTH * 2 / 5, y + OFFSET, 3*TextElement.WIDTH / 5 - OFFSET, NAME_HEIGHT);
         height = 2 * OFFSET + NAME_HEIGHT;
         for(TextElement e: elements){
             e.setBounds(x + OFFSET, y + height);
@@ -73,5 +78,8 @@ public class ElementsList extends ViewElement {
     }
     public int getHeight(){
         return height;
+    }
+    public void setState(String text){
+        this.state.setText(text);
     }
 }

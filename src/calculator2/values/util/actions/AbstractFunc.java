@@ -34,7 +34,7 @@ public class AbstractFunc<T>{
     public void setFunc(Expression<T> expression, ArrayList<Variable<T>> vars){
         this.expression = expression;
         if(vars.size() != argcount){
-            throw new RuntimeException(String.format("We need %d vars in function, now %d", argcount,vars.size()));
+            throw new RuntimeException(String.format("We need %d vars, now %d", argcount,vars.size()));
         }
         switch (vars.size()){
             case 3:

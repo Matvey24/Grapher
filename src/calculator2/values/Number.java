@@ -3,6 +3,8 @@ package calculator2.values;
 import calculator2.values.util.AbstractType;
 import calculator2.values.util.actions.Sign;
 
+import static java.lang.Math.PI;
+
 public class Number extends AbstractType<Double> {
     public Number(){
         addSign('+', (a,b)-> (double)a + b, 1);
@@ -28,6 +30,7 @@ public class Number extends AbstractType<Double> {
         addFunction("log",(a,b)-> Math.log(a) / Math.log(b), 5);
 
         addFunction("sin", Math::sin, 5);
+        addFunction("sind", a -> Math.sin(PI / 180 * a), 5);
         addFunction("cos", Math::cos, 5);
         addFunction("tg", Math::tan, 5);
         addFunction("ctg", a -> 1 / Math.tan(a), 5);
@@ -40,7 +43,7 @@ public class Number extends AbstractType<Double> {
         addFunction("abs", a->Math.abs(a), 5);
     }
     private void constants(){
-        addConst("pi", Math.PI);
+        addConst("pi", PI);
         addConst("e", Math.E);
 
         addConst("g", 9.8);

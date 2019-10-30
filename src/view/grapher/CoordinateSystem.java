@@ -1,12 +1,8 @@
 package view.grapher;
 
-import sun.misc.FloatingDecimal;
-import view.MainPanel;
-
 import java.awt.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Formatter;
 
 import static view.MainPanel.GRAPH_WIDTH;
 import static view.MainPanel.HEIGHT;
@@ -127,10 +123,12 @@ public class CoordinateSystem {
         if(d % 1 == 0){
             return String.valueOf((long)d);
         }
-        return BigDecimal.valueOf(d)
-                .setScale(15, RoundingMode.HALF_UP)
+        String val = BigDecimal.valueOf(d)
+                .toPlainString();
+        return BigDecimal.valueOf(Double.parseDouble(val.substring(0, Math.min(val.length(), 16))))
                 .stripTrailingZeros()
                 .toPlainString();
+
     }
 
     private static double mod(double a, double b) {

@@ -2,6 +2,7 @@ package view.grapher;
 
 import controller.ModelUpdater;
 import view.elements.ElementsList;
+import view.grapher.graphics.Graphic;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -36,6 +37,8 @@ public class GraphicsView {
         try {
             for (Graphic s : graphics)
                 s.paint(g);
-        }catch (NullPointerException e){}
+        }catch (NullPointerException e){
+            System.out.println(e);
+        }
     }
 }

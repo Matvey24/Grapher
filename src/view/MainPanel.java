@@ -2,8 +2,7 @@ package view;
 
 import controller.ModelUpdater;
 import framesLib.Screen;
-import view.elements.ElementsList;
-import view.elements.TextElement;
+import view.elements.*;
 import view.grapher.GraphicsView;
 
 import javax.swing.*;

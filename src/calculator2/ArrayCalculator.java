@@ -43,23 +43,42 @@ public class ArrayCalculator<T> {
         }
         director.renewType(type);
         for (int i = 0; i < this.funcs.size(); ++i) {
-            director.update(funcNames.get(i));
-            if (director.getVars().size() == 0)
-                director.getVars().add(new Variable<>());
-            this.funcs.get(i).setFunc(director.getTree(), director.getVars());
+            try {
+                director.update(funcNames.get(i));
+            }catch (RuntimeException e){
+                throw new RuntimeException(e.getMessage() + " in " + (i + 1) + " func");
+            }
+            if (director.getVars().size() == 0) {
+                Variable<T> var = new Variable<>();
+                var.setName("x");
+                director.getVars().add(var);
+            }
+            try {
+                this.funcs.get(i).setFunc(director.getTree(), director.getVars());
+            }catch (RuntimeException e){
+                throw new RuntimeException(e.getMessage() + " in " + (i + 1) + " func");
+            }
             if (i < graphics.size()) {
                 this.graphics.add(director.getTree());
                 this.vars.add(director.getVars().get(0));
             }
         }
-        director.update(calc);
+        try {
+            director.update(calc);
+        }catch (RuntimeException e){
+            throw new RuntimeException(e.getMessage() + " in calc");
+        }
         return director.calculate();
     }
 
     private void analise(String start, String end) {
         int pos = start.indexOf(':');
         if (pos == -1) {
-            director.update(end);
+            try {
+                director.update(end);
+            }catch (RuntimeException e){
+                throw new RuntimeException(e.getMessage() + " in var " + start);
+            }
             type.addConst(start, director.calculate());
         } else {
             AbstractFunc<T> func = new AbstractFunc<>();
@@ -76,7 +95,7 @@ public class ArrayCalculator<T> {
                     type.addFunction(name, func.getUnary(), 5);
                     break;
                 default:
-                    throw new RuntimeException("args count is bad " + args);
+                    throw new RuntimeException("Args count in func " + name + " is bad: " + args);
             }
             funcs.add(func);
             funcNames.add(end);

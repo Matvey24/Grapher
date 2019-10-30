@@ -106,7 +106,7 @@ class Parser<T> {
                         }
                     }
                     if (e.symbol.length() != 0) {
-                        throw new RuntimeException("Couldn't understand symbol '" + e + "'");
+                        throw new RuntimeException("Undefined symbol '" + e.symbol + "'");
                     }
                 }else if(helper.isVar(e.symbol)){
                     e.type = VAR;
@@ -186,9 +186,9 @@ class Parser<T> {
         }
         int returns = valsCount - needArgs;
         if(returns < 1)
-            throw new RuntimeException("Too many functions!");
+            throw new RuntimeException("Too many funcs!");
         else if(returns > 1)
-            throw new RuntimeException("Too many arguments!");
+            throw new RuntimeException("Too many args!");
     }
     private boolean openBracket(Element e){
         return e.type == BRACKET && helper.brackets.brOpens(e.symbol);
