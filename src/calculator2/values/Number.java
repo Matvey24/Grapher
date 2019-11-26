@@ -7,17 +7,21 @@ import static java.lang.Math.PI;
 
 public class Number extends AbstractType<Double> {
     public Number(){
-        addSign('+', (a,b)-> (double)a + b, 1);
-        Sign<Double> minus = addSign('-', (a, b)-> a - b, 1);
-        Sign<Double> mul = addSign('*', (a, b)-> a * b, 2);
-        addSign('/', (a, b)-> a / b, 2);
-        addSign('%', (a, b)-> a % b, 2);
-        addSign('^', Math::pow, 3);
+        addSign('<', (a, b)->((a < b)?1d:0), 1);
+        addSign('>', (a, b)->((a > b)?1d:0), 1);
+
+        addSign('+', (a,b)-> (double)a + b, 2);
+        Sign<Double> minus = addSign('-', (a, b)-> a - b, 2);
+        Sign<Double> mul = addSign('*', (a, b)-> a * b, 3);
+        addSign('/', (a, b)-> a / b, 3);
+        addSign('%', (a, b)-> a % b, 3);
+        addSign('^', Math::pow, 4);
+
 
         functions();
         constants();
 
-        unarySign(minus, a -> -a, 2);
+        unarySign(minus, a -> -a, 3);
         setMissingSign(mul);
     }
     private void functions(){
@@ -41,6 +45,10 @@ public class Number extends AbstractType<Double> {
         addFunction("arcctg", a->Math.atan(1/a), 5);
 
         addFunction("abs", a->Math.abs(a), 5);
+
+        addFunction("ift", (a,b,c)->(a == 0)?c:b, 5);
+        addFunction("ifd", (a,b)->(a == 0)?0:b, 5);
+        addFunction("if", a->(a == 0)?0d:1d, 5);
     }
     private void constants(){
         addConst("pi", PI);

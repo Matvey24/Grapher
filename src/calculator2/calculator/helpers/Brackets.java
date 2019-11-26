@@ -6,7 +6,6 @@ public class Brackets {
     private HashMap<Character, Boolean> names;
     Brackets(){
         names = new HashMap<>();
-        add('<', '>');
         add('(', ')');
         add('[', ']');
         add('{', '}');

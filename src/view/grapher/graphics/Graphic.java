@@ -2,14 +2,15 @@ package view.grapher.graphics;
 
 import calculator2.calculator.executors.Expression;
 import calculator2.calculator.executors.Variable;
+import view.elements.TextElement;
 
 import java.awt.*;
 
 import static view.MainPanel.GRAPH_WIDTH;
 
 public abstract class Graphic {
-    static final int MAP_SIZE = 500;
-    static final int MAX_DELTA = 1000;
+    int MAP_SIZE = 500;
+    int MAX_DELTA = 1000;
     double[] map;
     protected Expression<Double> func;
     Variable<Double> var;

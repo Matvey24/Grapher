@@ -1,6 +1,7 @@
 package framesLib;
 
 import javax.swing.*;
+import java.awt.*;
 
 public abstract class Screen extends JPanel {
     private MyFrame myFrame;

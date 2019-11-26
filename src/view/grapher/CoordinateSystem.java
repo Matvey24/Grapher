@@ -119,7 +119,7 @@ public class CoordinateSystem {
         return m * Math.ceil(a / m);
     }
 
-    private String dts(double d) {
+    public static String dts(double d) {
         if(d % 1 == 0){
             return String.valueOf((long)d);
         }

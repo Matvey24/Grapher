@@ -28,12 +28,12 @@ public class CalculatorView extends ViewElement {
         c.add(field);
     }
     public void setBounds(int x, int y){
-        name.setBounds(x + OFFSET,y,WIDTH / 2 - OFFSET, HEIGHT);
-        answer.setBounds(x + WIDTH / 2 + OFFSET, y, WIDTH / 2 - OFFSET, HEIGHT);
+        name.setBounds(x + OFFSET,y,WIDTH / 2 - 2 * OFFSET, HEIGHT);
+        answer.setBounds(x + WIDTH / 2, y, WIDTH / 2, HEIGHT);
         field.setBounds(x + OFFSET, y + HEIGHT + OFFSET, WIDTH - 2 * OFFSET, HEIGHT);
     }
-    public void setAnswer(double ans){
-        answer.setText(String.valueOf(ans));
+    public void setAnswer(String ans){
+        answer.setText(ans);
     }
     public String getText() {
         return field.getText();

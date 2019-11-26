@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class ElementsList extends ViewElement {
@@ -20,7 +22,7 @@ public class ElementsList extends ViewElement {
     public static final int WIDTH = TextElement.WIDTH + 2 * OFFSET;
     private Point pos;
     private Container c;
-    public ElementsList(String name, int x, int y, ActionListener sizeChanged) {
+    public ElementsList(String name, int x, int y, ActionListener sizeChanged, ActionListener settings) {
         elements = new ArrayList<>();
         pos = new Point();
         this.name = new JLabel(name);
@@ -41,6 +43,14 @@ public class ElementsList extends ViewElement {
                 sizeChanged.actionPerformed(new ActionEvent(0, id, "remove"));
                 if(elements.size() == max_size - 1){
                     c.add(btn_make_element);
+                }
+            });
+            el.addSettingsListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if(e.getButton() == MouseEvent.BUTTON3){
+                        settings.actionPerformed(new ActionEvent(0, elements.indexOf(el), null));
+                    }
                 }
             });
             int id = elements.size();

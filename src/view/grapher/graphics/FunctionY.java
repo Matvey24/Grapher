@@ -29,7 +29,7 @@ public class FunctionY extends Graphic {
                 continue;
             int x1 = (int) ((-offsetX + map[i]) * scaleX);
             int x2 = (int) ((-offsetX + map[i + 1]) * scaleX);
-            if(x1 < 0 && x2 < 0 || x1 > GRAPH_WIDTH && x2 > GRAPH_WIDTH)
+            if(x1 < 0 || x2 < 0 || x1 > GRAPH_WIDTH && x2 > GRAPH_WIDTH)
                 continue;
             g.drawLine(x1,i * HEIGHT / MAP_SIZE,
                     x2,(i + 1) * HEIGHT / MAP_SIZE);

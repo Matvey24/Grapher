@@ -2,7 +2,8 @@ package view.elements;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
+
 public class TextElement {
     public static final int NAME_WIDTH = 30;
     public static final int TEXT_WIDTH = 160;
@@ -12,6 +13,7 @@ public class TextElement {
     private JLabel name;
     private JTextField text;
     private JButton remove;
+    private ActionListener settingsListener;
     public TextElement(int x, int y, String name){
         this.name = new JLabel(name);
         text = new JTextField();
@@ -41,6 +43,11 @@ public class TextElement {
     public void addRemoveListener(ActionListener listener){
         remove.addActionListener(listener);
     }
+
+    public void addSettingsListener(MouseListener settingsListener) {
+        remove.addMouseListener(settingsListener);
+    }
+
     public void addTextChangedListener(ActionListener listener){
         text.addActionListener(listener);
     }
