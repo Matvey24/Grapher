@@ -1,6 +1,5 @@
 package view;
 
-import com.sun.scenario.effect.Offset;
 import controller.ModelUpdater;
 import framesLib.Screen;
 import view.elements.*;
@@ -13,8 +12,10 @@ import java.awt.event.*;
 import static view.elements.ElementsList.OFFSET;
 
 public class MainPanel extends Screen {
-    public static int WIDTH = 1280;
-    public static int HEIGHT = 720;
+    private static final int WIDTH_0 = 1280;
+    private static final int HEIGHT_0 = 720;
+    public static int WIDTH = WIDTH_0;
+    public static int HEIGHT = HEIGHT_0;
     public static int GRAPH_WIDTH = WIDTH - ElementsList.WIDTH;
     private GraphicsView graphicsView;
     private Point mousePosition;
@@ -62,19 +63,17 @@ public class MainPanel extends Screen {
         JButton btn_resize = new JButton("Resize");
         btn_resize.setBounds(OFFSET, 620 + TextElement.HEIGHT + OFFSET, TextElement.WIDTH, TextElement.HEIGHT);
         btn_resize.addActionListener(e -> {
-            int dw = getWidth() - WIDTH;
-            int dh = getHeight() - HEIGHT;
             WIDTH = getWidth();
             HEIGHT = getHeight();
-            resize();
+            GRAPH_WIDTH = WIDTH - ElementsList.WIDTH;
             updater.recalculate();
         });
         add(btn_resize);
+
     }
     @Override
     public void onSetSize() {
-        setSize(WIDTH, HEIGHT);
-        GRAPH_WIDTH = WIDTH - ElementsList.WIDTH;
+        setSize(WIDTH_0, HEIGHT_0);
     }
     @Override
     public void onShow() {

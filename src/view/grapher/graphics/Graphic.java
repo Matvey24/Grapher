@@ -2,14 +2,10 @@ package view.grapher.graphics;
 
 import calculator2.calculator.executors.Expression;
 import calculator2.calculator.executors.Variable;
-import view.elements.TextElement;
-
 import java.awt.*;
 
-import static view.MainPanel.GRAPH_WIDTH;
-
 public abstract class Graphic {
-    int MAP_SIZE = 500;
+    public int MAP_SIZE = 500;
     int MAX_DELTA = 1000;
     double[] map;
     protected Expression<Double> func;
@@ -37,5 +33,9 @@ public abstract class Graphic {
         this.color = color;
     }
     public abstract void paint(Graphics g);
-
+    public void setMAP_SIZE(int map_size){
+        MAP_SIZE = map_size;
+        needResize = true;
+        map = new double[map_size];;
+    }
 }

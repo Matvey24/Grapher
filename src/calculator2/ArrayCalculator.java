@@ -14,17 +14,30 @@ public class ArrayCalculator<T> {
     private List<AbstractFunc<T>> funcs;
 
     private List<Expression<T>> graphics;
-    private List<Variable<T>> vars;
+    private List<Expression<T>> expressions;
 
+    private List<Variable<T>> expressionVars;
+
+    private List<Variable<T>> vars;
     private List<String> funcNames;
 
-    public T calculate(List<String> funcs, List<String> graphics, String calc, AbstractType<T> type) {
-        this.type = type;
-        director = new Director<>(type);
+    public ArrayCalculator(){
         vars = new ArrayList<>();
         funcNames = new ArrayList<>();
-        this.funcs = new ArrayList<>();
-        this.graphics = new ArrayList<>();
+        funcs = new ArrayList<>();
+        graphics = new ArrayList<>();
+        expressions = new ArrayList<>();
+        expressionVars = new ArrayList<>();
+    }
+    public T calculate(List<String> funcs, List<String> graphics, List<String> calc, AbstractType<T> type) {
+        this.type = type;
+        director = new Director<>(type);
+        vars.clear();
+        funcNames.clear();
+        this.funcs.clear();
+        this.graphics.clear();
+        expressionVars.clear();
+        expressions.clear();
         for (String s : graphics) {
             String t = s.replaceAll("[ \t]", "");
             int n = t.indexOf('=');
@@ -64,13 +77,20 @@ public class ArrayCalculator<T> {
             }
         }
         try {
-            director.update(calc);
+            for(int i = 1; i < calc.size(); ++i) {
+                director.update(calc.get(i));
+                expressions.add(director.getTree());
+                if(director.getVars().size() == 0)
+                    expressionVars.add(new Variable<>());
+                else
+                    expressionVars.add(director.getVars().get(0));
+            }
+            director.update(calc.get(0));
+            return director.calculate();
         }catch (RuntimeException e){
             throw new RuntimeException(e.getMessage() + " in calc");
         }
-        return director.calculate();
     }
-
     private void analise(String start, String end) {
         int pos = start.indexOf(':');
         if (pos == -1) {
@@ -108,5 +128,13 @@ public class ArrayCalculator<T> {
 
     public List<Variable<T>> getVars() {
         return vars;
+    }
+
+    public List<Expression<T>> getExpressions() {
+        return expressions;
+    }
+
+    public List<Variable<T>> getExpressionVars() {
+        return expressionVars;
     }
 }

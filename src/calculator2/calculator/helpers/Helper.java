@@ -37,7 +37,7 @@ public class Helper<T> {
         return c == ',' || c == ';';
     }
     public boolean isVar(String s){
-        return s.equals("x") || s.equals("y") || s.equals("z") || s.equals("var");
+        return s.equals("x") || s.equals("y") || s.equals("z") || s.equals("t");
     }
     public boolean isType(char c){
         return  c >= '0' && c <= '9' || c == '.';

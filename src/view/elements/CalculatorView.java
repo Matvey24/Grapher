@@ -11,13 +11,15 @@ import static view.elements.TextElement.HEIGHT;
 import static view.elements.ElementsList.WIDTH;
 public class CalculatorView extends ViewElement {
     public static final int CALC_HEIGHT = 2 * HEIGHT + 2 * OFFSET;
-    private JLabel answer;
+    private JTextField answer;
     private JLabel name;
     private JTextField field;
     public CalculatorView(Runnable calculate){
         name = new JLabel("Calculator");
         name.setFont(name_font);
-        answer = new JLabel("\'ans\'");
+        answer = new JTextField();
+        answer.setEditable(false);
+        answer.setText("'ans'");
         field = new JTextField();
         field.addActionListener(e->calculate.run());
     }
@@ -29,7 +31,7 @@ public class CalculatorView extends ViewElement {
     }
     public void setBounds(int x, int y){
         name.setBounds(x + OFFSET,y,WIDTH / 2 - 2 * OFFSET, HEIGHT);
-        answer.setBounds(x + WIDTH / 2, y, WIDTH / 2, HEIGHT);
+        answer.setBounds(x + WIDTH / 2 - 3*OFFSET, y, 2*OFFSET + WIDTH / 2, HEIGHT);
         field.setBounds(x + OFFSET, y + HEIGHT + OFFSET, WIDTH - 2 * OFFSET, HEIGHT);
     }
     public void setAnswer(String ans){

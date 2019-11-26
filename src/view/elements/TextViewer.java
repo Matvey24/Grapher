@@ -11,13 +11,22 @@ public class TextViewer {
                 "Click \"+\" and write function in the text field.",
                 "Then press ENTER."
             },{
+                "Signs:",
+                "+, -, *, / standard math signs",
+                "^ - power",
+                "% - remainder of division",
+                "<, > - returns 1 if true else 0"
+            },{
                 "Functions:",
                 "sqrt, cbrt - quadratic and cubic roots",
                 "pow - power",
                 "lg, ln, ld, log - logarithms",
                 "sin, cos, tg, ctg, arcsin, arccos, arctg, arcctg, arctgTwo",
                 "- trigonometric functions",
-                "abs - absolute value"
+                "abs - absolute value",
+                "ift(x, y, z) - returns z if x = 0 else y",
+                "ifd(x, y) - returns 0 if x = 0 else y",
+                "if(x) - returns 0 if x = 0 else 1"
             },{
                 "Constants: (SI)",
                 "pi - pi value = 3.14",
@@ -65,11 +74,21 @@ public class TextViewer {
                 "you can't use your own functions,",
                 "but you can use your other constants,",
                 "which have written before."
+            }, {
+                "Extra:",
+                "Right click on '-' button in expression in graphics.",
+                "Extra info window will opened.",
+                "You can choose between Function and Parameter there."
+            },{
+                "Parameters:",
+                "Write expression for x, than put ':' and ",
+                "then write expression for y, click enter"
             },{
                 "Examples:",
                 "num = sqrt(5) - num is a constant",
                 "lb:1= ld(x) - lb(x) = logarithm of x with basis 2",
-                "mysin:2=sin(x) + cos(y) - use it like mysin(x,y)"
+                "mysin:2=sin(x) + cos(y) - use it like mysin(x,y)",
+                "(parameter) 2sin(x):cos(x) - draws ellipse"
             }
     };
     private static final HashMap<String, String[][]> text_panels;

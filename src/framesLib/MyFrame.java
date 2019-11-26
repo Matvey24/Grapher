@@ -9,6 +9,9 @@ import java.util.Stack;
 public class MyFrame extends JFrame {
     private Stack<Screen> backStack;
     public MyFrame() {
+        this(false);
+    }
+    public MyFrame(boolean secondary){
         backStack = new Stack<>();
         setVisible(true);
         addWindowListener(new WindowAdapter() {
@@ -17,10 +20,10 @@ public class MyFrame extends JFrame {
                 onHideScreen();
                 while (!backStack.empty())
                     backStack.pop().onDestroy();
-                System.exit(0);
+                if(!secondary)
+                    System.exit(0);
             }
         });
-
     }
     public void changeScreen(Screen screen){
         onHideScreen();
@@ -50,5 +53,8 @@ public class MyFrame extends JFrame {
         if(!backStack.empty()){
             backStack.peek().onHide();
         }
+    }
+    public void clearStack(){
+        backStack.clear();
     }
 }

@@ -1,21 +1,22 @@
 package controller;
 
 import calculator2.ArrayCalculator;
+import calculator2.calculator.executors.Expression;
 import calculator2.calculator.executors.Variable;
 import calculator2.values.Number;
 import threads.Tasks;
 import view.elements.CalculatorView;
-import view.elements.FunctionsView;
 import view.elements.ElementsList;
+import view.elements.FunctionsView;
 import view.elements.TextElement;
 import view.grapher.CoordinateSystem;
-import view.grapher.graphics.FunctionX;
-import view.grapher.graphics.FunctionY;
+import view.grapher.graphics.Function;
 import view.grapher.graphics.Graphic;
+import view.grapher.graphics.Parameter;
+import view.settings.SettingsManager;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.List;
 import static java.awt.Color.*;
 
 public class ModelUpdater {
-    public static final double deltaScale = 1.2;
+    private static final double deltaScale = 1.2;
     private Runnable repaint;
     private Runnable resize;
 
@@ -32,7 +33,7 @@ public class ModelUpdater {
     private ElementsList list;
     private FunctionsView functionsView;
     private CalculatorView calculatorView;
-
+    private SettingsManager settingsManager;
     private Tasks tasks;
 
     private double offsetX = -3;
@@ -45,11 +46,13 @@ public class ModelUpdater {
     public ModelUpdater(Runnable repaint) {
         this.repaint = repaint;
         calculator = new ArrayCalculator<>();
+        settingsManager = new SettingsManager(this);
         tasks = new Tasks();
     }
 
     public void addVRemove(ActionEvent e) {
         if (e.getActionCommand().equals("remove")) {
+            settingsManager.close();
             remove(e);
         } else if (e.getActionCommand().equals("add")) {
             add(e);
@@ -57,23 +60,49 @@ public class ModelUpdater {
             System.out.println("error " + e.getActionCommand());
         }
     }
-    public void add(ActionEvent e){
+    private void add(ActionEvent e){
         TextElement element = list.getElements().get(e.getID());
-        Graphic graphic = new FunctionX();
+        Graphic graphic = new Function();
         graphics.add(graphic);
 
-        element.addTextChangedListener((e1) -> {
-            recalculate();
-        });
+        element.addTextChangedListener((e1) -> recalculate());
         setColor(element, graphic);
         recalculate();
     }
-    public void remove(ActionEvent e){
+    private void remove(ActionEvent e){
         graphics.remove(e.getID());
         recalculate();
     }
 
-    public void startSettings(ActionEvent e){}
+    public void startSettings(ActionEvent e){
+        int id = e.getID();
+        Graphic g = graphics.get(id);
+        if(g instanceof Function){
+            settingsManager.openFunctionSettings((Function) g, list.getElements().get(id));
+        }else if(g instanceof Parameter){
+            settingsManager.openParameterSettings((Parameter) g, list.getElements().get(id));
+        }
+    }
+    public void makeFunction(Graphic g, TextElement e){
+        int idx = graphics.indexOf(g);
+        Function function = new Function();
+        function.setColor(e.getColor());
+        graphics.set(idx, function);
+        Color c = e.getColor();
+        e.setColor(WHITE);
+        setColor(e, function);
+        recalculate();
+        startSettings(new ActionEvent(0,idx, ""));
+    }
+    public void makeParameter(Graphic g, TextElement e){
+        int idx = graphics.indexOf(g);
+        Parameter parameter = new Parameter();
+        parameter.setColor(e.getColor());
+        graphics.set(idx, parameter);
+        recalculate();
+        e.setName("param");
+        startSettings(new ActionEvent(0,idx, ""));
+    }
 
     private void setColor(TextElement e, Graphic g) {
         for (int i = 0; i < colors.size(); ++i) {
@@ -87,16 +116,15 @@ public class ModelUpdater {
             }
             if (!hasColor) {
                 String varName;
-                if (g instanceof FunctionX) {
-                    varName = "x";
-                } else if (g instanceof FunctionY) {
-                    varName = "y";
-                } else {
-                    varName = "x";
+                if(g instanceof Function){
+                    if (((Function)g).abscissa)
+                        varName = "x";
+                    else
+                        varName = "y";
+                    e.setName(func_names.get(i) + "(" + varName + ")");
+                    e.setColor(c);
+                    g.setColor(c);
                 }
-                e.setName(func_names.get(i) + "(" + varName + ")");
-                e.setColor(c);
-                g.setColor(c);
                 return;
             }
         }
@@ -129,35 +157,57 @@ public class ModelUpdater {
             dangerState = false;
             try {
                 List<String> graphs = new ArrayList<>();
-                for (TextElement e : list.getElements()) {
-                    graphs.add(e.getName().substring(0, e.getName().length() - 3) + ":1=" + e.getText());
+                List<String> calc = new ArrayList<String>();
+                calc.add(calculatorView.getText());
+                for (int i = 0; i < list.getElements().size(); ++i) {
+                    TextElement e = list.getElements().get(i);
+                    if(graphics.get(i) instanceof Function) {
+                        graphs.add(e.getName().substring(0, e.getName().length() - 3) + ":1=" + e.getText());
+                    }
+                    else if(graphics.get(i) instanceof Parameter){
+                        String text = list.getElements().get(i).getText();
+                        String[] expressions = text.split(":");
+                        if(expressions.length == 2){
+                            calc.add(expressions[0]);
+                            calc.add(expressions[1]);
+                        }else{
+                            throw new RuntimeException("we need 2 funcs in parameter");
+                        }
+                    }
                 }
                 double ans = calculator.calculate(
                         Arrays.asList(functionsView.getText().split("\n")),
                         graphs,
-                        calculatorView.getText(),
+                        calc,
                         new Number()
                 );
 
-                calculatorView.setAnswer(CoordinateSystem.dts(ans));
+                calculatorView.setAnswer(String.valueOf(ans));
+                int funcs = 0;
+                int parameters = 0;
                 for (int i = 0; i < graphics.size(); ++i) {
                     Graphic g = graphics.get(i);
-                    Variable<Double> var = calculator.getVars().get(i);
-                    TextElement el = list.getElements().get(i);
-                    if (var.getName().equals("y") && !(g instanceof FunctionY)) {
-                        g = new FunctionY();
-                        graphics.set(i, g);
-                        g.setColor(el.getColor());
-                        String t = el.getName().substring(0, 1);
-                        el.setName(t + "(y)");
-                    } else if (var.getName().equals("x") && !(g instanceof FunctionX)) {
-                        g = new FunctionX();
-                        graphics.set(i, g);
-                        g.setColor(el.getColor());
-                        String t = el.getName().substring(0, 1);
-                        el.setName(t + "(x)");
+                    if(g instanceof Function) {
+                        Variable<Double> var = calculator.getVars().get(funcs);
+                        TextElement el = list.getElements().get(i);
+                        if (var.getName().equals("y") && ((Function) g).abscissa) {
+                            ((Function) g).abscissa = false;
+                            el.setName(el.getName().substring(0, el.getName().length() - 3) + "(y)");
+                        } else if (var.getName().equals("x") && !((Function) g).abscissa) {
+                            ((Function) g).abscissa = true;
+                            el.setName(el.getName().substring(0, el.getName().length() - 3) + "(x)");
+                        }
+                        g.update(calculator.getGraphics().get(funcs), var);
+                        ++funcs;
+                    }else if(g instanceof Parameter){
+                        Variable<Double> varX = calculator.getExpressionVars().get(parameters);
+                        Variable<Double> varY = calculator.getExpressionVars().get(parameters + 1);
+                        Expression<Double> funcX = calculator.getExpressions().get(parameters);
+                        Expression<Double> funcY = calculator.getExpressions().get(parameters + 1);
+                        g.update(funcY, varY);
+                        ((Parameter) g).updateX(funcX, varX);
+                        parameters += 2;
                     }
-                    g.update(calculator.getGraphics().get(i), var);
                 }
                 resize.run();
                 repaint.run();
@@ -167,7 +217,7 @@ public class ModelUpdater {
             }
         });
     }
-    public void runResize(){
+    private void runResize(){
         if (!dangerState)
             tasks.runTask(() -> {
                 resize.run();
