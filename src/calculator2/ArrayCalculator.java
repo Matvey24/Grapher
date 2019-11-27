@@ -14,11 +14,13 @@ public class ArrayCalculator<T> {
     private List<AbstractFunc<T>> funcs;
 
     private List<Expression<T>> graphics;
+    private List<List<Variable<T>>> vars;
+
+
     private List<Expression<T>> expressions;
+    private List<List<Variable<T>>> expressionVars;
 
-    private List<Variable<T>> expressionVars;
 
-    private List<Variable<T>> vars;
     private List<String> funcNames;
 
     public ArrayCalculator(){
@@ -32,11 +34,9 @@ public class ArrayCalculator<T> {
     public T calculate(List<String> funcs, List<String> graphics, List<String> calc, AbstractType<T> type) {
         this.type = type;
         director = new Director<>(type);
-        vars.clear();
         funcNames.clear();
         this.funcs.clear();
         this.graphics.clear();
-        expressionVars.clear();
         expressions.clear();
         for (String s : graphics) {
             String t = s.replaceAll("[ \t]", "");
@@ -61,29 +61,46 @@ public class ArrayCalculator<T> {
             }catch (RuntimeException e){
                 throw new RuntimeException(e.getMessage() + " in " + (i + 1) + " func");
             }
-            if (director.getVars().size() == 0) {
+            if (director.getVars().size() == 0 || director.getVars().size() == 1 && director.getVars().get(0).getName().equals("z")) {
                 Variable<T> var = new Variable<>();
                 var.setName("x");
                 director.getVars().add(var);
             }
             try {
-                this.funcs.get(i).setFunc(director.getTree(), director.getVars());
+                List<Variable<T>> dv = director.getVars();
+                Variable<T> global = null;
+                for(Variable<T> var: dv){
+                    if(var.getName().equals("z")){
+                        global = var;
+                        dv.remove(var);
+                        break;
+                    }
+                }
+                this.funcs.get(i).setFunc(director.getTree(), dv);
+                if(global != null)
+                    dv.add(global);
             }catch (RuntimeException e){
                 throw new RuntimeException(e.getMessage() + " in " + (i + 1) + " func");
             }
             if (i < graphics.size()) {
                 this.graphics.add(director.getTree());
-                this.vars.add(director.getVars().get(0));
+                if(this.vars.size() == i)
+                    this.vars.add(new ArrayList<>());
+                this.vars.get(i).clear();
+                this.vars.get(i).addAll(director.getVars());
             }
         }
         try {
             for(int i = 1; i < calc.size(); ++i) {
                 director.update(calc.get(i));
                 expressions.add(director.getTree());
-                if(director.getVars().size() == 0)
-                    expressionVars.add(new Variable<>());
-                else
-                    expressionVars.add(director.getVars().get(0));
+                if(expressionVars.size() == i - 1)
+                    expressionVars.add(new ArrayList<>());
+                expressionVars.get(i - 1).clear();
+                if(director.getVars().size() == 0) {
+                    expressionVars.get(i - 1).add(new Variable<>());
+                }else
+                    expressionVars.get(i - 1).addAll(director.getVars());
             }
             director.update(calc.get(0));
             return director.calculate();
@@ -126,7 +143,7 @@ public class ArrayCalculator<T> {
         return graphics;
     }
 
-    public List<Variable<T>> getVars() {
+    public List<List<Variable<T>>> getVars() {
         return vars;
     }
 
@@ -134,7 +151,7 @@ public class ArrayCalculator<T> {
         return expressions;
     }
 
-    public List<Variable<T>> getExpressionVars() {
+    public List<List<Variable<T>>> getExpressionVars() {
         return expressionVars;
     }
 }

@@ -7,7 +7,7 @@ import static view.MainPanel.HEIGHT;
 
 public class Function extends Graphic {
     public boolean abscissa = true;
-
+    public String name;
     @Override
     public void resize(double offsetX, double offsetY, double scaleX, double scaleY) {
         if(abscissa){

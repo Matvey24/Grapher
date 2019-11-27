@@ -2,6 +2,7 @@ package view.settings;
 
 import controller.GraphType;
 import controller.ModelUpdater;
+import controller.SettingsManager;
 import framesLib.Screen;
 import view.elements.Parameter;
 import view.elements.TextElement;
@@ -21,8 +22,10 @@ public class ParameterSettings extends Screen {
     public ParameterSettings(ModelUpdater updater){
         setLayout(null);
         mapSize = new Parameter("Frequency", (e)->{
-            if(p != null)
+            if(p != null){
                 p.setMAP_SIZE(Integer.parseInt(e.getSource().toString()));
+                updater.runResize();
+            }
         });
         dimension = new Parameter("Dimension", (e)->{
             if(p != null){
@@ -31,6 +34,7 @@ public class ParameterSettings extends Screen {
                     double start = Double.parseDouble(dim[0]);
                     double end = Double.parseDouble(dim[1]);
                     p.updateBoards(start, end);
+                    updater.runResize();
                 }catch (RuntimeException ex){
                     dimension.setDefault(p.getStartT() + ":" + p.getEndT());
                 }
@@ -48,7 +52,7 @@ public class ParameterSettings extends Screen {
             }
         });
     }
-    void setInfo(view.grapher.graphics.Parameter p, TextElement e){
+    public void setInfo(view.grapher.graphics.Parameter p, TextElement e){
         this.p = p;
         this.el = e;
         spinner.setSelectedIndex(GraphType.PARAMETER.ordinal());

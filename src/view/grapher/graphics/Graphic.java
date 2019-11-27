@@ -33,6 +33,9 @@ public abstract class Graphic {
         this.color = color;
     }
     public abstract void paint(Graphics g);
+    public void funcChanged(){
+        needResize = true;
+    }
     public void setMAP_SIZE(int map_size){
         MAP_SIZE = map_size;
         needResize = true;

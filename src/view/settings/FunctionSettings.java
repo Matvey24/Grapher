@@ -2,12 +2,12 @@ package view.settings;
 
 import controller.GraphType;
 import controller.ModelUpdater;
+import controller.SettingsManager;
 import framesLib.Screen;
 import view.elements.Parameter;
 import view.elements.TextElement;
 import view.grapher.graphics.Function;
 
-import javax.jws.WebParam;
 import javax.swing.*;
 import java.awt.event.ItemEvent;
 
@@ -22,8 +22,10 @@ public class FunctionSettings extends Screen {
     public FunctionSettings(ModelUpdater updater){
         setLayout(null);
         mapSize = new Parameter("Frequency", (e)->{
-            if(f != null)
+            if(f != null) {
                 f.setMAP_SIZE(Integer.parseInt(e.getSource().toString()));
+                updater.runResize();
+            }
         });
         mapSize.addTo(this);
         mapSize.setBounds(0,0, 150);
@@ -35,7 +37,7 @@ public class FunctionSettings extends Screen {
             }
         });
     }
-    void setInfo(Function f, TextElement e){
+    public void setInfo(Function f, TextElement e){
         this.f = f;
         this.el = e;
         spinner.setSelectedIndex(GraphType.FUNCTION.ordinal());

@@ -25,7 +25,6 @@ public class TextViewer {
                 "- trigonometric functions",
                 "abs - absolute value",
                 "ift(x, y, z) - returns z if x = 0 else y",
-                "ifd(x, y) - returns 0 if x = 0 else y",
                 "if(x) - returns 0 if x = 0 else 1"
             },{
                 "Constants: (SI)",
@@ -33,7 +32,7 @@ public class TextViewer {
                 "e - exponent = 2.71",
                 "g - gravity = 9.8",
                 "G - gravitational constant = 6.67 * 10 ^ -11",
-                "h - Planсk const = 6.62 * 10 ^ -34",
+                "h - Planсk constant = 6.62 * 10 ^ -34",
                 "c - speed of light = 3 * 10 ^ 8",
                 "eps - permittivity = 8.85 * 10 ^ -12",
                 "NA - Avogadro number = 6.02 * 10 ^ 23",
@@ -74,7 +73,11 @@ public class TextViewer {
                 "you can't use your own functions,",
                 "but you can use your other constants,",
                 "which have written before."
-            }, {
+            },{
+                "Timer",
+                "Write a graphic using time var 'z', that is a good name,",
+                "than click 'Timer' and click 'Run' in opened frame."
+            },{
                 "Extra:",
                 "Right click on '-' button in expression in graphics.",
                 "Extra info window will opened.",

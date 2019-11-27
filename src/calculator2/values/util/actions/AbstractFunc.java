@@ -7,6 +7,7 @@ import calculator2.values.util.actions.functions.TernarFunc;
 import calculator2.values.util.actions.functions.UnarFunc;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AbstractFunc<T>{
     private Expression<T> expression;
@@ -31,7 +32,7 @@ public class AbstractFunc<T>{
         return expression.calculate();
     }
 
-    public void setFunc(Expression<T> expression, ArrayList<Variable<T>> vars){
+    public void setFunc(Expression<T> expression, List<Variable<T>> vars){
         this.expression = expression;
         if(vars.size() != argcount){
             throw new RuntimeException(String.format("We need %d vars, now %d", argcount,vars.size()));

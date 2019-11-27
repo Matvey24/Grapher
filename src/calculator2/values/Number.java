@@ -47,7 +47,6 @@ public class Number extends AbstractType<Double> {
         addFunction("abs", a->Math.abs(a), 5);
 
         addFunction("ift", (a,b,c)->(a == 0)?c:b, 5);
-        addFunction("ifd", (a,b)->(a == 0)?0:b, 5);
         addFunction("if", a->(a == 0)?0d:1d, 5);
     }
     private void constants(){

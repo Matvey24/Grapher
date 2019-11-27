@@ -60,8 +60,9 @@ public class MainPanel extends Screen {
             }
         });
         addMouseWheelListener(e -> updater.resize(e.getPreciseWheelRotation(), e.getX() - ElementsList.WIDTH, e.getY()));
+
         JButton btn_resize = new JButton("Resize");
-        btn_resize.setBounds(OFFSET, 620 + TextElement.HEIGHT + OFFSET, TextElement.WIDTH, TextElement.HEIGHT);
+        btn_resize.setBounds(OFFSET, 620 + TextElement.HEIGHT + OFFSET, TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
         btn_resize.addActionListener(e -> {
             WIDTH = getWidth();
             HEIGHT = getHeight();
@@ -70,6 +71,12 @@ public class MainPanel extends Screen {
         });
         add(btn_resize);
 
+        JButton btn_timer = new JButton("Timer");
+        btn_timer.setBounds(3 * OFFSET / 2 + TextElement.WIDTH / 2, 620 + TextElement.HEIGHT + OFFSET, TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
+        btn_timer.addActionListener(e ->{
+            updater.openTimer();
+        });
+        add(btn_timer);
     }
     @Override
     public void onSetSize() {

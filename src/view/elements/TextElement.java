@@ -5,15 +5,14 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class TextElement {
-    public static final int NAME_WIDTH = 30;
-    public static final int TEXT_WIDTH = 160;
-    public static final int REMOVE_WIDTH = 25;
+    private static final int NAME_WIDTH = 30;
+    private static final int TEXT_WIDTH = 160;
+    private static final int REMOVE_WIDTH = 25;
     public static final int HEIGHT = 25;
     public static final int WIDTH = NAME_WIDTH + TEXT_WIDTH + REMOVE_WIDTH;
     private JLabel name;
     private JTextField text;
     private JButton remove;
-    private ActionListener settingsListener;
     public TextElement(int x, int y, String name){
         this.name = new JLabel(name);
         text = new JTextField();

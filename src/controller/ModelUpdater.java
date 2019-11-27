@@ -9,11 +9,9 @@ import view.elements.CalculatorView;
 import view.elements.ElementsList;
 import view.elements.FunctionsView;
 import view.elements.TextElement;
-import view.grapher.CoordinateSystem;
 import view.grapher.graphics.Function;
 import view.grapher.graphics.Graphic;
 import view.grapher.graphics.Parameter;
-import view.settings.SettingsManager;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -24,12 +22,15 @@ import java.util.List;
 import static java.awt.Color.*;
 
 public class ModelUpdater {
+    private static final List<Color> colors = Arrays.asList(RED, GREEN, BLUE, CYAN, magenta, ORANGE, YELLOW, GRAY, PINK, LIGHT_GRAY);
+    private static final List<String> func_names = Arrays.asList("f", "i", "j", "l", "m", "n", "o", "q", "r", "s");
     private static final double deltaScale = 1.2;
     private Runnable repaint;
     private Runnable resize;
 
     private ArrayCalculator<Double> calculator;
-    private ArrayList<Graphic> graphics;
+    private List<Graphic> graphics;
+    private List<Variable<Double>> timeVars;
     private ElementsList list;
     private FunctionsView functionsView;
     private CalculatorView calculatorView;
@@ -40,13 +41,13 @@ public class ModelUpdater {
     private double offsetY = 5.5;
     private double scaleX = 100;
     private double scaleY = 100;
-    private static List<Color> colors = Arrays.asList(RED, GREEN, BLUE, CYAN, magenta, ORANGE, YELLOW, GRAY, PINK, LIGHT_GRAY);
-    private static List<String> func_names = Arrays.asList("f", "i", "j", "l", "m", "n", "o", "q", "r", "s");
     private boolean dangerState = false;
+
     public ModelUpdater(Runnable repaint) {
         this.repaint = repaint;
         calculator = new ArrayCalculator<>();
         settingsManager = new SettingsManager(this);
+        timeVars = new ArrayList<>();
         tasks = new Tasks();
     }
 
@@ -60,7 +61,8 @@ public class ModelUpdater {
             System.out.println("error " + e.getActionCommand());
         }
     }
-    private void add(ActionEvent e){
+
+    private void add(ActionEvent e) {
         TextElement element = list.getElements().get(e.getID());
         Graphic graphic = new Function();
         graphics.add(graphic);
@@ -69,39 +71,43 @@ public class ModelUpdater {
         setColor(element, graphic);
         recalculate();
     }
-    private void remove(ActionEvent e){
+
+    private void remove(ActionEvent e) {
         graphics.remove(e.getID());
         recalculate();
     }
 
-    public void startSettings(ActionEvent e){
+    public void startSettings(ActionEvent e) {
         int id = e.getID();
         Graphic g = graphics.get(id);
-        if(g instanceof Function){
+        if (g instanceof Function) {
             settingsManager.openFunctionSettings((Function) g, list.getElements().get(id));
-        }else if(g instanceof Parameter){
+        } else if (g instanceof Parameter) {
             settingsManager.openParameterSettings((Parameter) g, list.getElements().get(id));
         }
     }
-    public void makeFunction(Graphic g, TextElement e){
+    public void openTimer(){
+        settingsManager.openTimerSettings();
+    }
+    public void makeFunction(Graphic g, TextElement e) {
         int idx = graphics.indexOf(g);
         Function function = new Function();
         function.setColor(e.getColor());
         graphics.set(idx, function);
-        Color c = e.getColor();
         e.setColor(WHITE);
         setColor(e, function);
         recalculate();
-        startSettings(new ActionEvent(0,idx, ""));
+        startSettings(new ActionEvent(0, idx, ""));
     }
-    public void makeParameter(Graphic g, TextElement e){
+
+    public void makeParameter(Graphic g, TextElement e) {
         int idx = graphics.indexOf(g);
         Parameter parameter = new Parameter();
         parameter.setColor(e.getColor());
         graphics.set(idx, parameter);
         recalculate();
-        e.setName("param");
-        startSettings(new ActionEvent(0,idx, ""));
+        e.setName("xy(t)");
+        startSettings(new ActionEvent(0, idx, ""));
     }
 
     private void setColor(TextElement e, Graphic g) {
@@ -115,13 +121,9 @@ public class ModelUpdater {
                 }
             }
             if (!hasColor) {
-                String varName;
-                if(g instanceof Function){
-                    if (((Function)g).abscissa)
-                        varName = "x";
-                    else
-                        varName = "y";
-                    e.setName(func_names.get(i) + "(" + varName + ")");
+                if (g instanceof Function) {
+                    e.setName(func_names.get(i) + "(" + ((((Function) g).abscissa)?"x":"y") + ")");
+                    ((Function) g).name = func_names.get(i);
                     e.setColor(c);
                     g.setColor(c);
                 }
@@ -131,17 +133,21 @@ public class ModelUpdater {
     }
 
     public void translate(int dScreenX, int dScreenY) {
+        if (dangerState)
+            return;
         double dOffsetX = dScreenX / scaleX;
         double dOffsetY = dScreenY / scaleY;
         offsetX -= dOffsetX;
         offsetY += dOffsetY;
-        if (!dangerState)
-            tasks.runTask(() -> {
-                resize.run();
-                repaint.run();
-            });
+        tasks.runTask(() -> {
+            resize.run();
+            repaint.run();
+        });
     }
+
     public void resize(double delta, int x, int y) {
+        if (dangerState)
+            return;
         double deltaX = x / scaleX;
         double deltaY = y / scaleY;
         scaleX /= Math.pow(deltaScale, delta);
@@ -150,27 +156,25 @@ public class ModelUpdater {
         offsetY += y / scaleY - deltaY;
         runResize();
     }
+
     public void recalculate() {
         tasks.clearTasks();
         tasks.runTask(() -> {
-            setState("+");
-            dangerState = false;
             try {
                 List<String> graphs = new ArrayList<>();
-                List<String> calc = new ArrayList<String>();
+                List<String> calc = new ArrayList<>();
                 calc.add(calculatorView.getText());
                 for (int i = 0; i < list.getElements().size(); ++i) {
                     TextElement e = list.getElements().get(i);
-                    if(graphics.get(i) instanceof Function) {
-                        graphs.add(e.getName().substring(0, e.getName().length() - 3) + ":1=" + e.getText());
-                    }
-                    else if(graphics.get(i) instanceof Parameter){
+                    if (graphics.get(i) instanceof Function) {
+                        graphs.add(((Function) graphics.get(i)).name + ":1=" + e.getText());
+                    } else if (graphics.get(i) instanceof Parameter) {
                         String text = list.getElements().get(i).getText();
                         String[] expressions = text.split(":");
-                        if(expressions.length == 2){
+                        if (expressions.length == 2) {
                             calc.add(expressions[0]);
                             calc.add(expressions[1]);
-                        }else{
+                        } else {
                             throw new RuntimeException("we need 2 funcs in parameter");
                         }
                     }
@@ -185,23 +189,31 @@ public class ModelUpdater {
                 calculatorView.setAnswer(String.valueOf(ans));
                 int funcs = 0;
                 int parameters = 0;
+                timeVars.clear();
                 for (int i = 0; i < graphics.size(); ++i) {
                     Graphic g = graphics.get(i);
-                    if(g instanceof Function) {
-                        Variable<Double> var = calculator.getVars().get(funcs);
+                    if (g instanceof Function) {
+                        Function f = (Function) g;
+                        List<Variable<Double>> vars = calculator.getVars().get(funcs);
                         TextElement el = list.getElements().get(i);
-                        if (var.getName().equals("y") && ((Function) g).abscissa) {
-                            ((Function) g).abscissa = false;
-                            el.setName(el.getName().substring(0, el.getName().length() - 3) + "(y)");
-                        } else if (var.getName().equals("x") && !((Function) g).abscissa) {
-                            ((Function) g).abscissa = true;
-                            el.setName(el.getName().substring(0, el.getName().length() - 3) + "(x)");
+                        checkTimeVars(vars);
+                        Variable<Double> var = vars.get(0);
+                        if (var.getName().equals("y") && f.abscissa) {
+                            f.abscissa = false;
+                            el.setName(f.name + "(y)");
+                        } else if (var.getName().equals("x") && !f.abscissa) {
+                            f.abscissa = true;
+                            el.setName(f.name + "(x)");
                         }
-                        g.update(calculator.getGraphics().get(funcs), var);
+                        f.update(calculator.getGraphics().get(funcs), var);
                         ++funcs;
-                    }else if(g instanceof Parameter){
-                        Variable<Double> varX = calculator.getExpressionVars().get(parameters);
-                        Variable<Double> varY = calculator.getExpressionVars().get(parameters + 1);
+                    } else if (g instanceof Parameter) {
+                        List<Variable<Double>> vars = calculator.getExpressionVars().get(parameters);
+                        checkTimeVars(vars);
+                        Variable<Double> varX = vars.get(0);
+                        vars = calculator.getExpressionVars().get(parameters + 1);
+                        checkTimeVars(vars);
+                        Variable<Double> varY = vars.get(0);
                         Expression<Double> funcX = calculator.getExpressions().get(parameters);
                         Expression<Double> funcY = calculator.getExpressions().get(parameters + 1);
                         g.update(funcY, varY);
@@ -209,34 +221,61 @@ public class ModelUpdater {
                         parameters += 2;
                     }
                 }
+                dangerState = false;
+                setState("+");
                 resize.run();
                 repaint.run();
             } catch (Exception e) {
-                setState(e.getMessage());
+                if(e instanceof NullPointerException){
+                    setState(e.toString());
+                }else
+                    setState(e.getMessage());
                 dangerState = true;
             }
         });
     }
-    private void runResize(){
+    private void checkTimeVars(List<Variable<Double>> vars){
+        String timeName = "z";
+        for(int i = 0; i < vars.size(); ++i){
+            if(vars.get(i).getName() != null && vars.get(i).getName().equals(timeName)){
+                Variable<Double> t = vars.remove(i);
+                t.setValue(settingsManager.getStartTime());
+                timeVars.add(t);
+                if(vars.size() == 0) {
+                    Variable<Double> var = new Variable<>();
+                    var.setName("x");
+                    vars.add(var);
+                }
+                break;
+            }
+        }
+    }
+    public void justResize(){
+        for(Graphic g: graphics){
+            g.funcChanged();
+        }
+        runResize();
+    }
+    public void runResize() {
         if (!dangerState)
             tasks.runTask(() -> {
                 resize.run();
                 repaint.run();
             });
     }
+
     public void setStringElements(FunctionsView functions, CalculatorView calculator) {
         this.functionsView = functions;
         this.calculatorView = calculator;
     }
+
     private void setState(String text) {
         list.setState(text);
     }
+
     public void setResize(Runnable resize) {
         this.resize = resize;
-        tasks.runTask(() -> {
-            resize.run();
-            repaint.run();
-        });
+        runResize();
     }
     public double getOffsetX() {
         return offsetX;
@@ -255,5 +294,9 @@ public class ModelUpdater {
     }
     public void setGraphics(ArrayList<Graphic> graphics) {
         this.graphics = graphics;
+    }
+
+    public List<Variable<Double>> getTimeVars() {
+        return timeVars;
     }
 }
