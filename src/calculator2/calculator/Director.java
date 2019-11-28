@@ -42,4 +42,8 @@ public class Director<T> {
     public Expression<T> getTree() {
         return tree;
     }
+
+    public Helper<T> getHelper() {
+        return helper;
+    }
 }

@@ -1,6 +1,5 @@
 package view.settings;
 
-import calculator2.calculator.executors.Variable;
 import controller.ModelUpdater;
 import framesLib.Screen;
 import view.elements.Parameter;
@@ -16,10 +15,11 @@ public class TimerSettings extends Screen {
     private Timer timer;
     private double FPS = 30;
     private double delta = 1/FPS;
-    private double time;
     private double dur = 3;
     private double startT = -5;
+    private double time;
     private double endT = 5;
+    private double value = startT;
     private boolean boomerang;
     private boolean fTimeDirection = true;
     private JToggleButton start;
@@ -38,6 +38,7 @@ public class TimerSettings extends Screen {
                     FPS = Double.parseDouble(vars[1]);
                     delta = 1 / FPS;
                 }
+                timer.setDelay((int)(1000*delta));
             }catch (RuntimeException ex){
                 onShow();
             }
@@ -51,12 +52,12 @@ public class TimerSettings extends Screen {
                     dimension.setDefault(startT + ":" + endT);
                 startT = Double.parseDouble(vars[0]);
                 endT = Double.parseDouble(vars[1]);
-                if(!timer.isRunning())
-                for(Variable<Double> var: updater.getTimeVars()){
-                    var.setValue(startT);
+                if(!timer.isRunning()) {
+                    value = startT;
+                    updater.setTime(startT);
+                    updater.justResize();
                 }
                 time = 0;
-                updater.justResize();
             }catch (RuntimeException ex){
                 onShow();
             }
@@ -65,10 +66,8 @@ public class TimerSettings extends Screen {
         dimension.setBounds(0,70,150);
         timer = new Timer((int)(delta * 1000), e -> {
             double len = endT - startT;
-            double val = time / dur * len + startT;
-            for(Variable<Double> var: updater.getTimeVars()){
-                var.setValue(val);
-            }
+            value = time / dur * len + startT;
+            updater.setTime(value);
             if(fTimeDirection)
                 time += delta;
             else
@@ -99,9 +98,7 @@ public class TimerSettings extends Screen {
         JToggleButton timeDir = new JToggleButton("Boomerang");
         add(timeDir);
         timeDir.setBounds(10,220, 150, 40);
-        timeDir.addActionListener(e->{
-            boomerang = timeDir.isSelected();
-        });
+        timeDir.addActionListener(e->boomerang = timeDir.isSelected());
     }
 
     @Override
@@ -119,8 +116,8 @@ public class TimerSettings extends Screen {
 
     }
 
-    public double getStartT() {
-        return startT;
+    public double getT() {
+        return value;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package view.elements;
 
+import calculator2.calculator.executors.Expression;
 import controller.ViewElement;
 import view.elements.TextElement;
 
@@ -14,12 +15,14 @@ public class CalculatorView extends ViewElement {
     private JTextField answer;
     private JLabel name;
     private JTextField field;
+    private Expression<Double> func;
     public CalculatorView(Runnable calculate){
         name = new JLabel("Calculator");
         name.setFont(name_font);
         answer = new JTextField();
         answer.setEditable(false);
         answer.setText("'ans'");
+        answer.setFont(new Font("arial", Font.PLAIN, 11));
         field = new JTextField();
         field.addActionListener(e->calculate.run());
     }
@@ -34,8 +37,11 @@ public class CalculatorView extends ViewElement {
         answer.setBounds(x + WIDTH / 2 - 3*OFFSET, y, 2*OFFSET + WIDTH / 2, HEIGHT);
         field.setBounds(x + OFFSET, y + HEIGHT + OFFSET, WIDTH - 2 * OFFSET, HEIGHT);
     }
-    public void setAnswer(String ans){
-        answer.setText(ans);
+    public void setAnswer(Expression<Double> func){
+        this.func = func;
+    }
+    public void update(){
+        answer.setText(String.valueOf(func.calculate()));
     }
     public String getText() {
         return field.getText();

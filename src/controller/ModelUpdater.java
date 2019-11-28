@@ -30,7 +30,6 @@ public class ModelUpdater {
 
     private ArrayCalculator<Double> calculator;
     private List<Graphic> graphics;
-    private List<Variable<Double>> timeVars;
     private ElementsList list;
     private FunctionsView functionsView;
     private CalculatorView calculatorView;
@@ -47,7 +46,6 @@ public class ModelUpdater {
         this.repaint = repaint;
         calculator = new ArrayCalculator<>();
         settingsManager = new SettingsManager(this);
-        timeVars = new ArrayList<>();
         tasks = new Tasks();
     }
 
@@ -179,24 +177,22 @@ public class ModelUpdater {
                         }
                     }
                 }
-                double ans = calculator.calculate(
+                calculator.calculate(
                         Arrays.asList(functionsView.getText().split("\n")),
                         graphs,
                         calc,
                         new Number()
                 );
 
-                calculatorView.setAnswer(String.valueOf(ans));
-                int funcs = 0;
-                int parameters = 0;
-                timeVars.clear();
+                calculatorView.setAnswer(calculator.getExpressions().get(0));
+                int funcs = 1;
+                int parameters = 1;
                 for (int i = 0; i < graphics.size(); ++i) {
                     Graphic g = graphics.get(i);
                     if (g instanceof Function) {
                         Function f = (Function) g;
                         List<Variable<Double>> vars = calculator.getVars().get(funcs);
                         TextElement el = list.getElements().get(i);
-                        checkTimeVars(vars);
                         Variable<Double> var = vars.get(0);
                         if (var.getName().equals("y") && f.abscissa) {
                             f.abscissa = false;
@@ -209,10 +205,8 @@ public class ModelUpdater {
                         ++funcs;
                     } else if (g instanceof Parameter) {
                         List<Variable<Double>> vars = calculator.getExpressionVars().get(parameters);
-                        checkTimeVars(vars);
                         Variable<Double> varX = vars.get(0);
                         vars = calculator.getExpressionVars().get(parameters + 1);
-                        checkTimeVars(vars);
                         Variable<Double> varY = vars.get(0);
                         Expression<Double> funcX = calculator.getExpressions().get(parameters);
                         Expression<Double> funcY = calculator.getExpressions().get(parameters + 1);
@@ -223,6 +217,7 @@ public class ModelUpdater {
                 }
                 dangerState = false;
                 setState("+");
+                setTime(settingsManager.getTime());
                 resize.run();
                 repaint.run();
             } catch (Exception e) {
@@ -233,22 +228,6 @@ public class ModelUpdater {
                 dangerState = true;
             }
         });
-    }
-    private void checkTimeVars(List<Variable<Double>> vars){
-        String timeName = "z";
-        for(int i = 0; i < vars.size(); ++i){
-            if(vars.get(i).getName() != null && vars.get(i).getName().equals(timeName)){
-                Variable<Double> t = vars.remove(i);
-                t.setValue(settingsManager.getStartTime());
-                timeVars.add(t);
-                if(vars.size() == 0) {
-                    Variable<Double> var = new Variable<>();
-                    var.setName("x");
-                    vars.add(var);
-                }
-                break;
-            }
-        }
     }
     public void justResize(){
         for(Graphic g: graphics){
@@ -296,7 +275,8 @@ public class ModelUpdater {
         this.graphics = graphics;
     }
 
-    public List<Variable<Double>> getTimeVars() {
-        return timeVars;
+    public void setTime(double time) {
+        calculator.resetConstant("tm", time);
+        calculatorView.update();
     }
 }

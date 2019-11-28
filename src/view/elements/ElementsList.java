@@ -18,7 +18,7 @@ public class ElementsList extends ViewElement {
     private int height;
     private int max_size = 10;
     public static final int OFFSET = 5;
-    public static final int NAME_HEIGHT = 30;
+    private static final int NAME_HEIGHT = 30;
     public static final int WIDTH = TextElement.WIDTH + 2 * OFFSET;
     private Point pos;
     private Container c;

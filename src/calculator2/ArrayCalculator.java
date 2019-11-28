@@ -31,7 +31,7 @@ public class ArrayCalculator<T> {
         expressions = new ArrayList<>();
         expressionVars = new ArrayList<>();
     }
-    public T calculate(List<String> funcs, List<String> graphics, List<String> calc, AbstractType<T> type) {
+    public void calculate(List<String> funcs, List<String> graphics, List<String> calc, AbstractType<T> type) {
         this.type = type;
         director = new Director<>(type);
         funcNames.clear();
@@ -61,24 +61,13 @@ public class ArrayCalculator<T> {
             }catch (RuntimeException e){
                 throw new RuntimeException(e.getMessage() + " in " + (i + 1) + " func");
             }
-            if (director.getVars().size() == 0 || director.getVars().size() == 1 && director.getVars().get(0).getName().equals("z")) {
+            if (director.getVars().size() == 0) {
                 Variable<T> var = new Variable<>();
                 var.setName("x");
                 director.getVars().add(var);
             }
             try {
-                List<Variable<T>> dv = director.getVars();
-                Variable<T> global = null;
-                for(Variable<T> var: dv){
-                    if(var.getName().equals("z")){
-                        global = var;
-                        dv.remove(var);
-                        break;
-                    }
-                }
-                this.funcs.get(i).setFunc(director.getTree(), dv);
-                if(global != null)
-                    dv.add(global);
+                this.funcs.get(i).setFunc(director.getTree(), director.getVars());
             }catch (RuntimeException e){
                 throw new RuntimeException(e.getMessage() + " in " + (i + 1) + " func");
             }
@@ -91,6 +80,8 @@ public class ArrayCalculator<T> {
             }
         }
         try {
+            director.update(calc.get(0));
+            expressions.add(director.getTree());
             for(int i = 1; i < calc.size(); ++i) {
                 director.update(calc.get(i));
                 expressions.add(director.getTree());
@@ -102,8 +93,6 @@ public class ArrayCalculator<T> {
                 }else
                     expressionVars.get(i - 1).addAll(director.getVars());
             }
-            director.update(calc.get(0));
-            return director.calculate();
         }catch (RuntimeException e){
             throw new RuntimeException(e.getMessage() + " in calc");
         }
@@ -153,5 +142,10 @@ public class ArrayCalculator<T> {
 
     public List<List<Variable<T>>> getExpressionVars() {
         return expressionVars;
+    }
+    public void resetConstant(String name, T val){
+        Variable<T> var = director.getHelper().consts.getConst(name);
+        if(var != null)
+            var.setValue(val);
     }
 }

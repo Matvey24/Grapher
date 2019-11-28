@@ -13,7 +13,7 @@ public class TextElement {
     private JLabel name;
     private JTextField text;
     private JButton remove;
-    public TextElement(int x, int y, String name){
+    TextElement(int x, int y, String name){
         this.name = new JLabel(name);
         text = new JTextField();
         remove = new JButton("-");
@@ -34,16 +34,16 @@ public class TextElement {
         container.add(text);
         container.add(remove);
     }
-    public void removeFrom(Container c) {
+    void removeFrom(Container c) {
         c.remove(name);
         c.remove(text);
         c.remove(remove);
     }
-    public void addRemoveListener(ActionListener listener){
+    void addRemoveListener(ActionListener listener){
         remove.addActionListener(listener);
     }
 
-    public void addSettingsListener(MouseListener settingsListener) {
+    void addSettingsListener(MouseListener settingsListener) {
         remove.addMouseListener(settingsListener);
     }
 

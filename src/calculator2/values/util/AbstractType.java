@@ -1,5 +1,6 @@
 package calculator2.values.util;
 
+import calculator2.calculator.executors.Variable;
 import calculator2.values.util.actions.Constant;
 import calculator2.values.util.actions.Func;
 import calculator2.values.util.actions.Sign;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 public abstract class AbstractType<T> {
     public final ArrayList<Sign<T>> signs;
     public final ArrayList<Func<T>> funcs;
-    public final ArrayList<Constant<T>> consts;
+    public final ArrayList<Variable<T>> consts;
     private Sign<T> missingSign;
     protected AbstractType() {
         signs = new ArrayList<>();
@@ -34,7 +35,7 @@ public abstract class AbstractType<T> {
     }
 
     public void addConst(String name, T state) {
-        consts.add(new Constant<>(name, state));
+        consts.add(new Variable<>(name, state));
     }
 
     public void addFunction(String name, UnarFunc<T> unarFunc, int priority) {

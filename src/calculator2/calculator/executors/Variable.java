@@ -3,6 +3,11 @@ package calculator2.calculator.executors;
 public class Variable<T> implements Expression<T>{
     private String name;
     private T value;
+    public Variable(){}
+    public Variable(String name, T value){
+        this.name = name;
+        this.value = value;
+    }
     public void setName(String name){
         this.name = name;
     }

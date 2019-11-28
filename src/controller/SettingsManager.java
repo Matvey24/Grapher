@@ -17,12 +17,12 @@ public class SettingsManager {
     private FunctionSettings functionSettings;
     private ParameterSettings parameterSettings;
     private TimerSettings timerSettings;
-    public SettingsManager(ModelUpdater updater){
+    SettingsManager(ModelUpdater updater){
         functionSettings = new FunctionSettings(updater);
         parameterSettings = new ParameterSettings(updater);
         timerSettings = new TimerSettings(updater);
     }
-    public void openFunctionSettings(Function f, TextElement e){
+    void openFunctionSettings(Function f, TextElement e){
         if(frame == null || !frame.isVisible())
             frame = new MyFrame(true);
         frame.clearStack();
@@ -30,7 +30,7 @@ public class SettingsManager {
         frame.changeScreen(functionSettings);
         frame.setFocusable(true);
     }
-    public void openParameterSettings(Parameter p, TextElement e){
+    void openParameterSettings(Parameter p, TextElement e){
         if(frame == null || !frame.isVisible())
             frame = new MyFrame(true);
         frame.clearStack();
@@ -38,14 +38,14 @@ public class SettingsManager {
         frame.changeScreen(parameterSettings);
         frame.setFocusable(true);
     }
-    public void openTimerSettings(){
+    void openTimerSettings(){
         if(frame == null || !frame.isVisible())
             frame = new MyFrame(true);
         frame.clearStack();
         frame.changeScreen(timerSettings);
         frame.setFocusable(true);
     }
-    public void close(){
+    void close(){
         if(frame != null && frame.isVisible())
             frame.dispose();
     }
@@ -61,7 +61,7 @@ public class SettingsManager {
         spinner.setBounds(10,y + 40, width, 30);
         return spinner;
     }
-    public Double getStartTime(){
-        return timerSettings.getStartT();
+    Double getTime(){
+        return timerSettings.getT();
     }
 }

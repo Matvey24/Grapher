@@ -33,9 +33,7 @@ class Calculator<T> {
                 nextSign(e);
                 break;
             case CONSTANT:
-                value = new Value<>();
-                value.setValue(helper.consts.getConst(e.symbol).value);
-                values.push(value);
+                values.push(helper.consts.getConst(e.symbol));
                 break;
             case NUMBER:
                 value = new Value<>();
