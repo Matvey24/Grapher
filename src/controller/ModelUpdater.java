@@ -185,8 +185,8 @@ public class ModelUpdater {
                 );
 
                 calculatorView.setAnswer(calculator.getExpressions().get(0));
-                int funcs = 1;
-                int parameters = 1;
+                int funcs = 0;
+                int parameters = 0;
                 for (int i = 0; i < graphics.size(); ++i) {
                     Graphic g = graphics.get(i);
                     if (g instanceof Function) {
@@ -208,8 +208,8 @@ public class ModelUpdater {
                         Variable<Double> varX = vars.get(0);
                         vars = calculator.getExpressionVars().get(parameters + 1);
                         Variable<Double> varY = vars.get(0);
-                        Expression<Double> funcX = calculator.getExpressions().get(parameters);
-                        Expression<Double> funcY = calculator.getExpressions().get(parameters + 1);
+                        Expression<Double> funcX = calculator.getExpressions().get(parameters + 1);
+                        Expression<Double> funcY = calculator.getExpressions().get(parameters + 2);
                         g.update(funcY, varY);
                         ((Parameter) g).updateX(funcX, varX);
                         parameters += 2;
