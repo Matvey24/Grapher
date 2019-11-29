@@ -13,12 +13,13 @@ public class TimerSettings extends Screen {
     private Parameter duration;
     private Parameter dimension;
     private Timer timer;
-    private double FPS = 30;
-    private double delta = 1/FPS;
-    private double dur = 3;
+    private double FPS = 60;
+    private double delay = 1/FPS;
+    private double dur = 30;
     private double startT = -5;
-    private double time;
     private double endT = 5;
+    private double time;
+    private long timeBefore;
     private double value = startT;
     private boolean boomerang;
     private boolean fTimeDirection = true;
@@ -33,12 +34,12 @@ public class TimerSettings extends Screen {
                 dur = Double.parseDouble(vars[0]);
                 if (vars.length == 1) {
                     FPS = 60;
-                    delta = 1 / FPS;
+                    delay = 1 / FPS;
                 }else {
                     FPS = Double.parseDouble(vars[1]);
-                    delta = 1 / FPS;
+                    delay = 1 / FPS;
                 }
-                timer.setDelay((int)(1000*delta));
+                timer.setDelay((int)(1000* delay));
             }catch (RuntimeException ex){
                 onShow();
             }
@@ -64,7 +65,10 @@ public class TimerSettings extends Screen {
         });
         dimension.addTo(this);
         dimension.setBounds(0,70,150);
-        timer = new Timer((int)(delta * 1000), e -> {
+        timer = new Timer((int)(delay * 1000), e -> {
+            long t = System.currentTimeMillis();
+            double delta = (t - timeBefore) / 1000d;
+            timeBefore = t;
             double len = endT - startT;
             value = time / dur * len + startT;
             updater.setTime(value);
@@ -90,6 +94,7 @@ public class TimerSettings extends Screen {
         start.setBounds(10,170,150, 40);
         start.addActionListener(e->{
             if(start.isSelected()){
+                timeBefore = System.currentTimeMillis();
                 timer.start();
             }else{
                 timer.stop();

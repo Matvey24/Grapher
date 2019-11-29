@@ -84,10 +84,10 @@ class Calculator<T> {
                 if(e.type == Element.ElementType.BRACKET){
                     if(i - 1 >= 0){
                         if(other.elementAt(i - 1).type == Element.ElementType.SIGN) {
-                            Sign s = helper.signs.getSign(other.elementAt(i - 1).symbol);
+                            Sign<T> s = helper.signs.getSign(other.elementAt(i - 1).symbol);
                             count(s.priority + 1);
                         }else if(other.elementAt(i - 1).type == Element.ElementType.FUNCTION){
-                            Func f = helper.funcs.getFunc(other.elementAt(i - 1).symbol);
+                            Func<T> f = helper.funcs.getFunc(other.elementAt(i - 1).symbol);
                             count(f.priority + 1);
                         }else if(other.elementAt(i - 1).type == Element.ElementType.BRACKET){
                             count(0);
@@ -128,26 +128,25 @@ class Calculator<T> {
         }else if(e.type == Element.ElementType.FUNCTION){
             Func<T> f = helper.funcs.getFunc(e.symbol);
             if(f.priority >= priority){
-                if(f.argcount() == 1){
+                if(f.args == 1){
                     Expression<T> e1 = values.pop();
 
                     UnaryActor<T> actor = new UnaryActor<>();
                     actor.setValues(f.unarFunc, e1, f.name);
                     values.push(actor);
-                }else if(f.argcount() == 2){
+                }else if(f.args == 2){
                     Expression<T> e2 = values.pop();
                     Expression<T> e1 = values.pop();
 
                     BinaryActor<T> actor = new BinaryActor<>();
                     actor.setValues(f.binarFunc, e1, e2, f.name);
                     values.push(actor);
-                }else if(f.argcount() == 3){
-                    Expression<T> e3 = values.pop();
-                    Expression<T> e2 = values.pop();
-                    Expression<T> e1 = values.pop();
-
-                    TriActor<T> actor = new TriActor<>();
-                    actor.setValues(f.ternarFunc, e1, e2, e3, f.name);
+                }else{
+                    Expression<T>[] arr = new Expression[f.args];
+                    for(int i = f.args - 1; i >= 0; --i)
+                        arr[i] = values.pop();
+                    MultiActor<T> actor = new MultiActor<>();
+                    actor.setValues(f.multiFunc, f.name, arr);
                     values.push(actor);
                 }
                 count(priority);

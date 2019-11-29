@@ -176,7 +176,7 @@ class Parser<T> {
                     ++valsCount;
                     break;
                 case FUNCTION:
-                    needArgs += helper.funcs.getFunc(e.symbol).argcount();
+                    needArgs += helper.funcs.getFunc(e.symbol).args;
                 case VAR:
                 case NUMBER:
                 case CONSTANT:

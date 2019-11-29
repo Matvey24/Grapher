@@ -1,11 +1,10 @@
 package calculator2.values.util;
 
 import calculator2.calculator.executors.Variable;
-import calculator2.values.util.actions.Constant;
 import calculator2.values.util.actions.Func;
 import calculator2.values.util.actions.Sign;
 import calculator2.values.util.actions.functions.BinarFunc;
-import calculator2.values.util.actions.functions.TernarFunc;
+import calculator2.values.util.actions.functions.MultiFunc;
 import calculator2.values.util.actions.functions.UnarFunc;
 
 import java.util.ArrayList;
@@ -30,8 +29,9 @@ public abstract class AbstractType<T> {
         sign.canBeUnary = true;
         addFunction("" + sign.name, func, priority);
     }
-    protected void setMissingSign(Sign<T> sign){
-        this.missingSign = sign;
+
+    protected void setMissingSign(char name, BinarFunc<T> sign, int priority){
+        this.missingSign = new Sign<T>(name, sign, priority);
     }
 
     public void addConst(String name, T state) {
@@ -45,9 +45,8 @@ public abstract class AbstractType<T> {
     public void addFunction(String name, BinarFunc<T> binarFunc, int priority) {
         funcs.add(new Func<>(name, binarFunc, priority));
     }
-
-    public void addFunction(String name, TernarFunc<T> ternarFunc, int priority) {
-        funcs.add(new Func<>(name, ternarFunc, priority));
+    public void addFunction(String name, MultiFunc<T> multiFunc, int args, int priority){
+        funcs.add(new Func<>(name, multiFunc, args, priority));
     }
 
     public abstract T toValue(String text);

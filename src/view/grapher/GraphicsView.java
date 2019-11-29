@@ -12,7 +12,8 @@ public class GraphicsView {
     private CoordinateSystem coordinateSystem;
 
     private ModelUpdater updater;
-    public GraphicsView(ElementsList list, ModelUpdater updater){
+
+    public GraphicsView(ElementsList list, ModelUpdater updater) {
         this.updater = updater;
         graphics = new ArrayList<>();
         coordinateSystem = new CoordinateSystem();
@@ -20,25 +21,26 @@ public class GraphicsView {
         updater.setGraphics(graphics);
         updater.setResize(this::resize);
     }
-    private void resize(){
+
+    private void resize() {
         double offsetX = updater.getOffsetX();
         double offsetY = updater.getOffsetY();
         double scaleX = updater.getScaleX();
         double scaleY = updater.getScaleY();
-        coordinateSystem.resize(offsetX, offsetY, scaleX,scaleY);
-        for(Graphic g: graphics){
+        coordinateSystem.resize(offsetX, offsetY, scaleX, scaleY);
+        for (Graphic g : graphics)
             g.resize(offsetX, offsetY, scaleX, scaleY);
-        }
     }
-    public void paint(Graphics g){
+
+    public void paint(Graphics g) {
         g.setColor(Color.BLACK);
         g.translate(ElementsList.WIDTH, 0);
         coordinateSystem.draw(g);
         try {
             for (Graphic s : graphics)
                 s.paint(g);
-        }catch (NullPointerException e){
-            System.out.println(e);
+        } catch (NullPointerException e) {
+            updater.error(e.toString());
         }
     }
 }

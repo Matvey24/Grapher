@@ -1,7 +1,6 @@
 package calculator2.calculator.helpers;
 
 import calculator2.calculator.executors.Variable;
-import calculator2.values.util.actions.Constant;
 
 import java.util.ArrayList;
 import java.util.HashMap;

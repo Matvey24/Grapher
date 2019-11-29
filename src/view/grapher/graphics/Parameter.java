@@ -18,7 +18,7 @@ public class Parameter extends Graphic {
     public Parameter(){
         xMap = new double[MAP_SIZE];
         startT = 0;
-        endT = 2 * Math.PI;
+        endT = 6.2832;
     }
     public void updateX(Expression<Double> xFunc, Variable<Double> xVar){
         this.xFunc = xFunc;

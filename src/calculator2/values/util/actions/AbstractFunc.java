@@ -1,9 +1,10 @@
 package calculator2.values.util.actions;
 
 import calculator2.calculator.executors.Expression;
+import calculator2.calculator.executors.MultiActor;
 import calculator2.calculator.executors.Variable;
 import calculator2.values.util.actions.functions.BinarFunc;
-import calculator2.values.util.actions.functions.TernarFunc;
+import calculator2.values.util.actions.functions.MultiFunc;
 import calculator2.values.util.actions.functions.UnarFunc;
 
 import java.util.ArrayList;
@@ -13,49 +14,48 @@ public class AbstractFunc<T>{
     private Expression<T> expression;
     private Variable<T> a;
     private Variable<T> b;
-    private Variable<T> c;
-    private int argcount;
+    private List<Variable<T>> arr;
+    private int args;
 
     private T execute(T a) {
         this.a.setValue(a);
         return expression.calculate();
     }
-    private T execute(T a, T b) {
-        this.a.setValue(a);
-        this.b.setValue(b);
+    private T execute(Expression<T> a, Expression<T> b) {
+        this.a.setValue(a.calculate());
+        this.b.setValue(b.calculate());
         return expression.calculate();
     }
-    private T execute(T a, T b, T c) {
-        this.a.setValue(a);
-        this.b.setValue(b);
-        this.c.setValue(c);
+    private T execute(Expression<T>[] arr){
+        for(int i = 0; i < arr.length; ++i)
+            this.arr.get(i).setValue(arr[i].calculate());
         return expression.calculate();
     }
-
     public void setFunc(Expression<T> expression, List<Variable<T>> vars){
         this.expression = expression;
-        if(vars.size() != argcount){
-            throw new RuntimeException(String.format("We need %d vars, now %d", argcount,vars.size()));
+        if(vars.size() != args){
+            throw new RuntimeException(String.format("We need %d vars, now %d", args,vars.size()));
         }
         switch (vars.size()){
-            case 3:
-                c = vars.get(2);
             case 2:
                 b = vars.get(1);
             case 1:
                 a = vars.get(0);
+                break;
+            default:
+                arr = new ArrayList<>(vars);
         }
     }
     public UnarFunc<T> getUnary(){
-        argcount = 1;
+        args = 1;
         return this::execute;
     }
     public BinarFunc<T> getBinary(){
-        argcount = 2;
+        args = 2;
         return this::execute;
     }
-    public TernarFunc<T> getTernary(){
-        argcount = 3;
+    public MultiFunc<T> getMulti(int args){
+        this.args = args;
         return this::execute;
     }
 

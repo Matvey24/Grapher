@@ -26,6 +26,6 @@ public class BinaryActor<T> implements Expression<T> {
 
     @Override
     public T calculate() {
-        return func.execute(a.calculate(), b.calculate());
+        return func.execute(a, b);
     }
 }

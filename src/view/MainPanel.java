@@ -73,9 +73,7 @@ public class MainPanel extends Screen {
 
         JButton btn_timer = new JButton("Timer");
         btn_timer.setBounds(3 * OFFSET / 2 + TextElement.WIDTH / 2, 620 + TextElement.HEIGHT + OFFSET, TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
-        btn_timer.addActionListener(e ->{
-            updater.openTimer();
-        });
+        btn_timer.addActionListener(e -> updater.openTimer());
         add(btn_timer);
     }
     @Override
@@ -86,9 +84,12 @@ public class MainPanel extends Screen {
     public void onShow() {
         setTitle("Grapher by Math_way");
     }
-
+//    private long t = System.currentTimeMillis();
     @Override
     public void paint(Graphics g) {
+//        long time = System.currentTimeMillis();
+//        System.out.println(time - t);
+//        t = time;
         super.paint(g);
         graphicsView.paint(g);
     }

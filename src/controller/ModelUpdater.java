@@ -103,8 +103,8 @@ public class ModelUpdater {
         Parameter parameter = new Parameter();
         parameter.setColor(e.getColor());
         graphics.set(idx, parameter);
-        recalculate();
         e.setName("xy(t)");
+        recalculate();
         startSettings(new ActionEvent(0, idx, ""));
     }
 
@@ -137,10 +137,7 @@ public class ModelUpdater {
         double dOffsetY = dScreenY / scaleY;
         offsetX -= dOffsetX;
         offsetY += dOffsetY;
-        tasks.runTask(() -> {
-            resize.run();
-            repaint.run();
-        });
+        runResize();
     }
 
     public void resize(double delta, int x, int y) {
@@ -218,6 +215,7 @@ public class ModelUpdater {
                 dangerState = false;
                 setState("+");
                 setTime(settingsManager.getTime());
+                calculatorView.update();
                 resize.run();
                 repaint.run();
             } catch (Exception e) {
@@ -230,16 +228,30 @@ public class ModelUpdater {
         });
     }
     public void justResize(){
-        for(Graphic g: graphics){
-            g.funcChanged();
-        }
-        runResize();
+        tasks.runTask(()-> {
+            if(!dangerState) {
+                try {
+                    for (Graphic g : graphics) {
+                        g.funcChanged();
+                    }
+                    calculatorView.update();
+                    resize.run();
+                    repaint.run();
+                } catch (Throwable e) {
+                    error(e.getClass().getName());
+                }
+            }
+        });
     }
     public void runResize() {
         if (!dangerState)
             tasks.runTask(() -> {
-                resize.run();
-                repaint.run();
+                try {
+                    resize.run();
+                    repaint.run();
+                }catch (Throwable t){
+                    error(t.getClass().getName());
+                }
             });
     }
 
@@ -274,9 +286,11 @@ public class ModelUpdater {
     public void setGraphics(ArrayList<Graphic> graphics) {
         this.graphics = graphics;
     }
-
+    public void error(String message){
+        dangerState = true;
+        setState(message);
+    }
     public void setTime(double time) {
         calculator.resetConstant("tm", time);
-        calculatorView.update();
     }
 }

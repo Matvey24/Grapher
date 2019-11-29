@@ -2,52 +2,63 @@ package calculator2.values;
 
 import calculator2.values.util.AbstractType;
 import calculator2.values.util.actions.Sign;
+import calculator2.values.util.actions.functions.BinarFunc;
 
 import static java.lang.Math.PI;
 
 public class Number extends AbstractType<Double> {
+    private static BinarFunc<Double> pow = (a, b)->{
+        double B = b.calculate();
+        if(B == 0)
+            return 1d;
+        return Math.pow(a.calculate(), B);
+    };
     public Number(){
-        addSign('<', (a, b)->((a < b)?1d:0), 1);
-        addSign('>', (a, b)->((a > b)?1d:0), 1);
+        addSign('<', (a, b)->((a.calculate() < b.calculate())?1d:0), 1);
+        addSign('>', (a, b)->((a.calculate() > b.calculate())?1d:0), 1);
 
-        addSign('+', (a,b)-> (double)a + b, 2);
-        Sign<Double> minus = addSign('-', (a, b)-> a - b, 2);
-        Sign<Double> mul = addSign('*', (a, b)-> a * b, 3);
-        addSign('/', (a, b)-> a / b, 3);
-        addSign('%', (a, b)-> a % b, 3);
-        addSign('^', Math::pow, 4);
+        addSign('+', (a,b)-> a.calculate() + b.calculate(), 2);
+        Sign<Double> minus = addSign('-', (a, b)-> a.calculate() - b.calculate(), 2);
+        addSign('*', (a, b)-> {
+                double A = a.calculate();
+                return (A == 0)?0:A * b.calculate();
+            }, 3);
+        addSign('/', (a, b)-> a.calculate() / b.calculate(), 3);
+        addSign('%', (a, b)-> a.calculate() % b.calculate(), 3);
+        addSign('^', pow, 4);
 
 
         functions();
         constants();
 
         unarySign(minus, a -> -a, 3);
-        setMissingSign(mul);
+        setMissingSign('*', (a, b) -> a.calculate() * b.calculate(), 5);
     }
     private void functions(){
-        addFunction("sqrt", Math::sqrt, 5);
-        addFunction("cbrt", Math::cbrt, 5);
-        addFunction("pow", Math::pow, 5);
-        addFunction("ln", Math::log, 5);
-        addFunction("ld", (a)->Math.log(a) / Math.log(2), 5);
-        addFunction("lg", Math::log10, 5);
-        addFunction("log",(a,b)-> Math.log(a) / Math.log(b), 5);
+        addFunction("sqrt", Math::sqrt, 10);
+        addFunction("cbrt", Math::cbrt, 10);
+        addFunction("pow", pow, 10);
+        addFunction("ln", Math::log, 10);
+        addFunction("ld", (a)->Math.log(a) / Math.log(2), 10);
+        addFunction("lg", Math::log10, 10);
+        addFunction("log",(a,b)-> Math.log(a.calculate()) / Math.log(b.calculate()), 10);
 
-        addFunction("sin", Math::sin, 5);
-        addFunction("sind", a -> Math.sin(PI / 180 * a), 5);
-        addFunction("cos", Math::cos, 5);
-        addFunction("tg", Math::tan, 5);
-        addFunction("ctg", a -> 1 / Math.tan(a), 5);
-        addFunction("arctgTwo", Math::atan2, 5);
-        addFunction("arcsin", Math::asin, 5);
-        addFunction("arccos", Math::acos, 5);
-        addFunction("arctg", Math::atan, 5);
-        addFunction("arcctg", a->Math.atan(1/a), 5);
+        addFunction("sin", Math::sin, 10);
+        addFunction("sind", a -> Math.sin(PI / 180 * a), 10);
+        addFunction("cos", Math::cos, 10);
+        addFunction("tg", Math::tan, 10);
+        addFunction("ctg", a -> 1 / Math.tan(a), 10);
+        addFunction("arctgTwo", (a, b)-> Math.atan2(a.calculate(), b.calculate()), 10);
+        addFunction("arcsin", Math::asin, 10);
+        addFunction("arccos", Math::acos, 10);
+        addFunction("arctg", Math::atan, 10);
+        addFunction("arcctg", a->Math.atan(1/a), 10);
 
-        addFunction("abs", a->Math.abs(a), 5);
+        addFunction("abs", a->Math.abs(a), 10);
+        addFunction("floor", Math::floor, 10);
 
-        addFunction("ift", (a,b,c)->(a == 0)?c:b, 5);
-        addFunction("if", a->(a == 0)?0d:1d, 5);
+        addFunction("ift", (a)->((a[0].calculate() == 0)?a[2].calculate():a[1].calculate()),3,  10);
+        addFunction("if", a->(a == 0)?0d:1d, 10);
     }
     private void constants(){
         addConst("pi", PI);

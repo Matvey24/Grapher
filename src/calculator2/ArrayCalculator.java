@@ -59,7 +59,7 @@ public class ArrayCalculator<T> {
             try {
                 director.update(funcNames.get(i));
             }catch (RuntimeException e){
-                throw new RuntimeException(e.getMessage() + " in " + (i + 1) + " func");
+                throw new RuntimeException(e.getMessage() + " in " + (i + 1) + " func grammar");
             }
             if (director.getVars().size() == 0) {
                 Variable<T> var = new Variable<>();
@@ -69,7 +69,7 @@ public class ArrayCalculator<T> {
             try {
                 this.funcs.get(i).setFunc(director.getTree(), director.getVars());
             }catch (RuntimeException e){
-                throw new RuntimeException(e.getMessage() + " in " + (i + 1) + " func");
+                throw new RuntimeException(e.getMessage() + " in " + (i + 1) + " func vars");
             }
             if (i < graphics.size()) {
                 this.graphics.add(director.getTree());
@@ -111,17 +111,16 @@ public class ArrayCalculator<T> {
             String name = start.substring(0, pos);
             int args = Integer.parseInt(start.substring(pos + 1));
             switch (args) {
-                case 3:
-                    type.addFunction(name, func.getTernary(), 5);
-                    break;
                 case 2:
-                    type.addFunction(name, func.getBinary(), 5);
+                    type.addFunction(name, func.getBinary(), 10);
                     break;
                 case 1:
-                    type.addFunction(name, func.getUnary(), 5);
+                    type.addFunction(name, func.getUnary(), 10);
                     break;
-                default:
+                case 0:
                     throw new RuntimeException("Args count in func " + name + " is bad: " + args);
+                default:
+                    type.addFunction(name, func.getMulti(args), args, 10);
             }
             funcs.add(func);
             funcNames.add(end);
