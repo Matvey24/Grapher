@@ -24,6 +24,7 @@ public class TextViewer {
                 "sin, cos, tg, ctg, arcsin, arccos, arctg, arcctg, arctgTwo",
                 "- trigonometric functions",
                 "abs - absolute value",
+                "floor - max integer less then given",
                 "ift(x, y, z) - returns z if x = 0 else y",
                 "if(x) - returns 0 if x = 0 else 1"
             },{
@@ -64,8 +65,10 @@ public class TextViewer {
             },{
                 "How to write your own functions?",
                 "Write name + \":\" + how many arguments do you",
-                "want to see (3 is max) + \"=\" and write an function",
-                "using these arguments."
+                "want to see + \"=\" and write an function",
+                "using these arguments.",
+                "You can call vars by these names:",
+                "x; y; z; t; x + some letter, like x龙."
             },{
                 "Constants:",
                 "Write name + \"=\" and write an example.",
@@ -74,9 +77,13 @@ public class TextViewer {
                 "but you can use your other constants,",
                 "which have written before."
             },{
-                "Timer",
-                "Write a graphic using time var 'z', that is a good name,",
+                "Timer:",
+                "Write a graphic using time var 'tm',",
                 "than click 'Timer' and click 'Run' in opened frame."
+            },{
+                "Recursion:",
+                "You can use recursion, but be careful",
+                "long recursion can produce stack over flow errors."
             },{
                 "Extra:",
                 "Right click on '-' button in expression in graphics.",

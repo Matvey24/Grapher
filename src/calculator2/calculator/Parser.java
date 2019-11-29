@@ -96,7 +96,7 @@ class Parser<T> {
                     list.remove(i);
                     for (int j = e.symbol.length() - 1; j >= 0; --j) {
                         String s = e.symbol.substring(j);
-                        if (helper.hasName(s) || helper.isVar(s)) {
+                        if (helper.hasName(s)) {
                             Element nE = new Element(s,
                                     (helper.funcs.getFunc(s) != null) ? FUNCTION :
                                             (helper.consts.getConst(s) != null) ? CONSTANT :
