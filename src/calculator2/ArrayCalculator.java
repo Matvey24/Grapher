@@ -30,10 +30,11 @@ public class ArrayCalculator<T> {
         graphics = new ArrayList<>();
         expressions = new ArrayList<>();
         expressionVars = new ArrayList<>();
+        director = new Director<>();
     }
     public void calculate(List<String> funcs, List<String> graphics, List<String> calc, AbstractType<T> type) {
         this.type = type;
-        director = new Director<>(type);
+        director.renewType(type);
         funcNames.clear();
         this.funcs.clear();
         this.graphics.clear();
@@ -103,9 +104,10 @@ public class ArrayCalculator<T> {
             try {
                 director.update(end);
             }catch (RuntimeException e){
-                throw new RuntimeException(e.getMessage() + " in var " + start);
+                throw new RuntimeException(e + " in var " + start);
             }
             type.addConst(start, director.calculate());
+            director.renewType(type);
         } else {
             AbstractFunc<T> func = new AbstractFunc<>();
             String name = start.substring(0, pos);

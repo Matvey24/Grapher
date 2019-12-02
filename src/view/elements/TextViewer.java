@@ -15,18 +15,23 @@ public class TextViewer {
                 "+, -, *, / standard math signs",
                 "^ - power",
                 "% - remainder of division",
-                "<, > - returns 1 if true else 0"
+                "<, > - returns 1 if first is smaller/larger then second else 0"
             },{
                 "Functions:",
                 "sqrt, cbrt - quadratic and cubic roots",
                 "pow - power",
+                "exp - exponent, it works faster than 'e^x'",
+                "signum - signum of number (1 / 0 / -1)",
                 "lg, ln, ld, log - logarithms",
                 "sin, cos, tg, ctg, arcsin, arccos, arctg, arcctg, arctgTwo",
                 "- trigonometric functions",
+                "put 'd' after them to convert radians to degrees.",
                 "abs - absolute value",
                 "floor - max integer less then given",
-                "ift(x, y, z) - returns z if x = 0 else y",
-                "if(x) - returns 0 if x = 0 else 1"
+                "ceil - min integer bigger then given",
+                "min, max - min / max number from two given",
+                "if(x, y, z) - returns z if x = 0 else y",
+                "iff(x) - returns 0 if x = 0 else 1"
             },{
                 "Constants: (SI)",
                 "pi - pi value = 3.14",
@@ -51,7 +56,8 @@ public class TextViewer {
                 "sqrt(4) = 2",
                 "pow(2, 4) = 16",
                 "ln(e) = 1",
-                "log(8, 2) = 3"
+                "log(8, 2) = 3",
+                "arcsind(1) = 90"
             }
     };
     private static final String[][] calc_help = {
@@ -81,6 +87,15 @@ public class TextViewer {
                 "Write a graphic using time var 'tm',",
                 "than click 'Timer' and click 'Run' in opened frame."
             },{
+                "Resize:",
+                "Open the app fullscreen and click",
+                "this button to resize graphics view.",
+                "Right click on this button will change the action:",
+                "Abscissa/Ordinate - mouse wheel rotation",
+                "will change only abscissa's/ordinate's size.",
+                "Return back - left click will change",
+                "ordinate's size to abscissa's size."
+            },{
                 "Recursion:",
                 "You can use recursion, but be careful",
                 "long recursion can produce stack over flow errors."
@@ -90,7 +105,7 @@ public class TextViewer {
                 "Extra info window will opened.",
                 "You can choose between Function and Parameter there."
             },{
-                "Parameters:",
+                "Parametric:",
                 "Write expression for x, than put ':' and ",
                 "then write expression for y, click enter"
             },{

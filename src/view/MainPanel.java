@@ -18,15 +18,18 @@ public class MainPanel extends Screen {
     public static int HEIGHT = HEIGHT_0;
     public static int GRAPH_WIDTH = WIDTH - ElementsList.WIDTH;
     private GraphicsView graphicsView;
+
     private Point mousePosition;
+    private int resizeType;
+    private static final String[] resizers = {"Resize", "Abscissa", "Ordinate", "Return back"};
     public MainPanel(){
         setLayout(null);
         JButton btn_help = new JButton("Help");
-        btn_help.setBounds(OFFSET,620, ElementsList.WIDTH / 3 - 2 * OFFSET, TextElement.HEIGHT);
+        btn_help.setBounds(OFFSET,620, TextElement.WIDTH / 3 - OFFSET/2, TextElement.HEIGHT);
         add(btn_help);
         btn_help.addActionListener((e)-> changeScreen(TextViewer.openText("Help")));
         JButton btn_calc_help = new JButton("Calculator help");
-        btn_calc_help.setBounds(2*OFFSET + ElementsList.WIDTH / 3, 620, 2 * ElementsList.WIDTH / 3 - 3 * OFFSET, TextElement.HEIGHT);
+        btn_calc_help.setBounds(3*OFFSET/2+TextElement.WIDTH / 3, 620, 2 * TextElement.WIDTH / 3 - OFFSET/2, TextElement.HEIGHT);
         add(btn_calc_help);
         btn_calc_help.addActionListener((e)-> changeScreen(TextViewer.openText("Calc_Help")));
         mousePosition = new Point();
@@ -59,15 +62,37 @@ public class MainPanel extends Screen {
                 mousePosition.setLocation(e.getX(), e.getY());
             }
         });
-        addMouseWheelListener(e -> updater.resize(e.getPreciseWheelRotation(), e.getX() - ElementsList.WIDTH, e.getY()));
+        addMouseWheelListener(e -> {
+            int line = 0;
+            if(resizeType == 1 || resizeType == 2)
+                line = resizeType;
+            updater.resize(e.getPreciseWheelRotation(), e.getX() - ElementsList.WIDTH, e.getY(), line);
+        });
 
-        JButton btn_resize = new JButton("Resize");
+        JButton btn_resize = new JButton(resizers[0]);
+        resizeType = 0;
         btn_resize.setBounds(OFFSET, 620 + TextElement.HEIGHT + OFFSET, TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
         btn_resize.addActionListener(e -> {
-            WIDTH = getWidth();
-            HEIGHT = getHeight();
-            GRAPH_WIDTH = WIDTH - ElementsList.WIDTH;
-            updater.recalculate();
+            switch (resizeType){
+                case 0:
+                    WIDTH = getWidth();
+                    HEIGHT = getHeight();
+                    GRAPH_WIDTH = WIDTH - ElementsList.WIDTH;
+                    updater.recalculate();
+                    break;
+                case 3:
+                    updater.resizeBack();
+                    break;
+            }
+        });
+        btn_resize.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(e.getButton() == MouseEvent.BUTTON3) {
+                    resizeType = (resizeType + 1) % 4;
+                    btn_resize.setText(resizers[resizeType]);
+                }
+            }
         });
         add(btn_resize);
 

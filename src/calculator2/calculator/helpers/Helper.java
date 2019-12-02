@@ -9,12 +9,11 @@ public class Helper<T> {
     public final Funcs<T> funcs;
     public final Signs<T> signs;
     private AbstractType<T> type;
-    public Helper(AbstractType<T> type){
+    public Helper(){
         brackets = new Brackets();
         consts = new Consts<>();
         funcs = new Funcs<>();
         signs = new Signs<>();
-        renewType(type);
     }
     public void renewType(AbstractType<T> type){
         this.type = type;

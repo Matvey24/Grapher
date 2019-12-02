@@ -15,8 +15,8 @@ public class Director<T> {
 
     private Expression<T> tree;
     private ArrayList<Variable<T>> vars;
-    public Director(AbstractType<T> type){
-        helper = new Helper<>(type);
+    public Director(){
+        helper = new Helper<>();
         calculator = new Calculator<>(helper);
         parser = new Parser<>(helper);
     }

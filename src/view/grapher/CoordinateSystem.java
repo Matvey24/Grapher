@@ -8,8 +8,8 @@ import static view.MainPanel.GRAPH_WIDTH;
 import static view.MainPanel.HEIGHT;
 
 public class CoordinateSystem {
-    private static final int MAX_DELTA = 190;
-    private static final int MIN_DELTA = 80;
+    private static final double MAX_DELTA = 210;
+    private static final double MIN_DELTA = 80;
     private static final Color EXTRA_LINE_COLOR = new Color(0.3f, 0.3f, 0.3f, 0.4f);
     private static final Color MAIN_COLOR = Color.BLACK;
     private double offsetX;
@@ -25,36 +25,7 @@ public class CoordinateSystem {
         this.offsetY = offsetY;
         this.scaleX = scaleX;
         this.scaleY = scaleY;
-        if (deltaX * scaleX > MAX_DELTA) {
-            if ((deltaXpow - 2) % 3 == 0) {
-                deltaX *= 0.4;
-            } else {
-                deltaX *= 0.5;
-            }
-            --deltaXpow;
-        } else if (deltaX * scaleX < MIN_DELTA) {
-            if ((deltaXpow - 1) % 3 == 0) {
-                deltaX *= 2.5;
-            } else {
-                deltaX *= 2;
-            }
-            ++deltaXpow;
-        }
-        if (deltaY * scaleY > MAX_DELTA) {
-            if ((deltaYpow - 2) % 3 == 0) {
-                deltaY *= 0.4;
-            } else {
-                deltaY *= 0.5;
-            }
-            --deltaYpow;
-        } else if (deltaY * scaleY < MIN_DELTA) {
-            if ((deltaYpow - 1) % 3 == 0) {
-                deltaY *= 2.5;
-            } else {
-                deltaY *= 2;
-            }
-            ++deltaYpow;
-        }
+        resizeNet();
         if (deltaX <= 0.5001 && deltaX >= 0.4999) {
             deltaX = 0.5;
         }
@@ -62,7 +33,50 @@ public class CoordinateSystem {
             deltaY = 0.5;
         }
     }
-
+    private void resizeNet(){
+        boolean redo = true;
+        while (redo){
+            redo = false;
+            if (deltaX * scaleX > MAX_DELTA) {
+                if ((deltaXpow - 2) % 3 == 0) {
+                    deltaX *= 0.4;
+                } else {
+                    deltaX *= 0.5;
+                }
+                --deltaXpow;
+                redo = true;
+            } else if (deltaX * scaleX < MIN_DELTA) {
+                if ((deltaXpow - 1) % 3 == 0) {
+                    deltaX *= 2.5;
+                } else {
+                    deltaX *= 2;
+                }
+                ++deltaXpow;
+                redo = true;
+            }
+        }
+        redo = true;
+        while (redo){
+            redo = false;
+            if (deltaY * scaleY > MAX_DELTA) {
+                if ((deltaYpow - 2) % 3 == 0) {
+                    deltaY *= 0.4;
+                } else {
+                    deltaY *= 0.5;
+                }
+                --deltaYpow;
+                redo = true;
+            } else if (deltaY * scaleY < MIN_DELTA) {
+                if ((deltaYpow - 1) % 3 == 0) {
+                    deltaY *= 2.5;
+                } else {
+                    deltaY *= 2;
+                }
+                ++deltaYpow;
+                redo = true;
+            }
+        }
+    }
     public void draw(Graphics gr) {
         gr.setColor(MAIN_COLOR);
         {

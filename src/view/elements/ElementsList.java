@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class ElementsList extends ViewElement {
     private JLabel name;
-    private JTextPane state;
+    private JTextField state;
     private JButton btn_make_element;
     private ArrayList<TextElement> elements;
     private int height;
@@ -28,7 +28,7 @@ public class ElementsList extends ViewElement {
         this.name = new JLabel(name);
         this.name.setFont(name_font);
         btn_make_element = new JButton("+");
-        state = new JTextPane();
+        state = new JTextField();
         state.setEditable(false);
         state.setFont(new Font("arial", Font.PLAIN, 12));
         setBounds(x,y);

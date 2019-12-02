@@ -30,8 +30,8 @@ public abstract class AbstractType<T> {
         addFunction("" + sign.name, func, priority);
     }
 
-    protected void setMissingSign(char name, BinarFunc<T> sign, int priority){
-        this.missingSign = new Sign<T>(name, sign, priority);
+    protected void setMissingSign(Sign<T> sign){
+        this.missingSign = sign;
     }
 
     public void addConst(String name, T state) {

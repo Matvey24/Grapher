@@ -1,13 +1,12 @@
 package controller;
 
-import calculator2.calculator.executors.Variable;
 import framesLib.MyFrame;
 import framesLib.Screen;
 import view.elements.TextElement;
 import view.grapher.graphics.Function;
-import view.grapher.graphics.Parameter;
+import view.grapher.graphics.Parametric;
 import view.settings.FunctionSettings;
-import view.settings.ParameterSettings;
+import view.settings.ParametricSettings;
 import view.settings.TimerSettings;
 
 import javax.swing.*;
@@ -15,11 +14,11 @@ import javax.swing.*;
 public class SettingsManager {
     private MyFrame frame;
     private FunctionSettings functionSettings;
-    private ParameterSettings parameterSettings;
+    private ParametricSettings parametricSettings;
     private TimerSettings timerSettings;
     SettingsManager(ModelUpdater updater){
         functionSettings = new FunctionSettings(updater);
-        parameterSettings = new ParameterSettings(updater);
+        parametricSettings = new ParametricSettings(updater);
         timerSettings = new TimerSettings(updater);
     }
     void openFunctionSettings(Function f, TextElement e){
@@ -30,12 +29,12 @@ public class SettingsManager {
         frame.changeScreen(functionSettings);
         frame.setFocusable(true);
     }
-    void openParameterSettings(Parameter p, TextElement e){
+    void openParameterSettings(Parametric p, TextElement e){
         if(frame == null || !frame.isVisible())
             frame = new MyFrame(true);
         frame.clearStack();
-        parameterSettings.setInfo(p, e);
-        frame.changeScreen(parameterSettings);
+        parametricSettings.setInfo(p, e);
+        frame.changeScreen(parametricSettings);
         frame.setFocusable(true);
     }
     void openTimerSettings(){

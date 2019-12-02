@@ -8,14 +8,14 @@ import java.awt.*;
 import static view.MainPanel.GRAPH_WIDTH;
 import static view.MainPanel.HEIGHT;
 
-public class Parameter extends Graphic {
+public class Parametric extends Graphic {
     private double startT;
     private double endT;
     private double[] xMap;
     private Expression<Double> xFunc;
     private Variable<Double> xVar;
 
-    public Parameter(){
+    public Parametric(){
         xMap = new double[MAP_SIZE];
         startT = 0;
         endT = 6.2832;

@@ -11,7 +11,7 @@ import view.elements.FunctionsView;
 import view.elements.TextElement;
 import view.grapher.graphics.Function;
 import view.grapher.graphics.Graphic;
-import view.grapher.graphics.Parameter;
+import view.grapher.graphics.Parametric;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -22,7 +22,7 @@ import java.util.List;
 import static java.awt.Color.*;
 
 public class ModelUpdater {
-    private static final List<Color> colors = Arrays.asList(RED, GREEN, BLUE, CYAN, magenta, ORANGE, YELLOW, GRAY, PINK, LIGHT_GRAY);
+    private static final List<Color> colors = Arrays.asList(BLUE, RED, GREEN, CYAN, magenta, GRAY, ORANGE, PINK, YELLOW, LIGHT_GRAY);
     private static final List<String> func_names = Arrays.asList("f", "i", "j", "l", "m", "n", "o", "q", "r", "s");
     private static final double deltaScale = 1.2;
     private Runnable repaint;
@@ -80,8 +80,8 @@ public class ModelUpdater {
         Graphic g = graphics.get(id);
         if (g instanceof Function) {
             settingsManager.openFunctionSettings((Function) g, list.getElements().get(id));
-        } else if (g instanceof Parameter) {
-            settingsManager.openParameterSettings((Parameter) g, list.getElements().get(id));
+        } else if (g instanceof Parametric) {
+            settingsManager.openParameterSettings((Parametric) g, list.getElements().get(id));
         }
     }
     public void openTimer(){
@@ -100,9 +100,9 @@ public class ModelUpdater {
 
     public void makeParameter(Graphic g, TextElement e) {
         int idx = graphics.indexOf(g);
-        Parameter parameter = new Parameter();
-        parameter.setColor(e.getColor());
-        graphics.set(idx, parameter);
+        Parametric parametric = new Parametric();
+        parametric.setColor(e.getColor());
+        graphics.set(idx, parametric);
         e.setName("xy(t)");
         recalculate();
         startSettings(new ActionEvent(0, idx, ""));
@@ -140,15 +140,31 @@ public class ModelUpdater {
         runResize();
     }
 
-    public void resize(double delta, int x, int y) {
+    public void resize(double delta, int x, int y, int line) {
         if (dangerState)
             return;
         double deltaX = x / scaleX;
         double deltaY = y / scaleY;
-        scaleX /= Math.pow(deltaScale, delta);
-        scaleY /= Math.pow(deltaScale, delta);
-        offsetX += -x / scaleX + deltaX;
-        offsetY += y / scaleY - deltaY;
+        if(line == 0) {
+            scaleX /= Math.pow(deltaScale, delta);
+            scaleY /= Math.pow(deltaScale, delta);
+            offsetX += -x / scaleX + deltaX;
+            offsetY += y / scaleY - deltaY;
+        }else if(line == 1){
+            scaleX /= Math.pow(deltaScale, delta);
+            offsetX += -x / scaleX + deltaX;
+        }else if(line == 2){
+            scaleY /= Math.pow(deltaScale, delta);
+            offsetY += y / scaleY - deltaY;
+        }
+        runResize();
+    }
+    public void resizeBack(){
+        if(dangerState)
+            return;
+        double yc = offsetY * scaleY;
+        scaleY = 1 * scaleX;
+        offsetY = yc / scaleY;
         runResize();
     }
 
@@ -163,7 +179,7 @@ public class ModelUpdater {
                     TextElement e = list.getElements().get(i);
                     if (graphics.get(i) instanceof Function) {
                         graphs.add(((Function) graphics.get(i)).name + ":1=" + e.getText());
-                    } else if (graphics.get(i) instanceof Parameter) {
+                    } else if (graphics.get(i) instanceof Parametric) {
                         String text = list.getElements().get(i).getText();
                         String[] expressions = text.split(":");
                         if (expressions.length == 2) {
@@ -200,7 +216,7 @@ public class ModelUpdater {
                         }
                         f.update(calculator.getGraphics().get(funcs), var);
                         ++funcs;
-                    } else if (g instanceof Parameter) {
+                    } else if (g instanceof Parametric) {
                         List<Variable<Double>> vars = calculator.getExpressionVars().get(parameters);
                         Variable<Double> varX = vars.get(0);
                         vars = calculator.getExpressionVars().get(parameters + 1);
@@ -208,7 +224,7 @@ public class ModelUpdater {
                         Expression<Double> funcX = calculator.getExpressions().get(parameters + 1);
                         Expression<Double> funcY = calculator.getExpressions().get(parameters + 2);
                         g.update(funcY, varY);
-                        ((Parameter) g).updateX(funcX, varX);
+                        ((Parametric) g).updateX(funcX, varX);
                         parameters += 2;
                     }
                 }

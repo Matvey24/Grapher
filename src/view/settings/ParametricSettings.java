@@ -6,20 +6,21 @@ import controller.SettingsManager;
 import framesLib.Screen;
 import view.elements.Parameter;
 import view.elements.TextElement;
+import view.grapher.graphics.Parametric;
 
 import javax.swing.*;
 import java.awt.event.ItemEvent;
 
-public class ParameterSettings extends Screen {
+public class ParametricSettings extends Screen {
     private static final int WIDTH = 200;
     private static final int HEIGHT = 400;
 
     private Parameter mapSize;
     private Parameter dimension;
-    private view.grapher.graphics.Parameter p;
+    private Parametric p;
     private TextElement el;
     private JComboBox<String> spinner;
-    public ParameterSettings(ModelUpdater updater){
+    public ParametricSettings(ModelUpdater updater){
         setLayout(null);
         mapSize = new Parameter("Frequency", (e)->{
             if(p != null){
@@ -52,7 +53,7 @@ public class ParameterSettings extends Screen {
             }
         });
     }
-    public void setInfo(view.grapher.graphics.Parameter p, TextElement e){
+    public void setInfo(Parametric p, TextElement e){
         this.p = p;
         this.el = e;
         spinner.setSelectedIndex(GraphType.PARAMETER.ordinal());
