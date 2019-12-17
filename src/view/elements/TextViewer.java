@@ -66,7 +66,7 @@ public class TextViewer {
                 "Enter an example in field and press Enter",
                 "If you want, you also can add your",
                 "own functions and constants,",
-                "You can write them in \'Functions\' area,",
+                "You can write them in 'Functions' area,",
                 "separate each one by pressing ENTER."
             },{
                 "How to write your own functions?",

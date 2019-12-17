@@ -172,6 +172,7 @@ public class ModelUpdater {
         tasks.clearTasks();
         tasks.runTask(() -> {
             try {
+                setState("Converting functions");
                 List<String> graphs = new ArrayList<>();
                 List<String> calc = new ArrayList<>();
                 calc.add(calculatorView.getText());
@@ -229,7 +230,6 @@ public class ModelUpdater {
                     }
                 }
                 dangerState = false;
-                setState("+");
                 setTime(settingsManager.getTime());
                 calculatorView.update();
                 resize.run();
@@ -276,7 +276,7 @@ public class ModelUpdater {
         this.calculatorView = calculator;
     }
 
-    private void setState(String text) {
+    public void setState(String text) {
         list.setState(text);
     }
 

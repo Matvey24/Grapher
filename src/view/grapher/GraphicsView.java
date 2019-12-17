@@ -23,6 +23,7 @@ public class GraphicsView {
     }
 
     private void resize() {
+        updater.setState("֍");
         double offsetX = updater.getOffsetX();
         double offsetY = updater.getOffsetY();
         double scaleX = updater.getScaleX();
@@ -30,6 +31,7 @@ public class GraphicsView {
         coordinateSystem.resize(offsetX, offsetY, scaleX, scaleY);
         for (Graphic g : graphics)
             g.resize(offsetX, offsetY, scaleX, scaleY);
+        updater.setState("+");
     }
 
     public void paint(Graphics g) {
