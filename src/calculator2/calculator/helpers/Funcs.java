@@ -1,16 +1,20 @@
 package calculator2.calculator.helpers;
 
+import calculator2.calculator.executors.Variable;
 import calculator2.values.util.actions.Func;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Funcs<T> {
     private final HashMap<String, Func<T>> functions;
     Funcs(){
         functions = new HashMap<>();
     }
-    public void add(Func<T> func){
-        functions.put(func.name, func);
+    void addAll(List<Func<T>> list) {
+        for(Func<T> f: list)
+            this.functions.put(f.name, f);
     }
     public Func<T> getFunc(String name){
         return functions.get(name);

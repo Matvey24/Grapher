@@ -69,41 +69,42 @@ public class TextViewer {
                 "You can write them in 'Functions' area,",
                 "separate each one by pressing ENTER."
             },{
+                "Constants:",
+                "Write name + \"=\" + write an example."
+            },{
                 "How to write your own functions?",
-                "Write name + \":\" + how many arguments do you",
-                "want to see + \"=\" and write an function",
-                "using these arguments.",
+                "This is the same as writing constant.",
                 "You can call vars by these names:",
                 "x; y; z; t; x + some letter, like x龙."
             },{
-                "Constants:",
-                "Write name + \"=\" and write an example.",
-                "When you write a constant,",
-                "you can't use your own functions,",
-                "but you can use your other constants,",
-                "which have written before."
-            },{
                 "Timer:",
                 "Write a graphic using time var 'tm',",
-                "than click 'Timer' and click 'Run' in opened frame."
+                "than click 'Timer' and click 'Run' in opened frame.",
+                "You can change some settings in this frame."
             },{
                 "Resize:",
                 "Open the app fullscreen and click",
-                "this button to resize graphics view.",
-                "Right click on this button will change the action:",
-                "Abscissa/Ordinate - mouse wheel rotation",
+                "this button is to resize graphics view.",
+                "Right click on the button will change the action:",
+                "Abscissa/Ordinate - mouse wheel rotation/touchPad gestures",
                 "will change only abscissa's/ordinate's size.",
                 "Return back - left click will change",
                 "ordinate's size to abscissa's size."
             },{
                 "Recursion:",
                 "You can use recursion, but be careful",
-                "long recursion can produce stack over flow errors."
+                "long recursion can produce stack over flow errors.",
+                "When you call func like that \"func= ... func(x-1) ... x ...\"",
+                "x will be changed to x-1 after every calling func(->(x-1)<-)",
+                "it is bad, but it is true.",
+                "So don't use x after the same callings to avoid the same results.",
+                "fact = if(x < 2, 1, fact(x-1) * x) everytime returns 1 when x is integer",
+                "fact = if(x < 2, 1, x * fact(x-1)) is normal factorial when x is integer"
             },{
                 "Extra:",
                 "Right click on '-' button in expression in graphics.",
-                "Extra info window will opened.",
-                "You can choose between Function and Parameter there."
+                "Extra info window will be opened.",
+                "You can choose between Function and Parametric there."
             },{
                 "Parametric:",
                 "Write expression for x, than put ':' and ",
@@ -111,8 +112,8 @@ public class TextViewer {
             },{
                 "Examples:",
                 "num = sqrt(5) - num is a constant",
-                "lb:1= ld(x) - lb(x) = logarithm of x with basis 2",
-                "mysin:2=sin(x) + cos(y) - use it like mysin(x,y)",
+                "lb = ld(x) - lb(x) = logarithm of x with basis 2",
+                "myfunc = sin(x) + cos(y) - use it like myfunc(x,y)",
                 "(parameter) 2sin(x):cos(x) - draws ellipse"
             }
     };

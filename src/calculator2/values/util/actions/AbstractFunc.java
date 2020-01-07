@@ -1,7 +1,6 @@
 package calculator2.values.util.actions;
 
 import calculator2.calculator.executors.Expression;
-import calculator2.calculator.executors.MultiActor;
 import calculator2.calculator.executors.Variable;
 import calculator2.values.util.actions.functions.BinarFunc;
 import calculator2.values.util.actions.functions.MultiFunc;
@@ -57,6 +56,9 @@ public class AbstractFunc<T>{
     public MultiFunc<T> getMulti(int args){
         this.args = args;
         return this::execute;
+    }
+    public int args(){
+        return args;
     }
 
 }

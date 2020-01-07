@@ -4,6 +4,7 @@ import calculator2.calculator.executors.*;
 import calculator2.calculator.helpers.Helper;
 import calculator2.values.util.actions.Func;
 import calculator2.values.util.actions.Sign;
+import calculator2.values.util.actions.functions.MultiFunc;
 
 import java.util.ArrayList;
 import java.util.Stack;

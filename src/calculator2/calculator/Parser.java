@@ -12,21 +12,24 @@ import static calculator2.calculator.Element.ElementType.*;
 class Parser<T> {
     private StringBuilder sb;
     private Helper<T> helper;
-
+    private Stack<Element> stack;
+    private List<String> varNames;
     Parser(Helper<T> helper) {
         this.helper = helper;
         sb = new StringBuilder();
+        varNames = new ArrayList<>();
     }
 
-    Stack<Element> parse(String str) {
+    int parse(String str) {
         str = str.replaceAll("[ \\n\\t]", "");
         List<Element> list = toList(str);
         normaliseBrackets(list);
         normaliseLetters(list);
         findUnarySigns(list);
         addMissingSigns(list);
-        simpleCheck(list);
-        return toStack(list);
+        int size = calculateVars(list);
+        this.stack = toStack(list);
+        return size;
     }
 
     private Element.ElementType type(char c) {
@@ -98,9 +101,8 @@ class Parser<T> {
                         String s = e.symbol.substring(j);
                         if (helper.hasName(s)) {
                             Element nE = new Element(s,
-                                    (helper.funcs.getFunc(s) != null) ? FUNCTION :
-                                            (helper.consts.getConst(s) != null) ? CONSTANT :
-                                                    VAR);
+                                    (helper.isVar(s)) ? VAR :
+                                            (helper.consts.getConst(s) != null) ? CONSTANT : FUNCTION);
                             list.add(i, nE);
                             e.symbol = e.symbol.substring(0, j);
                         }
@@ -164,12 +166,10 @@ class Parser<T> {
         }
         return stack;
     }
-    private void simpleCheck(List<Element> list){
+    public void simpleCheck(Stack<Element> stack){
         int needArgs = 0;
-
         int valsCount = 0;
-
-        for (Element e : list) {
+        for (Element e : stack) {
             switch (e.type) {
                 case SIGN:
                     needArgs += 2;
@@ -190,7 +190,22 @@ class Parser<T> {
         else if(returns > 1)
             throw new RuntimeException("Too many args!");
     }
+    private int calculateVars(List<Element> list){
+        varNames.clear();
+        for (Element element : list) {
+            if (element.type != VAR)
+                continue;
+            String name = element.symbol;
+            if (!varNames.contains(name)) {
+                varNames.add(name);
+            }
+        }
+        return varNames.size();
+    }
     private boolean openBracket(Element e){
         return e.type == BRACKET && helper.brackets.brOpens(e.symbol);
+    }
+    public Stack<Element> getStack() {
+        return stack;
     }
 }

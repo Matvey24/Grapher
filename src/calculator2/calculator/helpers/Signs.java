@@ -3,14 +3,16 @@ package calculator2.calculator.helpers;
 import calculator2.values.util.actions.Sign;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class Signs<T> {
     private HashMap<Character, Sign<T>> signs;
     Signs(){
         signs = new HashMap<>();
     }
-    public void add(Sign<T> sign){
-        signs.put(sign.name, sign);
+    public void addAll(List<Sign<T>> signs){
+        for(Sign<T> sign: signs)
+            this.signs.put(sign.name, sign);
     }
     public Sign<T> getSign(String sign){
         return getSign(sign.charAt(0));

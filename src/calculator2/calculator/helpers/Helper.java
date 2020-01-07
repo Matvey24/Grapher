@@ -20,14 +20,12 @@ public class Helper<T> {
         funcs.clear();
         consts.clear();
         signs.clear();
-        for(int i = 0; i < type.funcs.size(); ++i)
-            funcs.add(type.funcs.get(i));
+        funcs.addAll(type.funcs);
         consts.addAll(type.consts);
-        for(int i = 0; i < type.signs.size(); ++i)
-            signs.add(type.signs.get(i));
+        signs.addAll(type.signs);
     }
     public boolean hasName(String name){
-        return consts.getConst(name) != null || funcs.getFunc(name) != null || isVar(name);
+        return consts.getConst(name) != null || funcs.getFunc(name) != null || isVar(name) || type.funcNames.contains(name);
     }
     public T toValue(String text){
         return type.toValue(text);

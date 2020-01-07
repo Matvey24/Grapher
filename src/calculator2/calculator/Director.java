@@ -23,8 +23,11 @@ public class Director<T> {
     public void renewType(AbstractType<T> type){
         helper.renewType(type);
     }
-    public void update(String str){
-        Stack<Element> stack = parser.parse(str);
+    public int parse(String str){
+        return parser.parse(str);
+    }
+    public void update(Stack<Element> stack){
+        parser.simpleCheck(stack);
         calculator.clear();
         while (!stack.empty())
             calculator.next(stack.pop());
@@ -34,6 +37,10 @@ public class Director<T> {
     }
     public T calculate(){
         return tree.calculate();
+    }
+
+    public Stack<Element> getStack(){
+        return parser.getStack();
     }
     public ArrayList<Variable<T>> getVars(){
         return vars;

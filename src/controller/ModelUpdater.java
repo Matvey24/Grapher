@@ -179,7 +179,7 @@ public class ModelUpdater {
                 for (int i = 0; i < list.getElements().size(); ++i) {
                     TextElement e = list.getElements().get(i);
                     if (graphics.get(i) instanceof Function) {
-                        graphs.add(((Function) graphics.get(i)).name + ":1=" + e.getText());
+                        graphs.add(((Function) graphics.get(i)).name + "=" + e.getText());
                     } else if (graphics.get(i) instanceof Parametric) {
                         String text = list.getElements().get(i).getText();
                         String[] expressions = text.split(":");

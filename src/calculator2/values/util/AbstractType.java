@@ -8,16 +8,19 @@ import calculator2.values.util.actions.functions.MultiFunc;
 import calculator2.values.util.actions.functions.UnarFunc;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractType<T> {
-    public final ArrayList<Sign<T>> signs;
-    public final ArrayList<Func<T>> funcs;
-    public final ArrayList<Variable<T>> consts;
+    public final List<Sign<T>> signs;
+    public final List<Func<T>> funcs;
+    public final List<Variable<T>> consts;
+    public final List<String> funcNames;
     private Sign<T> missingSign;
     protected AbstractType() {
         signs = new ArrayList<>();
         funcs = new ArrayList<>();
         consts = new ArrayList<>();
+        funcNames = new ArrayList<>();
     }
 
     protected Sign<T> addSign(char name, BinarFunc<T> sign, int priority) {
@@ -53,5 +56,9 @@ public abstract class AbstractType<T> {
 
     public Sign<T> getMissingSign() {
         return missingSign;
+    }
+
+    public void addFuncName(String name){
+        funcNames.add(name);
     }
 }
