@@ -86,7 +86,8 @@ public class TextViewer {
                 "Open the app fullscreen and click",
                 "this button is to resize graphics view.",
                 "Right click on the button will change the action:",
-                "Abscissa/Ordinate - mouse wheel rotation/touchPad gestures",
+                "Abscissa/Ordinate - mouse wheel ",
+                "rotation/touchPad gestures",
                 "will change only abscissa's/ordinate's size.",
                 "Return back - left click will change",
                 "ordinate's size to abscissa's size."
@@ -94,12 +95,17 @@ public class TextViewer {
                 "Recursion:",
                 "You can use recursion, but be careful",
                 "long recursion can produce stack over flow errors.",
-                "When you call func like that \"func= ... func(x-1) ... x ...\"",
-                "x will be changed to x-1 after every calling func(->(x-1)<-)",
+                "When you call func like that",
+                "\"func= ... func(x-1) ... x ...\"",
+                "x will be changed to x-1 after every",
+                "calling func(->(x-1)<-)",
                 "it is bad, but it is true.",
-                "So don't use x after the same callings to avoid the same results.",
-                "fact = if(x < 2, 1, fact(x-1) * x) everytime returns 1 when x is integer",
-                "fact = if(x < 2, 1, x * fact(x-1)) is normal factorial when x is integer"
+                "So don't use x after the same callings",
+                "to avoid the same results.",
+                "fact = if(x < 2, 1, fact(x-1) * x)",
+                "everytime returns 1 when x is integer",
+                "fact = if(x < 2, 1, x * fact(x-1))",
+                "is normal factorial when x is integer"
             },{
                 "Extra:",
                 "Right click on '-' button in expression in graphics.",

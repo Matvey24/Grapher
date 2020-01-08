@@ -8,6 +8,7 @@ import view.grapher.graphics.Parametric;
 import view.settings.FunctionSettings;
 import view.settings.ParametricSettings;
 import view.settings.TimerSettings;
+import view.settings.UpdaterFrame;
 
 import javax.swing.*;
 
@@ -42,6 +43,12 @@ public class SettingsManager {
             frame = new MyFrame(true);
         frame.clearStack();
         frame.changeScreen(timerSettings);
+        frame.setFocusable(true);
+    }
+    void openUpdaterFrame(String version){
+        if(frame == null || !frame.isVisible())
+            frame = new MyFrame(true);
+        frame.changeScreen(new UpdaterFrame(version));
         frame.setFocusable(true);
     }
     void close(){

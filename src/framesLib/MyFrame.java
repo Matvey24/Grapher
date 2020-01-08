@@ -32,8 +32,17 @@ public class MyFrame extends JFrame {
     }
     void back(){
         onHideScreen();
-        backStack.pop().onDestroy();
-        setScreen(backStack.peek());
+        if(!backStack.empty()) {
+            backStack.pop().onDestroy();
+        }else{
+            dispose();
+            return;
+        }
+        if(!backStack.empty()){
+            setScreen(backStack.peek());
+        }else{
+            this.dispose();
+        }
     }
     private void setScreen(Screen screen){
         getContentPane().removeAll();

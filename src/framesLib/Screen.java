@@ -12,7 +12,7 @@ public abstract class Screen extends JPanel {
     protected final void changeScreen(Screen screen){
         myFrame.changeScreen(screen);
     }
-    final void back(){
+    public final void back(){
         myFrame.back();
     }
     public abstract void onSetSize();

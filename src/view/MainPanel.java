@@ -1,6 +1,7 @@
 package view;
 
 import controller.ModelUpdater;
+import controller.VersionController;
 import framesLib.Screen;
 import view.elements.*;
 import view.grapher.GraphicsView;
@@ -107,7 +108,7 @@ public class MainPanel extends Screen {
     }
     @Override
     public void onShow() {
-        setTitle("Grapher by Math_way");
+        setTitle("Grapher" + VersionController.VERSION_NAME + " by Math_way");
     }
 //    private long t = System.currentTimeMillis();
     @Override

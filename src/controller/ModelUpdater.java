@@ -47,6 +47,12 @@ public class ModelUpdater {
         calculator = new ArrayCalculator<>();
         settingsManager = new SettingsManager(this);
         tasks = new Tasks();
+        new Thread(()-> {
+            int version = VersionController.checkUpdates();
+            if (version != -2) {
+                settingsManager.openUpdaterFrame(VersionController.getName(version));
+            }
+        }).start();
     }
 
     public void addVRemove(ActionEvent e) {
