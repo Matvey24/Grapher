@@ -5,9 +5,9 @@ import java.net.URL;
 import java.nio.file.Files;
 
 public class VersionController {
-    public static final int VERSION_CODE = 0;
+    public static final int VERSION_CODE = 1;
     public static final String VERSION_NAME = getName(VERSION_CODE);
-    private static final String URL_VERSION = "https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/Version.txt";
+    private static final String URL_VERSION = "https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/Version.bin";
     private static final String URL_APP = "https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/Grapher.jar";
     private static int newVersion = -1;
 
@@ -21,9 +21,9 @@ public class VersionController {
             URL url = new URL(URL_VERSION);
             DataInputStream input = new DataInputStream(url.openStream());
             newVersion = Integer.parseInt(input.readUTF());
-            return (newVersion > VERSION_CODE)? newVersion : -2;
+            return (newVersion > VERSION_CODE)? newVersion : -1;
         }catch (Exception e){
-            return -2;
+            return -1;
         }
     }
     public static boolean update(){

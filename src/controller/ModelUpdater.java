@@ -49,7 +49,7 @@ public class ModelUpdater {
         tasks = new Tasks();
         new Thread(()-> {
             int version = VersionController.checkUpdates();
-            if (version != -2) {
+            if (version != -1) {
                 settingsManager.openUpdaterFrame(VersionController.getName(version));
             }
         }).start();
