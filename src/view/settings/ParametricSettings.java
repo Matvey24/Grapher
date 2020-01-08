@@ -50,6 +50,8 @@ public class ParametricSettings extends Screen {
             if(e.getStateChange() == ItemEvent.SELECTED){
                 if(e.getItem() == GraphType.titles[GraphType.FUNCTION.ordinal()])
                     updater.makeFunction(p, el);
+                else if(e.getItem() == GraphType.titles[GraphType.IMPLICIT.ordinal()])
+                    updater.makeImplicit(p, el);
             }
         });
     }

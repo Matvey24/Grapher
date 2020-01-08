@@ -23,6 +23,7 @@ public class TextViewer {
                 "exp - exponent, it works faster than 'e^x'",
                 "signum - signum of number (1 / 0 / -1)",
                 "lg, ln, ld, log - logarithms",
+                "sigm - sigmoid - sigm(x) = 1 / (1 + e^-x)",
                 "sin, cos, tg, ctg, arcsin, arccos, arctg, arcctg, arctgTwo",
                 "- trigonometric functions",
                 "put 'd' after them to convert radians to degrees.",
@@ -31,7 +32,7 @@ public class TextViewer {
                 "ceil - min integer bigger then given",
                 "min, max - min / max number from two given",
                 "if(x, y, z) - returns z if x = 0 else y",
-                "iff(x) - returns 0 if x = 0 else 1"
+                "ifs(x) - returns 0 if x = 0 else 1"
             },{
                 "Constants: (SI)",
                 "pi - pi value = 3.14",
@@ -115,6 +116,16 @@ public class TextViewer {
                 "Parametric:",
                 "Write expression for x, than put ':' and ",
                 "then write expression for y, click enter"
+            },{
+                "Implicit:",
+                "Inequality:",
+                "Write an expression using x, y and grapher",
+                "will show color, where this expression is non-zero",
+                "Spectrum:",
+                "The same as inequality, but grapher will show color",
+                "which depends on expression value,",
+                "from red to purple (rainbow).",
+                "Use sensitivity to control rainbow thickness."
             },{
                 "Examples:",
                 "num = sqrt(5) - num is a constant",

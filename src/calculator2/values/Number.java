@@ -46,6 +46,7 @@ public class Number extends AbstractType<Double> {
         addFunction("ld", (a)->Math.log(a) / ln2, 10);
         addFunction("lg", Math::log10, 10);
         addFunction("log",(a,b)-> Math.log(a.calculate()) / Math.log(b.calculate()), 10);
+        addFunction("sigm", a -> 1 / (1 + Math.exp(-a)),10);
 
         addFunction("sin", Math::sin, 10);
         addFunction("cos", Math::cos, 10);
@@ -70,11 +71,12 @@ public class Number extends AbstractType<Double> {
         addFunction("floor", Math::floor, 10);
         addFunction("ceil", Math::ceil, 10);
 
+
         addFunction("min", (a, b) -> Math.min(a.calculate(),b.calculate()), 10);
         addFunction("max", (a, b) -> Math.max(a.calculate(),b.calculate()), 10);
 
         addFunction("if", (a)->((a[0].calculate() == 0)?a[2].calculate():a[1].calculate()),3,  10);
-        addFunction("iff", a->(a == 0)?0d:1d, 10);
+        addFunction("ifs", a->(a == 0)?0d:1d, 10);
     }
     private void constants(){
         addConst("pi", PI);

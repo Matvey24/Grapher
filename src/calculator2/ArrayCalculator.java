@@ -97,10 +97,7 @@ public class ArrayCalculator<T> {
                 if (expressionVars.size() == i - 1)
                     expressionVars.add(new ArrayList<>());
                 expressionVars.get(i - 1).clear();
-                if (director.getVars().size() == 0) {
-                    expressionVars.get(i - 1).add(new Variable<>());
-                } else
-                    expressionVars.get(i - 1).addAll(director.getVars());
+                expressionVars.get(i - 1).addAll(director.getVars());
             }
         } catch (RuntimeException e) {
             throw new RuntimeException(e.getMessage() + " in calc");

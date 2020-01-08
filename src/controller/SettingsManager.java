@@ -4,11 +4,9 @@ import framesLib.MyFrame;
 import framesLib.Screen;
 import view.elements.TextElement;
 import view.grapher.graphics.Function;
+import view.grapher.graphics.Implicit;
 import view.grapher.graphics.Parametric;
-import view.settings.FunctionSettings;
-import view.settings.ParametricSettings;
-import view.settings.TimerSettings;
-import view.settings.UpdaterFrame;
+import view.settings.*;
 
 import javax.swing.*;
 
@@ -16,38 +14,43 @@ public class SettingsManager {
     private MyFrame frame;
     private FunctionSettings functionSettings;
     private ParametricSettings parametricSettings;
+    private ImplicitSettings implicitSettings;
     private TimerSettings timerSettings;
     SettingsManager(ModelUpdater updater){
         functionSettings = new FunctionSettings(updater);
         parametricSettings = new ParametricSettings(updater);
         timerSettings = new TimerSettings(updater);
+        implicitSettings = new ImplicitSettings(updater);
     }
     void openFunctionSettings(Function f, TextElement e){
-        if(frame == null || !frame.isVisible())
-            frame = new MyFrame(true);
+        checkFrame();
         frame.clearStack();
         functionSettings.setInfo(f, e);
         frame.changeScreen(functionSettings);
         frame.setFocusable(true);
     }
     void openParameterSettings(Parametric p, TextElement e){
-        if(frame == null || !frame.isVisible())
-            frame = new MyFrame(true);
+        checkFrame();
         frame.clearStack();
         parametricSettings.setInfo(p, e);
         frame.changeScreen(parametricSettings);
         frame.setFocusable(true);
     }
+    void openImplicitSettings(Implicit imp, TextElement e){
+        checkFrame();
+        frame.clearStack();
+        implicitSettings.setInfo(imp, e);
+        frame.changeScreen(implicitSettings);
+        frame.setFocusable(true);
+    }
     void openTimerSettings(){
-        if(frame == null || !frame.isVisible())
-            frame = new MyFrame(true);
+        checkFrame();
         frame.clearStack();
         frame.changeScreen(timerSettings);
         frame.setFocusable(true);
     }
     void openUpdaterFrame(String version){
-        if(frame == null || !frame.isVisible())
-            frame = new MyFrame(true);
+        checkFrame();
         frame.changeScreen(new UpdaterFrame(version));
         frame.setFocusable(true);
     }
@@ -62,10 +65,14 @@ public class SettingsManager {
         screen.add(spinnerName);
         JComboBox<String> spinner = new JComboBox<>();
         screen.add(spinner);
-        spinner.addItem(GraphType.titles[0]);
-        spinner.addItem(GraphType.titles[1]);
+        for(int i = 0; i < GraphType.titles.length; ++i)
+            spinner.addItem(GraphType.titles[i]);
         spinner.setBounds(10,y + 40, width, 30);
         return spinner;
+    }
+    private void checkFrame(){
+        if(frame == null || !frame.isVisible())
+            frame = new MyFrame(true);
     }
     Double getTime(){
         return timerSettings.getT();

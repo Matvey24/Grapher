@@ -34,6 +34,8 @@ public class FunctionSettings extends Screen {
             if(e.getStateChange() == ItemEvent.SELECTED){
                 if(e.getItem() == GraphType.titles[GraphType.PARAMETER.ordinal()])
                     updater.makeParameter(f, el);
+                else if(e.getItem() == GraphType.titles[GraphType.IMPLICIT.ordinal()])
+                    updater.makeImplicit(f, el);
             }
         });
     }

@@ -4,6 +4,7 @@ import calculator2.ArrayCalculator;
 import calculator2.calculator.executors.Expression;
 import calculator2.calculator.executors.Variable;
 import calculator2.values.Number;
+import org.omg.CORBA.IMP_LIMIT;
 import threads.Tasks;
 import view.elements.CalculatorView;
 import view.elements.ElementsList;
@@ -11,6 +12,7 @@ import view.elements.FunctionsView;
 import view.elements.TextElement;
 import view.grapher.graphics.Function;
 import view.grapher.graphics.Graphic;
+import view.grapher.graphics.Implicit;
 import view.grapher.graphics.Parametric;
 
 import java.awt.*;
@@ -47,7 +49,7 @@ public class ModelUpdater {
         calculator = new ArrayCalculator<>();
         settingsManager = new SettingsManager(this);
         tasks = new Tasks();
-        new Thread(()-> {
+        new Thread(() -> {
             int version = VersionController.checkUpdates();
             if (version != -1) {
                 settingsManager.openUpdaterFrame(VersionController.getName(version));
@@ -88,12 +90,18 @@ public class ModelUpdater {
             settingsManager.openFunctionSettings((Function) g, list.getElements().get(id));
         } else if (g instanceof Parametric) {
             settingsManager.openParameterSettings((Parametric) g, list.getElements().get(id));
+        } else if (g instanceof Implicit) {
+            settingsManager.openImplicitSettings((Implicit) g, list.getElements().get(id));
         }
     }
-    public void openTimer(){
+
+    public void openTimer() {
         settingsManager.openTimerSettings();
     }
+
     public void makeFunction(Graphic g, TextElement e) {
+        if (g instanceof Function)
+            return;
         int idx = graphics.indexOf(g);
         Function function = new Function();
         function.setColor(e.getColor());
@@ -105,11 +113,25 @@ public class ModelUpdater {
     }
 
     public void makeParameter(Graphic g, TextElement e) {
+        if (g instanceof Parametric)
+            return;
         int idx = graphics.indexOf(g);
         Parametric parametric = new Parametric();
         parametric.setColor(e.getColor());
         graphics.set(idx, parametric);
         e.setName("xy(t)");
+        recalculate();
+        startSettings(new ActionEvent(0, idx, ""));
+    }
+
+    public void makeImplicit(Graphic g, TextElement e) {
+        if (g instanceof Implicit)
+            return;
+        int idx = graphics.indexOf(g);
+        Implicit implicit = new Implicit();
+        implicit.setColor(e.getColor());
+        graphics.set(idx, implicit);
+        e.setName("Imp");
         recalculate();
         startSettings(new ActionEvent(0, idx, ""));
     }
@@ -126,7 +148,7 @@ public class ModelUpdater {
             }
             if (!hasColor) {
                 if (g instanceof Function) {
-                    e.setName(func_names.get(i) + "(" + ((((Function) g).abscissa)?"x":"y") + ")");
+                    e.setName(func_names.get(i) + "(" + ((((Function) g).abscissa) ? "x" : "y") + ")");
                     ((Function) g).name = func_names.get(i);
                     e.setColor(c);
                     g.setColor(c);
@@ -151,22 +173,23 @@ public class ModelUpdater {
             return;
         double deltaX = x / scaleX;
         double deltaY = y / scaleY;
-        if(line == 0) {
+        if (line == 0) {
             scaleX /= Math.pow(deltaScale, delta);
             scaleY /= Math.pow(deltaScale, delta);
             offsetX += -x / scaleX + deltaX;
             offsetY += y / scaleY - deltaY;
-        }else if(line == 1){
+        } else if (line == 1) {
             scaleX /= Math.pow(deltaScale, delta);
             offsetX += -x / scaleX + deltaX;
-        }else if(line == 2){
+        } else if (line == 2) {
             scaleY /= Math.pow(deltaScale, delta);
             offsetY += y / scaleY - deltaY;
         }
         runResize();
     }
-    public void resizeBack(){
-        if(dangerState)
+
+    public void resizeBack() {
+        if (dangerState)
             return;
         double yc = offsetY * scaleY;
         scaleY = 1 * scaleX;
@@ -195,6 +218,9 @@ public class ModelUpdater {
                         } else {
                             throw new RuntimeException("we need 2 funcs in parameter");
                         }
+                    } else if (graphics.get(i) instanceof Implicit) {
+                        String text = list.getElements().get(i).getText();
+                        calc.add(text);
                     }
                 }
                 calculator.calculate(
@@ -203,7 +229,6 @@ public class ModelUpdater {
                         calc,
                         new Number()
                 );
-
                 calculatorView.setAnswer(calculator.getExpressions().get(0));
                 int funcs = 0;
                 int parameters = 0;
@@ -225,14 +250,53 @@ public class ModelUpdater {
                         ++funcs;
                     } else if (g instanceof Parametric) {
                         List<Variable<Double>> vars = calculator.getExpressionVars().get(parameters);
+                        if (vars.size() == 0)
+                            vars.add(new Variable<>());
                         Variable<Double> varX = vars.get(0);
                         vars = calculator.getExpressionVars().get(parameters + 1);
+                        if (vars.size() == 0)
+                            vars.add(new Variable<>());
                         Variable<Double> varY = vars.get(0);
                         Expression<Double> funcX = calculator.getExpressions().get(parameters + 1);
                         Expression<Double> funcY = calculator.getExpressions().get(parameters + 2);
                         g.update(funcY, varY);
                         ((Parametric) g).updateX(funcX, varX);
                         parameters += 2;
+                    } else if (g instanceof Implicit) {
+                        List<Variable<Double>> vars = calculator.getExpressionVars().get(parameters);
+                        Expression<Double> func = calculator.getExpressions().get(parameters + 1);
+                        if (vars.size() > 2)
+                            throw new RuntimeException("We need x and y wars in Implicit");
+                        Variable<Double> varX = null;
+                        Variable<Double> varY = null;
+                        checkingVars:
+                        {
+                            if (vars.size() == 0) {
+                                varX = new Variable<>();
+                                varY = new Variable<>();
+                                break checkingVars;
+                            } else if (vars.get(0).getName().equals("x")) {
+                                varX = vars.get(0);
+                            } else if (vars.get(0).getName().equals("y")) {
+                                varY = vars.get(0);
+                            } else {
+                                throw new RuntimeException("We need x and y wars in Implicit");
+                            }
+                            if (vars.size() == 1 && varX == null) {
+                                varX = new Variable<>();
+                            } else if (vars.size() == 1) {
+                                varY = new Variable<>();
+                            } else if (vars.get(1).getName().equals("x")) {
+                                varX = vars.get(1);
+                            } else if (vars.get(1).getName().equals("y")) {
+                                varY = vars.get(1);
+                            } else {
+                                throw new RuntimeException("We need x and y wars in Implicit");
+                            }
+                        }
+                        g.update(func, varX);
+                        ((Implicit) g).updateY(varY);
+                        ++parameters;
                     }
                 }
                 dangerState = false;
@@ -241,17 +305,18 @@ public class ModelUpdater {
                 resize.run();
                 repaint.run();
             } catch (Exception e) {
-                if(e instanceof NullPointerException){
+                if (e instanceof NullPointerException) {
                     setState(e.toString());
-                }else
-                    setState(e.getMessage());
+                } else
+                    setState(e.toString());
                 dangerState = true;
             }
         });
     }
-    public void justResize(){
-        tasks.runTask(()-> {
-            if(!dangerState) {
+
+    public void justResize() {
+        tasks.runTask(() -> {
+            if (!dangerState) {
                 try {
                     for (Graphic g : graphics) {
                         g.funcChanged();
@@ -265,13 +330,14 @@ public class ModelUpdater {
             }
         });
     }
+
     public void runResize() {
         if (!dangerState)
             tasks.runTask(() -> {
                 try {
                     resize.run();
                     repaint.run();
-                }catch (Throwable t){
+                } catch (Throwable t) {
                     error(t.getClass().getName());
                 }
             });
@@ -290,28 +356,36 @@ public class ModelUpdater {
         this.resize = resize;
         runResize();
     }
+
     public double getOffsetX() {
         return offsetX;
     }
+
     public double getOffsetY() {
         return offsetY;
     }
+
     public double getScaleX() {
         return scaleX;
     }
+
     public double getScaleY() {
         return scaleY;
     }
+
     public void setList(ElementsList list) {
         this.list = list;
     }
+
     public void setGraphics(ArrayList<Graphic> graphics) {
         this.graphics = graphics;
     }
-    public void error(String message){
+
+    public void error(String message) {
         dangerState = true;
         setState(message);
     }
+
     public void setTime(double time) {
         calculator.resetConstant("tm", time);
     }
