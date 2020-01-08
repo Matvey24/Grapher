@@ -27,7 +27,7 @@ public class UpdaterFrame extends Screen {
             btn_update.setEnabled(false);
             new Thread(()->{
                 if(VersionController.update()){
-                    label.setText("New version downloaded successful! You can open Grapher" + version);
+                    label.setText("Successful! You can open Grapher" + version + ".jar");
                 }else{
                     label.setText("Error downloading!");
                 }
