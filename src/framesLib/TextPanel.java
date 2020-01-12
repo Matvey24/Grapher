@@ -4,10 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public class TextPanel extends Screen {
-    private int height;
-    private int width = 400;
+    private final int height;
+    private final int width = 400;
     private static final int MAX_HEIGHT = 600;
-    private JPanel internal;
+    private final JPanel internal;
 
     public TextPanel(String[][] text) {
         setLayout(null);

@@ -10,11 +10,11 @@ public class TextElement {
     private static final int REMOVE_WIDTH = 25;
     public static final int HEIGHT = 25;
     public static final int WIDTH = NAME_WIDTH + TEXT_WIDTH + REMOVE_WIDTH;
-    private JLabel name;
-    private JTextField text;
-    private JButton remove;
-    TextElement(int x, int y, String name){
-        this.name = new JLabel(name);
+    private final JLabel name;
+    private final JTextField text;
+    private final JButton remove;
+    TextElement(int x, int y){
+        this.name = new JLabel("");
         text = new JTextField();
         remove = new JButton("-");
         remove.setFont(new Font("arial", Font.PLAIN, 8));

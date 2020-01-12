@@ -7,8 +7,8 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class Parameter extends ViewElement {
-    private JLabel label;
-    private JTextField field;
+    private final JLabel label;
+    private final JTextField field;
 
     public Parameter(String name, ActionListener onChange){
         label = new JLabel(name);

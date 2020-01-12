@@ -57,8 +57,5 @@ public class AbstractFunc<T>{
         this.args = args;
         return this::execute;
     }
-    public int args(){
-        return args;
-    }
 
 }

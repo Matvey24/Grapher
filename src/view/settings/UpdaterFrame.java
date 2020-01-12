@@ -6,9 +6,9 @@ import framesLib.Screen;
 import javax.swing.*;
 
 public class UpdaterFrame extends Screen {
-    public JLabel label;
-    public JButton btn_cancel;
-    public JButton btn_update;
+    public final JLabel label;
+    public final JButton btn_cancel;
+    public final JButton btn_update;
     public UpdaterFrame(String version){
         setLayout(null);
         label = new JLabel("Found new version: Grapher" + version + ".jar");

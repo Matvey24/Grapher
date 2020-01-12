@@ -8,10 +8,10 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class GraphicsView {
-    private ArrayList<Graphic> graphics;
-    private CoordinateSystem coordinateSystem;
+    private final ArrayList<Graphic> graphics;
+    private final CoordinateSystem coordinateSystem;
 
-    private ModelUpdater updater;
+    private final ModelUpdater updater;
 
     public GraphicsView(ElementsList list, ModelUpdater updater) {
         this.updater = updater;
@@ -21,9 +21,8 @@ public class GraphicsView {
         updater.setGraphics(graphics);
         updater.setResize(this::resize);
     }
-
     private void resize() {
-        updater.setState("֍");
+        updater.setState("updating..");
         double offsetX = updater.getOffsetX();
         double offsetY = updater.getOffsetY();
         double scaleX = updater.getScaleX();
@@ -33,10 +32,8 @@ public class GraphicsView {
             g.resize(offsetX, offsetY, scaleX, scaleY);
         updater.setState("+");
     }
-
     public void paint(Graphics g) {
         g.setColor(Color.BLACK);
-        g.translate(ElementsList.WIDTH, 0);
         coordinateSystem.draw(g);
         try {
             for (Graphic s : graphics)

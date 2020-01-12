@@ -15,11 +15,11 @@ public class ParametricSettings extends Screen {
     private static final int WIDTH = 200;
     private static final int HEIGHT = 400;
 
-    private Parameter mapSize;
+    private final Parameter mapSize;
     private Parameter dimension;
     private Parametric p;
     private TextElement el;
-    private JComboBox<String> spinner;
+    private final JComboBox<String> spinner;
     public ParametricSettings(ModelUpdater updater){
         setLayout(null);
         mapSize = new Parameter("Frequency", (e)->{

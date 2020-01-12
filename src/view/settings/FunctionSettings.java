@@ -15,10 +15,10 @@ public class FunctionSettings extends Screen {
     private static final int WIDTH = 200;
     private static final int HEIGHT = 300;
 
-    private Parameter mapSize;
+    private final Parameter mapSize;
     private Function f;
     private TextElement el;
-    private JComboBox<String> spinner;
+    private final JComboBox<String> spinner;
     public FunctionSettings(ModelUpdater updater){
         setLayout(null);
         mapSize = new Parameter("Frequency", (e)->{

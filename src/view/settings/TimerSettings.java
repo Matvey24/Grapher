@@ -23,7 +23,7 @@ public class TimerSettings extends Screen {
     private double value = startT;
     private boolean boomerang;
     private boolean fTimeDirection = true;
-    private JToggleButton start;
+    private final JToggleButton start;
     public TimerSettings(ModelUpdater updater){
         setLayout(null);
         duration = new Parameter("Duration:fps", (e)->{
@@ -34,11 +34,10 @@ public class TimerSettings extends Screen {
                 dur = Double.parseDouble(vars[0]);
                 if (vars.length == 1) {
                     FPS = 60;
-                    delay = 1 / FPS;
                 }else {
                     FPS = Double.parseDouble(vars[1]);
-                    delay = 1 / FPS;
                 }
+                delay = 1 / FPS;
                 timer.setDelay((int)(1000* delay));
             }catch (RuntimeException ex){
                 onShow();

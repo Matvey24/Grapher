@@ -3,9 +3,9 @@ import java.util.concurrent.CyclicBarrier;
 
 public class ThreadWorker extends Thread{
 
-  private Tasks header;
+  private final Tasks header;
   
-  private CyclicBarrier locker;
+  private final CyclicBarrier locker;
   
   private boolean disposed;
   

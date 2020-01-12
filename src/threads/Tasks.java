@@ -6,10 +6,10 @@ import java.util.Stack;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Tasks {
-    private ConcurrentLinkedQueue<Runnable> queue;
-    private List<ThreadWorker> workers;
-    private Stack<ThreadWorker> freeWorkers;
-    private int threadCount;
+    private final ConcurrentLinkedQueue<Runnable> queue;
+    private final List<ThreadWorker> workers;
+    private final Stack<ThreadWorker> freeWorkers;
+    private final int threadCount;
 
     private boolean disposeOnFinish;
 
@@ -19,9 +19,9 @@ public class Tasks {
 
     public Tasks(int threadCount) {
         this.threadCount = threadCount;
-        queue = new ConcurrentLinkedQueue<Runnable>();
-        workers = new ArrayList<ThreadWorker>(threadCount);
-        freeWorkers = new Stack<ThreadWorker>();
+        queue = new ConcurrentLinkedQueue<>();
+        workers = new ArrayList<>(threadCount);
+        freeWorkers = new Stack<>();
     }
 
     public synchronized void runTask(Runnable task) {

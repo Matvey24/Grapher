@@ -6,7 +6,7 @@ import java.awt.*;
 
 public abstract class Graphic {
     public int MAP_SIZE = 500;
-    int MAX_DELTA = 1000;
+    final int MAX_DELTA = 1000;
     double[] map;
     protected Expression<Double> func;
     Variable<Double> var;

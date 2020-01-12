@@ -2,14 +2,13 @@ package view.grapher;
 
 import java.awt.*;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 import static view.MainPanel.GRAPH_WIDTH;
 import static view.MainPanel.HEIGHT;
 
 public class CoordinateSystem {
-    private static final double MAX_DELTA = 210;
-    private static final double MIN_DELTA = 80;
+    private static final int MIN_DELTA = 80;
+    private static final int MAX_DELTA = MIN_DELTA * 5 / 2;
     private static final Color EXTRA_LINE_COLOR = new Color(0.3f, 0.3f, 0.3f, 0.4f);
     private static final Color MAIN_COLOR = Color.BLACK;
     private double offsetX;
@@ -20,51 +19,68 @@ public class CoordinateSystem {
     private double deltaY = 1;
     private int deltaXpow = 0;
     private int deltaYpow = 0;
+    private int maxDeltaX = MAX_DELTA * 4 / 5;
+    private int maxDeltaY = MAX_DELTA * 4 / 5;
     public void resize(double offsetX, double offsetY, double scaleX, double scaleY) {
         this.offsetX = offsetX;
         this.offsetY = offsetY;
         this.scaleX = scaleX;
         this.scaleY = scaleY;
-        resizeNet();
         if (deltaX <= 0.5001 && deltaX >= 0.4999) {
             deltaX = 0.5;
         }
         if (deltaY <= 0.5001 && deltaY >= 0.4999) {
             deltaY = 0.5;
         }
+        resizeNet();
     }
     private void resizeNet(){
         boolean redo = true;
         while (redo){
             redo = false;
-            if (deltaX * scaleX > MAX_DELTA) {
+            if(deltaX * scaleX > maxDeltaX) {
                 if ((deltaXpow - 2) % 3 == 0) {
                     deltaX *= 0.4;
                 } else {
                     deltaX *= 0.5;
                 }
                 --deltaXpow;
+                if ((deltaXpow - 2) % 3 == 0) {
+                    maxDeltaX = MAX_DELTA;
+                } else {
+                    maxDeltaX = MAX_DELTA * 4 / 5;
+                }
                 redo = true;
-            } else if (deltaX * scaleX < MIN_DELTA) {
+            }else if (deltaX * scaleX < MIN_DELTA) {
                 if ((deltaXpow - 1) % 3 == 0) {
                     deltaX *= 2.5;
                 } else {
                     deltaX *= 2;
                 }
                 ++deltaXpow;
+                if ((deltaXpow - 2) % 3 == 0) {
+                    maxDeltaX = MAX_DELTA;
+                } else {
+                    maxDeltaX = MAX_DELTA * 4 / 5;
+                }
                 redo = true;
             }
         }
         redo = true;
         while (redo){
             redo = false;
-            if (deltaY * scaleY > MAX_DELTA) {
+            if (deltaY * scaleY > maxDeltaY) {
                 if ((deltaYpow - 2) % 3 == 0) {
                     deltaY *= 0.4;
                 } else {
                     deltaY *= 0.5;
                 }
                 --deltaYpow;
+                if ((deltaYpow - 2) % 3 == 0) {
+                    maxDeltaY = MAX_DELTA;
+                } else {
+                    maxDeltaY = MAX_DELTA * 4 / 5;
+                }
                 redo = true;
             } else if (deltaY * scaleY < MIN_DELTA) {
                 if ((deltaYpow - 1) % 3 == 0) {
@@ -73,6 +89,11 @@ public class CoordinateSystem {
                     deltaY *= 2;
                 }
                 ++deltaYpow;
+                if ((deltaYpow - 2) % 3 == 0) {
+                    maxDeltaY = MAX_DELTA;
+                } else {
+                    maxDeltaY = MAX_DELTA * 4 / 5;
+                }
                 redo = true;
             }
         }
@@ -135,7 +156,7 @@ public class CoordinateSystem {
 
     public static String dts(double d) {
         if(d % 1 == 0){
-            return String.valueOf((long)d);
+            return String.valueOf(BigDecimal.valueOf(d).toBigInteger());
         }
         String val = BigDecimal.valueOf(d)
                 .toPlainString();

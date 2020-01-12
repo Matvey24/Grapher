@@ -3,7 +3,7 @@ package calculator2.calculator.helpers;
 import java.util.HashMap;
 
 public class Brackets {
-    private HashMap<Character, Boolean> names;
+    private final HashMap<Character, Boolean> names;
     Brackets(){
         names = new HashMap<>();
         add('(', ')');

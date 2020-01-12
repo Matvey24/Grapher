@@ -1,9 +1,7 @@
 package calculator2.calculator.helpers;
 
-import calculator2.calculator.executors.Variable;
 import calculator2.values.util.actions.Func;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 

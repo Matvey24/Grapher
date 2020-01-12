@@ -10,10 +10,10 @@ import java.util.Stack;
 import static calculator2.calculator.Element.ElementType.*;
 
 class Parser<T> {
-    private StringBuilder sb;
-    private Helper<T> helper;
+    private final StringBuilder sb;
+    private final Helper<T> helper;
     private Stack<Element> stack;
-    private List<String> varNames;
+    private final List<String> varNames;
     Parser(Helper<T> helper) {
         this.helper = helper;
         sb = new StringBuilder();

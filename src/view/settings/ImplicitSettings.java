@@ -15,12 +15,12 @@ public class ImplicitSettings extends Screen {
     private static final int WIDTH = 200;
     private static final int HEIGHT = 400;
 
-    private Parameter mapSize;
-    private Parameter sensitivity;
+    private final Parameter mapSize;
+    private final Parameter sensitivity;
     private Implicit imp;
     private TextElement el;
-    private JComboBox<String> spinner;
-    private JComboBox<String> spectrum;
+    private final JComboBox<String> spinner;
+    private final JComboBox<String> spectrum;
     public ImplicitSettings(ModelUpdater updater){
         setLayout(null);
         mapSize = new Parameter("Frequency", (e)->{

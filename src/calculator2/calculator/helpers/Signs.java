@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Signs<T> {
-    private HashMap<Character, Sign<T>> signs;
+    private final HashMap<Character, Sign<T>> signs;
     Signs(){
         signs = new HashMap<>();
     }

@@ -11,10 +11,10 @@ import static view.elements.ElementsList.WIDTH;
 public class FunctionsView extends ViewElement {
     private static final int AREA_HEIGHT = 150;
     public static final int FUNC_HEIGHT = AREA_HEIGHT + HEIGHT + OFFSET;
-    private JLabel name;
-    private JTextArea area;
-    private JButton btn_update;
-    private JScrollPane scrollPane;
+    private final JLabel name;
+    private final JTextArea area;
+    private final JButton btn_update;
+    private final JScrollPane scrollPane;
     public FunctionsView(Runnable onUpdate){
         area = new JTextArea();
         area.setLineWrap(true);

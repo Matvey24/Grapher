@@ -2,7 +2,6 @@ package view.elements;
 
 import calculator2.calculator.executors.Expression;
 import controller.ViewElement;
-import view.elements.TextElement;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,9 +11,9 @@ import static view.elements.TextElement.HEIGHT;
 import static view.elements.ElementsList.WIDTH;
 public class CalculatorView extends ViewElement {
     public static final int CALC_HEIGHT = 2 * HEIGHT + 2 * OFFSET;
-    private JTextField answer;
-    private JLabel name;
-    private JTextField field;
+    private final JTextField answer;
+    private final JLabel name;
+    private final JTextField field;
     private Expression<Double> func;
     public CalculatorView(Runnable calculate){
         name = new JLabel("Calculator");

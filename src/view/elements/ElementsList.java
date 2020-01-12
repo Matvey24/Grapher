@@ -11,16 +11,16 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class ElementsList extends ViewElement {
-    private JLabel name;
-    private JTextField state;
-    private JButton btn_make_element;
-    private ArrayList<TextElement> elements;
+    private final JLabel name;
+    private final JTextField state;
+    private final JButton btn_make_element;
+    private final ArrayList<TextElement> elements;
     private int height;
-    private int max_size = 10;
+    private final int max_size = 10;
     public static final int OFFSET = 5;
     private static final int NAME_HEIGHT = 30;
     public static final int WIDTH = TextElement.WIDTH + 2 * OFFSET;
-    private Point pos;
+    private final Point pos;
     private Container c;
     public ElementsList(String name, int x, int y, ActionListener sizeChanged, ActionListener settings) {
         elements = new ArrayList<>();
@@ -34,7 +34,7 @@ public class ElementsList extends ViewElement {
         setBounds(x,y);
         btn_make_element.addActionListener((e)->{
             int y2 = height - OFFSET - TextElement.HEIGHT;
-            TextElement el = new TextElement(x + OFFSET, y2, "");
+            TextElement el = new TextElement(x + OFFSET, y2);
             el.addRemoveListener((e2)->{
                 int id = elements.indexOf(el);
                 elements.remove(id);
@@ -86,9 +86,7 @@ public class ElementsList extends ViewElement {
     public ArrayList<TextElement> getElements(){
         return elements;
     }
-    public int getHeight(){
-        return height;
-    }
+
     public void setState(String text){
         this.state.setText(text);
     }

@@ -3,6 +3,7 @@ package calculator2.values;
 import calculator2.values.util.AbstractType;
 import calculator2.values.util.actions.Sign;
 import calculator2.values.util.actions.functions.BinarFunc;
+import calculator2.values.util.actions.functions.UnarFunc;
 
 import static java.lang.Math.PI;
 
@@ -17,7 +18,7 @@ public class Number extends AbstractType<Double> {
         double A = a.calculate();
         return (A == 0)?0:A * b.calculate();
     };
-    private double ln2 = Math.log(2);
+    private final double ln2 = Math.log(2);
     public Number(){
         addSign('<', (a, b)->((a.calculate() < b.calculate())?1d:0), 1);
         addSign('>', (a, b)->((a.calculate() > b.calculate())?1d:0), 1);
@@ -33,15 +34,16 @@ public class Number extends AbstractType<Double> {
         functions();
         constants();
 
-        unarySign(minus, a -> -a, 5);
+        unarySign(minus, a -> -a);
         setMissingSign(mulp);
     }
+    @SuppressWarnings("RedundantCast")
     private void functions(){
         addFunction("sqrt", Math::sqrt, 10);
         addFunction("cbrt", Math::cbrt, 10);
         addFunction("pow", pow, 10);
         addFunction("exp", Math::exp, 10);
-        addFunction("signum", a-> Math.signum((double)a), 10);
+        addFunction("signum", (UnarFunc<Double>)Math::signum, 10);
         addFunction("ln", Math::log, 10);
         addFunction("ld", (a)->Math.log(a) / ln2, 10);
         addFunction("lg", Math::log10, 10);
@@ -67,7 +69,7 @@ public class Number extends AbstractType<Double> {
         addFunction("arcctgd", a->Math.atan(1/a)/PI*180, 10);
 
 
-        addFunction("abs", a->Math.abs((double)a), 10);
+        addFunction("abs", (UnarFunc<Double>) Math::abs, 10);
         addFunction("floor", Math::floor, 10);
         addFunction("ceil", Math::ceil, 10);
 

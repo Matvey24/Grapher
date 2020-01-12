@@ -28,9 +28,9 @@ public abstract class AbstractType<T> {
         signs.add(s);
         return s;
     }
-    protected void unarySign(Sign<T> sign, UnarFunc<T> func, int priority){
+    protected void unarySign(Sign<T> sign, UnarFunc<T> func){
         sign.canBeUnary = true;
-        addFunction("" + sign.name, func, priority);
+        addFunction("" + sign.name, func, 5);
     }
 
     protected void setMissingSign(Sign<T> sign){

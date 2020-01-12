@@ -1,7 +1,6 @@
 package framesLib;
 
 import javax.swing.*;
-import java.awt.*;
 
 public abstract class Screen extends JPanel {
     private MyFrame myFrame;
@@ -18,6 +17,7 @@ public abstract class Screen extends JPanel {
     public abstract void onSetSize();
     public void onShow(){}
     public void onHide(){}
+    @SuppressWarnings("EmptyMethod")
     public void onDestroy(){}
     protected final void setTitle(String title){
         myFrame.setTitle(title);

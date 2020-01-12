@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 public class Director<T> {
-    private Calculator<T> calculator;
-    private Parser<T> parser;
-    private Helper<T> helper;
+    private final Calculator<T> calculator;
+    private final Parser<T> parser;
+    private final Helper<T> helper;
 
     private Expression<T> tree;
     private ArrayList<Variable<T>> vars;
@@ -34,9 +34,6 @@ public class Director<T> {
         calculator.next(null);
         tree = calculator.getExpression();
         vars = calculator.getVars();
-    }
-    public T calculate(){
-        return tree.calculate();
     }
 
     public Stack<Element> getStack(){

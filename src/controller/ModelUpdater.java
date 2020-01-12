@@ -4,7 +4,6 @@ import calculator2.ArrayCalculator;
 import calculator2.calculator.executors.Expression;
 import calculator2.calculator.executors.Variable;
 import calculator2.values.Number;
-import org.omg.CORBA.IMP_LIMIT;
 import threads.Tasks;
 import view.elements.CalculatorView;
 import view.elements.ElementsList;
@@ -27,16 +26,16 @@ public class ModelUpdater {
     private static final List<Color> colors = Arrays.asList(BLUE, RED, GREEN, CYAN, magenta, GRAY, ORANGE, PINK, YELLOW, LIGHT_GRAY);
     private static final List<String> func_names = Arrays.asList("f", "i", "j", "l", "m", "n", "o", "q", "r", "s");
     private static final double deltaScale = 1.2;
-    private Runnable repaint;
+    private final Runnable repaint;
     private Runnable resize;
 
-    private ArrayCalculator<Double> calculator;
+    private final ArrayCalculator<Double> calculator;
     private List<Graphic> graphics;
     private ElementsList list;
     private FunctionsView functionsView;
     private CalculatorView calculatorView;
-    private SettingsManager settingsManager;
-    private Tasks tasks;
+    private final SettingsManager settingsManager;
+    private final Tasks tasks;
 
     private double offsetX = -3;
     private double offsetY = 5.5;
@@ -308,13 +307,14 @@ public class ModelUpdater {
                 if (e instanceof NullPointerException) {
                     setState(e.toString());
                 } else
-                    setState(e.toString());
+                    setState(e.getMessage());
                 dangerState = true;
             }
         });
     }
 
     public void justResize() {
+        tasks.clearTasks();
         tasks.runTask(() -> {
             if (!dangerState) {
                 try {
@@ -332,6 +332,7 @@ public class ModelUpdater {
     }
 
     public void runResize() {
+        tasks.clearTasks();
         if (!dangerState)
             tasks.runTask(() -> {
                 try {

@@ -12,10 +12,10 @@ import javax.swing.*;
 
 public class SettingsManager {
     private MyFrame frame;
-    private FunctionSettings functionSettings;
-    private ParametricSettings parametricSettings;
-    private ImplicitSettings implicitSettings;
-    private TimerSettings timerSettings;
+    private final FunctionSettings functionSettings;
+    private final ParametricSettings parametricSettings;
+    private final ImplicitSettings implicitSettings;
+    private final TimerSettings timerSettings;
     SettingsManager(ModelUpdater updater){
         functionSettings = new FunctionSettings(updater);
         parametricSettings = new ParametricSettings(updater);

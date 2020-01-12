@@ -18,9 +18,9 @@ public class MainPanel extends Screen {
     public static int WIDTH = WIDTH_0;
     public static int HEIGHT = HEIGHT_0;
     public static int GRAPH_WIDTH = WIDTH - ElementsList.WIDTH;
-    private GraphicsView graphicsView;
+    private final GraphicsView graphicsView;
 
-    private Point mousePosition;
+    private final Point mousePosition;
     private int resizeType;
     private static final String[] resizers = {"Resize", "Abscissa", "Ordinate", "Return back"};
     public MainPanel(){
@@ -110,13 +110,10 @@ public class MainPanel extends Screen {
     public void onShow() {
         setTitle("Grapher" + VersionController.VERSION_NAME + " by Math_way");
     }
-//    private long t = System.currentTimeMillis();
     @Override
     public void paint(Graphics g) {
-//        long time = System.currentTimeMillis();
-//        System.out.println(time - t);
-//        t = time;
         super.paint(g);
+        g.translate(ElementsList.WIDTH, 0);
         graphicsView.paint(g);
     }
 }

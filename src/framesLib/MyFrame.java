@@ -7,7 +7,7 @@ import java.awt.event.WindowEvent;
 import java.util.Stack;
 
 public class MyFrame extends JFrame {
-    private Stack<Screen> backStack;
+    private final Stack<Screen> backStack;
     public MyFrame() {
         this(false);
     }

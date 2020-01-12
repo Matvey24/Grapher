@@ -4,16 +4,15 @@ import calculator2.calculator.executors.*;
 import calculator2.calculator.helpers.Helper;
 import calculator2.values.util.actions.Func;
 import calculator2.values.util.actions.Sign;
-import calculator2.values.util.actions.functions.MultiFunc;
 
 import java.util.ArrayList;
 import java.util.Stack;
 
 class Calculator<T> {
-    private Helper<T> helper;
-    private Stack<Expression<T>> values;
-    private Stack<Element> other;
-    private ArrayList<Variable<T>> vars;
+    private final Helper<T> helper;
+    private final Stack<Expression<T>> values;
+    private final Stack<Element> other;
+    private final ArrayList<Variable<T>> vars;
     Calculator(Helper<T> helper){
         this.helper = helper;
         values = new Stack<>();
@@ -143,6 +142,7 @@ class Calculator<T> {
                     actor.setValues(f.binarFunc, e1, e2, f.name);
                     values.push(actor);
                 }else{
+                    @SuppressWarnings("unchecked")
                     Expression<T>[] arr = new Expression[f.args];
                     for(int i = f.args - 1; i >= 0; --i)
                         arr[i] = values.pop();

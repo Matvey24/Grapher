@@ -2,12 +2,11 @@ package calculator2.calculator.helpers;
 
 import calculator2.calculator.executors.Variable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class Consts<T> {
-    private HashMap<String, Variable<T>> map;
+    private final HashMap<String, Variable<T>> map;
     Consts(){
         map = new HashMap<>();
     }

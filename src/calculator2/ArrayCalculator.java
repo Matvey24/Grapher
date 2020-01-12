@@ -10,19 +10,19 @@ import calculator2.values.util.actions.AbstractFunc;
 import java.util.*;
 
 public class ArrayCalculator<T> {
-    private Director<T> director;
+    private final Director<T> director;
     private AbstractType<T> type;
-    private List<AbstractFunc<T>> funcs;
+    private final List<AbstractFunc<T>> funcs;
 
-    private List<Expression<T>> graphics;
-    private List<List<Variable<T>>> vars;
-
-
-    private List<Expression<T>> expressions;
-    private List<List<Variable<T>>> expressionVars;
+    private final List<Expression<T>> graphics;
+    private final List<List<Variable<T>>> vars;
 
 
-    private List<Stack<Element>> funcNames;
+    private final List<Expression<T>> expressions;
+    private final List<List<Variable<T>>> expressionVars;
+
+
+    private final List<Stack<Element>> funcNames;
 
     public ArrayCalculator() {
         vars = new ArrayList<>();
@@ -52,14 +52,26 @@ public class ArrayCalculator<T> {
             graphics.set(i, graphics.get(i).replaceAll("[ \t]", ""));
             type.addFuncName(graphics.get(i).substring(0, graphics.get(i).indexOf("=")));
         }
-        for (String s: graphics) {
-            int n = s.indexOf('=');
-            analise(s.substring(0, n), s.substring(n + 1), true);
+        int err = 0;
+        try {
+            for (; err < graphics.size(); ++err) {
+                String s = graphics.get(err);
+                int n = s.indexOf('=');
+                analise(s.substring(0, n), s.substring(n + 1), true);
+            }
+        }catch (RuntimeException e){
+            throw new RuntimeException(e.getMessage() + " in " + (err + 1) + " graphic");
         }
-        for (String s : funcs) {
-            int n = s.indexOf('=');
-            if (n != -1)
-                analise(s.substring(0, n), s.substring(n + 1), false);
+        err = 0;
+        try {
+            for (; err < funcs.size(); ++err) {
+                String s = funcs.get(err);
+                int n = s.indexOf('=');
+                if (n != -1)
+                    analise(s.substring(0, n), s.substring(n + 1), false);
+            }
+        }catch (RuntimeException e){
+            throw new RuntimeException(e.getMessage() + " in " + (err + 1) + " function");
         }
         director.renewType(type);
         for (int i = 0; i < this.funcs.size(); ++i) {
