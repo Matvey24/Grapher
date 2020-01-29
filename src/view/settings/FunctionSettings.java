@@ -1,8 +1,9 @@
 package view.settings;
 
 import controller.GraphType;
+import controller.Language;
 import controller.ModelUpdater;
-import controller.SettingsManager;
+import controller.SupportFrameManager;
 import framesLib.Screen;
 import view.elements.Parameter;
 import view.elements.TextElement;
@@ -21,7 +22,7 @@ public class FunctionSettings extends Screen {
     private final JComboBox<String> spinner;
     public FunctionSettings(ModelUpdater updater){
         setLayout(null);
-        mapSize = new Parameter("Frequency", (e)->{
+        mapSize = new Parameter(Language.DISCRETIZATION, (e)->{
             if(f != null) {
                 f.setMAP_SIZE(Integer.parseInt(e.getSource().toString()));
                 updater.runResize();
@@ -29,7 +30,7 @@ public class FunctionSettings extends Screen {
         });
         mapSize.addTo(this);
         mapSize.setBounds(0,0, 150);
-        spinner = SettingsManager.createSpinner(this,  90, 150);
+        spinner = SupportFrameManager.createSpinner(this,  90, 150);
         spinner.addItemListener((e)->{
             if(e.getStateChange() == ItemEvent.SELECTED){
                 if(e.getItem() == GraphType.titles[GraphType.PARAMETER.ordinal()])
@@ -43,8 +44,9 @@ public class FunctionSettings extends Screen {
         this.f = f;
         this.el = e;
         spinner.setSelectedIndex(GraphType.FUNCTION.ordinal());
-        mapSize.setDefault(f.MAP_SIZE + "");
+        mapSize.setDefault(String.valueOf(f.MAP_SIZE));
     }
+
     @Override
     public void onSetSize() {
         setSize(WIDTH, HEIGHT);

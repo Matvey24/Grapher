@@ -2,6 +2,7 @@ package controller;
 
 import framesLib.MyFrame;
 import framesLib.Screen;
+import framesLib.TextPanel;
 import view.elements.TextElement;
 import view.grapher.graphics.Function;
 import view.grapher.graphics.Implicit;
@@ -10,13 +11,13 @@ import view.settings.*;
 
 import javax.swing.*;
 
-public class SettingsManager {
+public class SupportFrameManager {
     private MyFrame frame;
     private final FunctionSettings functionSettings;
     private final ParametricSettings parametricSettings;
     private final ImplicitSettings implicitSettings;
     private final TimerSettings timerSettings;
-    SettingsManager(ModelUpdater updater){
+    SupportFrameManager(ModelUpdater updater){
         functionSettings = new FunctionSettings(updater);
         parametricSettings = new ParametricSettings(updater);
         timerSettings = new TimerSettings(updater);
@@ -24,34 +25,36 @@ public class SettingsManager {
     }
     void openFunctionSettings(Function f, TextElement e){
         checkFrame();
-        frame.clearStack();
         functionSettings.setInfo(f, e);
         frame.changeScreen(functionSettings);
         frame.setFocusable(true);
     }
     void openParameterSettings(Parametric p, TextElement e){
         checkFrame();
-        frame.clearStack();
         parametricSettings.setInfo(p, e);
         frame.changeScreen(parametricSettings);
         frame.setFocusable(true);
     }
     void openImplicitSettings(Implicit imp, TextElement e){
         checkFrame();
-        frame.clearStack();
         implicitSettings.setInfo(imp, e);
         frame.changeScreen(implicitSettings);
         frame.setFocusable(true);
     }
     void openTimerSettings(){
         checkFrame();
-        frame.clearStack();
         frame.changeScreen(timerSettings);
         frame.setFocusable(true);
     }
     void openUpdaterFrame(String version){
         checkFrame();
         frame.changeScreen(new UpdaterFrame(version));
+        frame.setFocusable(true);
+    }
+    public void openTextFrame(TextPanel panel){
+        if(frame == null || !frame.isVisible())
+            frame = new MyFrame(true);
+        frame.changeScreen(panel);
         frame.setFocusable(true);
     }
     void close(){
@@ -73,6 +76,9 @@ public class SettingsManager {
     private void checkFrame(){
         if(frame == null || !frame.isVisible())
             frame = new MyFrame(true);
+        else {
+            frame.clearStack();
+        }
     }
     Double getTime(){
         return timerSettings.getT();

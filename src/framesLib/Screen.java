@@ -15,7 +15,9 @@ public abstract class Screen extends JPanel {
         myFrame.back();
     }
     public abstract void onSetSize();
-    public void onShow(){}
+    public void onShow(){
+        setTitle("");
+    }
     public void onHide(){}
     @SuppressWarnings("EmptyMethod")
     public void onDestroy(){}

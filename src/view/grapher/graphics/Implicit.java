@@ -14,11 +14,10 @@ public class Implicit extends Graphic {
     private boolean spectrum;
     private Color c;
     private double sensitivity;
+
     public Implicit() {
+        setMAP_SIZE(200);
         sensitivity = 1;
-        float dw = (float) GRAPH_WIDTH / MAP_SIZE;
-        yMAP_SIZE = (int) (HEIGHT / dw);
-        data = new float[MAP_SIZE][yMAP_SIZE];
     }
 
     @Override
@@ -45,7 +44,6 @@ public class Implicit extends Graphic {
     public void paint(Graphics g) {
         float dw = (float) GRAPH_WIDTH / MAP_SIZE;
         float dh = (float) HEIGHT / yMAP_SIZE;
-        g.setColor(c);
         if (spectrum) {
             for (int i = 0; i < MAP_SIZE; ++i) {
                 for (int j = 0; j < yMAP_SIZE; ++j) {
@@ -81,6 +79,7 @@ public class Implicit extends Graphic {
                 }
             }
         } else {
+            g.setColor(c);
             for (int i = 0; i < MAP_SIZE; ++i) {
                 for (int j = 0; j < yMAP_SIZE; ++j) {
                     if (data[i][j] != 0.0) {

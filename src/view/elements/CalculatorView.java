@@ -1,6 +1,7 @@
 package view.elements;
 
 import calculator2.calculator.executors.Expression;
+import controller.Language;
 import controller.ViewElement;
 
 import javax.swing.*;
@@ -16,11 +17,11 @@ public class CalculatorView extends ViewElement {
     private final JTextField field;
     private Expression<Double> func;
     public CalculatorView(Runnable calculate){
-        name = new JLabel("Calculator");
+        name = new JLabel(Language.CALCULATOR);
         name.setFont(name_font);
         answer = new JTextField();
         answer.setEditable(false);
-        answer.setText("'ans'");
+        answer.setText("0");
         answer.setFont(new Font("arial", Font.PLAIN, 11));
         field = new JTextField();
         field.addActionListener(e->calculate.run());
@@ -40,7 +41,8 @@ public class CalculatorView extends ViewElement {
         this.func = func;
     }
     public void update(){
-        answer.setText(String.valueOf(func.calculate()));
+        if(func != null)
+            answer.setText(String.valueOf(func.calculate()));
     }
     public String getText() {
         return field.getText();

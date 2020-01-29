@@ -1,8 +1,9 @@
 package view.settings;
 
 import controller.GraphType;
+import controller.Language;
 import controller.ModelUpdater;
-import controller.SettingsManager;
+import controller.SupportFrameManager;
 import framesLib.Screen;
 import view.elements.Parameter;
 import view.elements.TextElement;
@@ -22,13 +23,13 @@ public class ParametricSettings extends Screen {
     private final JComboBox<String> spinner;
     public ParametricSettings(ModelUpdater updater){
         setLayout(null);
-        mapSize = new Parameter("Frequency", (e)->{
+        mapSize = new Parameter(Language.DISCRETIZATION, (e)->{
             if(p != null){
                 p.setMAP_SIZE(Integer.parseInt(e.getSource().toString()));
                 updater.runResize();
             }
         });
-        dimension = new Parameter("Dimension", (e)->{
+        dimension = new Parameter(Language.DIMENSION, (e)->{
             if(p != null){
                 try {
                     String[] dim = e.getSource().toString().split(":");
@@ -45,7 +46,7 @@ public class ParametricSettings extends Screen {
         mapSize.setBounds(0,0, 150);
         dimension.addTo(this);
         dimension.setBounds(0,80,150);
-        spinner = SettingsManager.createSpinner(this, 200, 150);
+        spinner = SupportFrameManager.createSpinner(this, 200, 150);
         spinner.addItemListener((e)->{
             if(e.getStateChange() == ItemEvent.SELECTED){
                 if(e.getItem() == GraphType.titles[GraphType.FUNCTION.ordinal()])

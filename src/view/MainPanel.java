@@ -1,5 +1,6 @@
 package view;
 
+import controller.Language;
 import controller.ModelUpdater;
 import controller.VersionController;
 import framesLib.Screen;
@@ -22,31 +23,32 @@ public class MainPanel extends Screen {
 
     private final Point mousePosition;
     private int resizeType;
-    private static final String[] resizers = {"Resize", "Abscissa", "Ordinate", "Return back"};
     public MainPanel(){
         setLayout(null);
-        JButton btn_help = new JButton("Help");
+        JButton btn_help = new JButton(Language.HELP);
         btn_help.setBounds(OFFSET,620, TextElement.WIDTH / 3 - OFFSET/2, TextElement.HEIGHT);
         add(btn_help);
-        btn_help.addActionListener((e)-> changeScreen(TextViewer.openText("Help")));
-        JButton btn_calc_help = new JButton("Calculator help");
+        JButton btn_calc_help = new JButton(Language.CALC_HELP);
         btn_calc_help.setBounds(3*OFFSET/2+TextElement.WIDTH / 3, 620, 2 * TextElement.WIDTH / 3 - OFFSET/2, TextElement.HEIGHT);
         add(btn_calc_help);
-        btn_calc_help.addActionListener((e)-> changeScreen(TextViewer.openText("Calc_Help")));
         mousePosition = new Point();
 
         ModelUpdater updater = new ModelUpdater(this::repaint);
-        ElementsList graphics = new ElementsList("Graphics", 0, 0, updater::addVRemove, updater::startSettings);
+
+        btn_help.addActionListener((e)-> updater.getSupportFrameManager().openTextFrame(TextViewer.openText("User help")));
+        btn_calc_help.addActionListener((e)->  updater.getSupportFrameManager().openTextFrame(TextViewer.openText("Calculator help")));
+
+        ElementsList graphics = new ElementsList(Language.GRAPHICS, 0, 0, updater::addVRemove, updater::startSettings);
         graphics.addTo(this);
         graphicsView = new GraphicsView(graphics, updater);
 
         CalculatorView calculator = new CalculatorView(updater::recalculate);
         calculator.addTo(this);
-        calculator.setBounds(0, 620 - OFFSET - CalculatorView.CALC_HEIGHT);
+        calculator.setBounds(0,ElementsList.MAX_HEIGHT + 4 * OFFSET + FunctionsView.FUNC_HEIGHT);
 
         FunctionsView functions = new FunctionsView(updater::recalculate);
         functions.addTo(this);
-        functions.setBounds(0, 620 - 3 * OFFSET - CalculatorView.CALC_HEIGHT - FunctionsView.FUNC_HEIGHT);
+        functions.setBounds(0, ElementsList.MAX_HEIGHT + 2 * OFFSET);
 
         updater.setStringElements(functions, calculator);
 
@@ -70,7 +72,7 @@ public class MainPanel extends Screen {
             updater.resize(e.getPreciseWheelRotation(), e.getX() - ElementsList.WIDTH, e.getY(), line);
         });
 
-        JButton btn_resize = new JButton(resizers[0]);
+        JButton btn_resize = new JButton(Language.RESIZERS[0]);
         resizeType = 0;
         btn_resize.setBounds(OFFSET, 620 + TextElement.HEIGHT + OFFSET, TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
         btn_resize.addActionListener(e -> {
@@ -91,13 +93,13 @@ public class MainPanel extends Screen {
             public void mouseClicked(MouseEvent e) {
                 if(e.getButton() == MouseEvent.BUTTON3) {
                     resizeType = (resizeType + 1) % 4;
-                    btn_resize.setText(resizers[resizeType]);
+                    btn_resize.setText(Language.RESIZERS[resizeType]);
                 }
             }
         });
         add(btn_resize);
 
-        JButton btn_timer = new JButton("Timer");
+        JButton btn_timer = new JButton(Language.TIMER);
         btn_timer.setBounds(3 * OFFSET / 2 + TextElement.WIDTH / 2, 620 + TextElement.HEIGHT + OFFSET, TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
         btn_timer.addActionListener(e -> updater.openTimer());
         add(btn_timer);
@@ -108,7 +110,7 @@ public class MainPanel extends Screen {
     }
     @Override
     public void onShow() {
-        setTitle("Grapher" + VersionController.VERSION_NAME + " by Math_way");
+        setTitle(Language.GRAPHER + VersionController.VERSION_NAME + " by Math_way");
     }
     @Override
     public void paint(Graphics g) {

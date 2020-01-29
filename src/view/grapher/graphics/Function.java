@@ -48,7 +48,6 @@ public class Function extends Graphic {
                 int y2 = (int) ((offsetY - map[i + 1]) * scaleY);
                 if(y1 < 0 && y2 < 0 || y1 > HEIGHT && y2 > HEIGHT)
                     continue;
-
                 g.drawLine(i * GRAPH_WIDTH / MAP_SIZE, y1,
                         (i + 1) * GRAPH_WIDTH / MAP_SIZE, y2);
             }

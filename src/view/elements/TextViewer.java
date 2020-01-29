@@ -137,10 +137,10 @@ public class TextViewer {
     private static final HashMap<String, String[][]> text_panels;
     static{
         text_panels = new HashMap<>();
-        text_panels.put("Help", help);
-        text_panels.put("Calc_Help", calc_help);
+        text_panels.put("User help", help);
+        text_panels.put("Calculator help", calc_help);
     }
     public static TextPanel openText(String name){
-        return new TextPanel(text_panels.get(name));
+        return new TextPanel(text_panels.get(name), name);
     }
 }

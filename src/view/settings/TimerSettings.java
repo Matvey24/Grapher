@@ -1,5 +1,6 @@
 package view.settings;
 
+import controller.Language;
 import controller.ModelUpdater;
 import framesLib.Screen;
 import view.elements.Parameter;
@@ -26,7 +27,7 @@ public class TimerSettings extends Screen {
     private final JToggleButton start;
     public TimerSettings(ModelUpdater updater){
         setLayout(null);
-        duration = new Parameter("Duration:fps", (e)->{
+        duration = new Parameter(Language.DURATION_FPS, (e)->{
             try {
                 String[] vars = e.getSource().toString().split(":");
                 if (vars.length == 0)
@@ -45,7 +46,7 @@ public class TimerSettings extends Screen {
         });
         duration.addTo(this);
         duration.setBounds(0,0, 150);
-        dimension = new Parameter("Dimension", (e)->{
+        dimension = new Parameter(Language.DIMENSION, (e)->{
             try {
                 String[] vars = e.getSource().toString().split(":");
                 if (vars.length == 0)
@@ -55,7 +56,7 @@ public class TimerSettings extends Screen {
                 if(!timer.isRunning()) {
                     value = startT;
                     updater.setTime(startT);
-                    updater.justResize();
+                    updater.frameResize();
                 }
                 time = 0;
             }catch (RuntimeException ex){
@@ -86,9 +87,9 @@ public class TimerSettings extends Screen {
                 time = 0;
                 fTimeDirection = true;
             }
-            updater.justResize();
+            updater.frameResize();
         });
-        start = new JToggleButton("Run");
+        start = new JToggleButton(Language.RUN);
         add(start);
         start.setBounds(10,170,150, 40);
         start.addActionListener(e->{
@@ -99,7 +100,7 @@ public class TimerSettings extends Screen {
                 timer.stop();
             }
         });
-        JToggleButton timeDir = new JToggleButton("Boomerang");
+        JToggleButton timeDir = new JToggleButton(Language.BOOMERANG);
         add(timeDir);
         timeDir.setBounds(10,220, 150, 40);
         timeDir.addActionListener(e->boomerang = timeDir.isSelected());

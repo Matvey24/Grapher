@@ -1,8 +1,9 @@
 package view.settings;
 
 import controller.GraphType;
+import controller.Language;
 import controller.ModelUpdater;
-import controller.SettingsManager;
+import controller.SupportFrameManager;
 import framesLib.Screen;
 import view.elements.Parameter;
 import view.elements.TextElement;
@@ -23,7 +24,7 @@ public class ImplicitSettings extends Screen {
     private final JComboBox<String> spectrum;
     public ImplicitSettings(ModelUpdater updater){
         setLayout(null);
-        mapSize = new Parameter("Frequency", (e)->{
+        mapSize = new Parameter(Language.DISCRETIZATION, (e)->{
             if(imp != null){
                 imp.setMAP_SIZE(Integer.parseInt(e.getSource().toString()));
                 updater.runResize();
@@ -31,7 +32,7 @@ public class ImplicitSettings extends Screen {
         });
         mapSize.addTo(this);
         mapSize.setBounds(0,0, 150);
-        sensitivity = new Parameter("Sensitivity", e->{
+        sensitivity = new Parameter(Language.SENSITIVITY, e->{
             if(imp != null){
                 imp.setSensitivity(Double.parseDouble(e.getSource().toString()));
                 updater.runResize();
@@ -39,7 +40,7 @@ public class ImplicitSettings extends Screen {
         });
         sensitivity.addTo(this);
         sensitivity.setBounds(0, 70, 150);
-        spinner = SettingsManager.createSpinner(this, 200, 150);
+        spinner = SupportFrameManager.createSpinner(this, 200, 150);
         spinner.addItemListener((e)->{
             if(e.getStateChange() == ItemEvent.SELECTED){
                 if(e.getItem() == GraphType.titles[GraphType.FUNCTION.ordinal()])
@@ -51,16 +52,16 @@ public class ImplicitSettings extends Screen {
         spectrum = new JComboBox<>();
         spectrum.setBounds(10, 150, 150, 40);
         add(spectrum);
-        spectrum.addItem("Inequality");
-        spectrum.addItem("Spectrum");
+        spectrum.addItem(Language.INEQUALITY);
+        spectrum.addItem(Language.SPECTRUM);
         spectrum.addItemListener((e)->{
             if(e.getStateChange() == ItemEvent.SELECTED){
-                if(e.getItem().equals("Inequality")){
+                if(e.getItem().equals(Language.INEQUALITY)){
                     imp.setSpectrum(false);
                 }else{
                     imp.setSpectrum(true);
                 }
-                updater.justResize();
+                updater.frameResize();
             }
         });
     }

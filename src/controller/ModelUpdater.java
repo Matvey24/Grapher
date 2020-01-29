@@ -34,7 +34,7 @@ public class ModelUpdater {
     private ElementsList list;
     private FunctionsView functionsView;
     private CalculatorView calculatorView;
-    private final SettingsManager settingsManager;
+    private final SupportFrameManager supportFrameManager;
     private final Tasks tasks;
 
     private double offsetX = -3;
@@ -46,19 +46,19 @@ public class ModelUpdater {
     public ModelUpdater(Runnable repaint) {
         this.repaint = repaint;
         calculator = new ArrayCalculator<>();
-        settingsManager = new SettingsManager(this);
+        supportFrameManager = new SupportFrameManager(this);
         tasks = new Tasks();
         new Thread(() -> {
             int version = VersionController.checkUpdates();
             if (version != -1) {
-                settingsManager.openUpdaterFrame(VersionController.getName(version));
+                supportFrameManager.openUpdaterFrame(VersionController.getName(version));
             }
         }).start();
     }
 
     public void addVRemove(ActionEvent e) {
         if (e.getActionCommand().equals("remove")) {
-            settingsManager.close();
+            supportFrameManager.close();
             remove(e);
         } else if (e.getActionCommand().equals("add")) {
             add(e);
@@ -86,16 +86,16 @@ public class ModelUpdater {
         int id = e.getID();
         Graphic g = graphics.get(id);
         if (g instanceof Function) {
-            settingsManager.openFunctionSettings((Function) g, list.getElements().get(id));
+            supportFrameManager.openFunctionSettings((Function) g, list.getElements().get(id));
         } else if (g instanceof Parametric) {
-            settingsManager.openParameterSettings((Parametric) g, list.getElements().get(id));
+            supportFrameManager.openParameterSettings((Parametric) g, list.getElements().get(id));
         } else if (g instanceof Implicit) {
-            settingsManager.openImplicitSettings((Implicit) g, list.getElements().get(id));
+            supportFrameManager.openImplicitSettings((Implicit) g, list.getElements().get(id));
         }
     }
 
     public void openTimer() {
-        settingsManager.openTimerSettings();
+        supportFrameManager.openTimerSettings();
     }
 
     public void makeFunction(Graphic g, TextElement e) {
@@ -200,7 +200,7 @@ public class ModelUpdater {
         tasks.clearTasks();
         tasks.runTask(() -> {
             try {
-                setState("Converting functions");
+                setState(Language.CONVERTING);
                 List<String> graphs = new ArrayList<>();
                 List<String> calc = new ArrayList<>();
                 calc.add(calculatorView.getText());
@@ -299,7 +299,7 @@ public class ModelUpdater {
                     }
                 }
                 dangerState = false;
-                setTime(settingsManager.getTime());
+                setTime(supportFrameManager.getTime());
                 calculatorView.update();
                 resize.run();
                 repaint.run();
@@ -313,7 +313,7 @@ public class ModelUpdater {
         });
     }
 
-    public void justResize() {
+    public void frameResize() {
         tasks.clearTasks();
         tasks.runTask(() -> {
             if (!dangerState) {
@@ -326,6 +326,7 @@ public class ModelUpdater {
                     repaint.run();
                 } catch (Throwable e) {
                     error(e.getClass().getName());
+                    e.printStackTrace();
                 }
             }
         });
@@ -380,6 +381,10 @@ public class ModelUpdater {
 
     public void setGraphics(ArrayList<Graphic> graphics) {
         this.graphics = graphics;
+    }
+
+    public SupportFrameManager getSupportFrameManager() {
+        return supportFrameManager;
     }
 
     public void error(String message) {

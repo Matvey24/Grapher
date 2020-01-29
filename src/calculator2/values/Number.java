@@ -104,6 +104,7 @@ public class Number extends AbstractType<Double> {
 
         addConst("au", 1.495978707e11);
         addConst("pc", 3.09e16);
+
         addConst("tm", .0);
     }
     @Override

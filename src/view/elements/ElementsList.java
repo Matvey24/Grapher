@@ -16,9 +16,10 @@ public class ElementsList extends ViewElement {
     private final JButton btn_make_element;
     private final ArrayList<TextElement> elements;
     private int height;
-    private final int max_size = 10;
+    private static final int MAX_SIZE = 10;
     public static final int OFFSET = 5;
     private static final int NAME_HEIGHT = 30;
+    public static final int MAX_HEIGHT = OFFSET + NAME_HEIGHT + MAX_SIZE * (TextElement.HEIGHT + OFFSET);
     public static final int WIDTH = TextElement.WIDTH + 2 * OFFSET;
     private final Point pos;
     private Container c;
@@ -41,7 +42,7 @@ public class ElementsList extends ViewElement {
                 el.removeFrom(c);
                 setBounds(pos.x, pos.y);
                 sizeChanged.actionPerformed(new ActionEvent(0, id, "remove"));
-                if(elements.size() == max_size - 1){
+                if(elements.size() == MAX_SIZE - 1){
                     c.add(btn_make_element);
                 }
             });
@@ -58,7 +59,7 @@ public class ElementsList extends ViewElement {
             el.addTo(c);
             setBounds(pos.x, pos.y);
             sizeChanged.actionPerformed(new ActionEvent(0, id, "add"));
-            if(elements.size() == max_size){
+            if(elements.size() == MAX_SIZE){
                 c.remove(btn_make_element);
             }
         });

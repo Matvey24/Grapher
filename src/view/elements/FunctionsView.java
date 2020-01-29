@@ -1,4 +1,5 @@
 package view.elements;
+import controller.Language;
 import controller.ViewElement;
 
 import javax.swing.*;
@@ -19,9 +20,9 @@ public class FunctionsView extends ViewElement {
         area = new JTextArea();
         area.setLineWrap(true);
         scrollPane = new JScrollPane(area);
-        name = new JLabel("Functions");
+        name = new JLabel(Language.FUNCTIONS);
         name.setFont(name_font);
-        btn_update = new JButton("Update");
+        btn_update = new JButton(Language.UPDATE);
         btn_update.addActionListener(e -> onUpdate.run());
     }
     @Override

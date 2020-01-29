@@ -1,5 +1,6 @@
 package view.grapher;
 
+import controller.Language;
 import controller.ModelUpdater;
 import view.elements.ElementsList;
 import view.grapher.graphics.Graphic;
@@ -22,7 +23,7 @@ public class GraphicsView {
         updater.setResize(this::resize);
     }
     private void resize() {
-        updater.setState("updating..");
+        updater.setState(Language.UPDATING);
         double offsetX = updater.getOffsetX();
         double offsetY = updater.getOffsetY();
         double scaleX = updater.getScaleX();
@@ -30,10 +31,9 @@ public class GraphicsView {
         coordinateSystem.resize(offsetX, offsetY, scaleX, scaleY);
         for (Graphic g : graphics)
             g.resize(offsetX, offsetY, scaleX, scaleY);
-        updater.setState("+");
+        updater.setState(Language.FINE);
     }
     public void paint(Graphics g) {
-        g.setColor(Color.BLACK);
         coordinateSystem.draw(g);
         try {
             for (Graphic s : graphics)
