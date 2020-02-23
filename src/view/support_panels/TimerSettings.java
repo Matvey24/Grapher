@@ -1,6 +1,6 @@
-package view.settings;
+package view.support_panels;
 
-import controller.Language;
+import model.Language;
 import controller.ModelUpdater;
 import framesLib.Screen;
 import view.elements.Parameter;
@@ -25,6 +25,7 @@ public class TimerSettings extends Screen {
     private boolean boomerang;
     private boolean fTimeDirection = true;
     private final JToggleButton start;
+    private final JToggleButton timeDir;
     public TimerSettings(ModelUpdater updater){
         setLayout(null);
         duration = new Parameter(Language.DURATION_FPS, (e)->{
@@ -89,7 +90,7 @@ public class TimerSettings extends Screen {
             }
             updater.frameResize();
         });
-        start = new JToggleButton(Language.RUN);
+        start = new JToggleButton(Language.BEGIN);
         add(start);
         start.setBounds(10,170,150, 40);
         start.addActionListener(e->{
@@ -100,7 +101,7 @@ public class TimerSettings extends Screen {
                 timer.stop();
             }
         });
-        JToggleButton timeDir = new JToggleButton(Language.BOOMERANG);
+        timeDir = new JToggleButton(Language.BOOMERANG);
         add(timeDir);
         timeDir.setBounds(10,220, 150, 40);
         timeDir.addActionListener(e->boomerang = timeDir.isSelected());
@@ -120,7 +121,12 @@ public class TimerSettings extends Screen {
         }
 
     }
-
+    public void updateLanguage(){
+        duration.setName(Language.DURATION_FPS);
+        dimension.setName(Language.DIMENSION);
+        start.setText(Language.BEGIN);
+        timeDir.setText(Language.BOOMERANG);
+    }
     public double getT() {
         return value;
     }

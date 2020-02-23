@@ -1,4 +1,4 @@
-package view.settings;
+package view.support_panels;
 
 import controller.VersionController;
 import framesLib.Screen;
@@ -33,6 +33,7 @@ public class UpdaterFrame extends Screen {
                     label.setText("Error downloading!");
                 }
                 btn_cancel.setEnabled(true);
+                btn_cancel.setText("Ok");
             }).start();
         });
     }

@@ -1,35 +1,40 @@
 package framesLib;
 
-import controller.Language;
+import model.Language;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class TextPanel extends Screen {
-    private final int height;
+    private int height;
     private final int width = 400;
-    private static final int MAX_HEIGHT = 600;
+    private static final int MAX_HEIGHT = 500;
     private final JPanel internal;
     private String title;
+    private JButton btn_back;
+    private JScrollPane scrollPane;
     public TextPanel(String[][] text, String title) {
         setLayout(null);
         this.title = title;
         internal = new JPanel();
         internal.setLayout(null);
 
+        btn_back = new JButton(Language.BACK);
+        add(btn_back);
+        btn_back.addActionListener((e)-> back());
+
+        scrollPane = new JScrollPane(internal);
+        add(scrollPane);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        makeText(text);
+    }
+    private void makeText(String[][] text){
         int offset = 10;
         for (String[] strings : text)
             offset = makeTheme(strings, offset);
-        JButton btn_back = new JButton(Language.BACK);
-        add(btn_back);
-        btn_back.addActionListener((e)-> back());
         height = offset + 30;
-
         internal.setBounds(0,0, width - 40, height);
         internal.setPreferredSize(internal.getSize());
-        JScrollPane scrollPane = new JScrollPane(internal);
-        add(scrollPane);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         scrollPane.setBounds(0,0,width - 20, Math.min(height, MAX_HEIGHT) - 30);
         btn_back.setBounds(20, Math.min(height, MAX_HEIGHT) - 20, 100,20);
     }
@@ -59,5 +64,9 @@ public class TextPanel extends Screen {
         int h = (int)((Math.min(height, MAX_HEIGHT) + 30) * 1.1f);
         setSize(width, h);
     }
-
+    public void updateLanguage(String[][] text, String title){
+        this.title = title;
+        internal.removeAll();
+        makeText(text);
+    }
 }

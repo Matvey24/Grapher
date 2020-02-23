@@ -4,7 +4,9 @@ import calculator2.ArrayCalculator;
 import calculator2.calculator.executors.Expression;
 import calculator2.calculator.executors.Variable;
 import calculator2.values.Number;
+import model.Language;
 import threads.Tasks;
+import view.MainPanel;
 import view.elements.CalculatorView;
 import view.elements.ElementsList;
 import view.elements.FunctionsView;
@@ -20,11 +22,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static model.Language.UPDATER_ERRORS;
 import static java.awt.Color.*;
 
 public class ModelUpdater {
-    private static final List<Color> colors = Arrays.asList(BLUE, RED, GREEN, CYAN, magenta, GRAY, ORANGE, PINK, YELLOW, LIGHT_GRAY);
-    private static final List<String> func_names = Arrays.asList("f", "i", "j", "l", "m", "n", "o", "q", "r", "s");
+    private static final List<Color> colors = Arrays.asList(BLUE, RED, GREEN, CYAN, magenta, GRAY, ORANGE, PINK, YELLOW, LIGHT_GRAY, BLACK);
+    private static final List<String> func_names = Arrays.asList("f", "i", "j", "l", "m", "n", "o", "q", "r", "s", "bl");
     private static final double deltaScale = 1.2;
     private final Runnable repaint;
     private Runnable resize;
@@ -35,6 +38,7 @@ public class ModelUpdater {
     private FunctionsView functionsView;
     private CalculatorView calculatorView;
     private final SupportFrameManager supportFrameManager;
+    private final MainPanel mainPanel;
     private final Tasks tasks;
 
     private double offsetX = -3;
@@ -43,8 +47,9 @@ public class ModelUpdater {
     private double scaleY = 100;
     private boolean dangerState = false;
 
-    public ModelUpdater(Runnable repaint) {
+    public ModelUpdater(Runnable repaint, MainPanel mainPanel) {
         this.repaint = repaint;
+        this.mainPanel = mainPanel;
         calculator = new ArrayCalculator<>();
         supportFrameManager = new SupportFrameManager(this);
         tasks = new Tasks();
@@ -65,15 +70,19 @@ public class ModelUpdater {
         } else {
             System.out.println("error " + e.getActionCommand());
         }
+        mainPanel.setGraphicsHeight();
     }
 
     private void add(ActionEvent e) {
         TextElement element = list.getElements().get(e.getID());
         Graphic graphic = new Function();
         graphics.add(graphic);
-
         element.addTextChangedListener((e1) -> recalculate());
-        setColor(element, graphic);
+        int id = findFreeId();
+        graphic.setColor(colors.get(id));
+        element.setColor(colors.get(id));
+        element.setName(func_names.get(id) + "(x)");
+        graphic.name = func_names.get(id);
         recalculate();
     }
 
@@ -82,8 +91,7 @@ public class ModelUpdater {
         recalculate();
     }
 
-    public void startSettings(ActionEvent e) {
-        int id = e.getID();
+    public void startSettings(int id) {
         Graphic g = graphics.get(id);
         if (g instanceof Function) {
             supportFrameManager.openFunctionSettings((Function) g, list.getElements().get(id));
@@ -105,10 +113,11 @@ public class ModelUpdater {
         Function function = new Function();
         function.setColor(e.getColor());
         graphics.set(idx, function);
-        e.setColor(WHITE);
-        setColor(e, function);
+        int id = colors.indexOf(e.getColor());
+        e.setName(func_names.get(id) + "(x)");
+        function.name = func_names.get(id);
         recalculate();
-        startSettings(new ActionEvent(0, idx, ""));
+        startSettings(idx);
     }
 
     public void makeParameter(Graphic g, TextElement e) {
@@ -119,8 +128,9 @@ public class ModelUpdater {
         parametric.setColor(e.getColor());
         graphics.set(idx, parametric);
         e.setName("xy(t)");
+        parametric.name = func_names.get(colors.indexOf(e.getColor()));
         recalculate();
-        startSettings(new ActionEvent(0, idx, ""));
+        startSettings(idx);
     }
 
     public void makeImplicit(Graphic g, TextElement e) {
@@ -130,13 +140,14 @@ public class ModelUpdater {
         Implicit implicit = new Implicit();
         implicit.setColor(e.getColor());
         graphics.set(idx, implicit);
-        e.setName("Imp");
+        int id = colors.indexOf(e.getColor());
+        e.setName(func_names.get(id) + "(xy)");
+        implicit.name = func_names.get(id);
         recalculate();
-        startSettings(new ActionEvent(0, idx, ""));
+        startSettings(idx);
     }
-
-    private void setColor(TextElement e, Graphic g) {
-        for (int i = 0; i < colors.size(); ++i) {
+    private int findFreeId(){
+        for (int i = 0; i < colors.size() - 1; ++i) {
             Color c = colors.get(i);
             boolean hasColor = false;
             for (TextElement element : list.getElements()) {
@@ -145,18 +156,11 @@ public class ModelUpdater {
                     break;
                 }
             }
-            if (!hasColor) {
-                if (g instanceof Function) {
-                    e.setName(func_names.get(i) + "(" + ((((Function) g).abscissa) ? "x" : "y") + ")");
-                    ((Function) g).name = func_names.get(i);
-                    e.setColor(c);
-                    g.setColor(c);
-                }
-                return;
-            }
+            if (!hasColor)
+                return i;
         }
+        return colors.size() - 1;
     }
-
     public void translate(int dScreenX, int dScreenY) {
         if (dangerState)
             return;
@@ -206,8 +210,8 @@ public class ModelUpdater {
                 calc.add(calculatorView.getText());
                 for (int i = 0; i < list.getElements().size(); ++i) {
                     TextElement e = list.getElements().get(i);
-                    if (graphics.get(i) instanceof Function) {
-                        graphs.add(((Function) graphics.get(i)).name + "=" + e.getText());
+                    if (graphics.get(i) instanceof Function || graphics.get(i) instanceof Implicit) {
+                        graphs.add(graphics.get(i).name + "=" + e.getText());
                     } else if (graphics.get(i) instanceof Parametric) {
                         String text = list.getElements().get(i).getText();
                         String[] expressions = text.split(":");
@@ -215,11 +219,8 @@ public class ModelUpdater {
                             calc.add(expressions[0]);
                             calc.add(expressions[1]);
                         } else {
-                            throw new RuntimeException("we need 2 funcs in parameter");
+                            throw new RuntimeException(UPDATER_ERRORS[0]);
                         }
-                    } else if (graphics.get(i) instanceof Implicit) {
-                        String text = list.getElements().get(i).getText();
-                        calc.add(text);
                     }
                 }
                 calculator.calculate(
@@ -236,6 +237,14 @@ public class ModelUpdater {
                     if (g instanceof Function) {
                         Function f = (Function) g;
                         List<Variable<Double>> vars = calculator.getVars().get(funcs);
+                        if(vars.size() == 0) {
+                            Variable<Double> var = new Variable<>();
+                            var.setName((f.abscissa)?"x":"y");
+                            vars.add(var);
+                        }
+                        if(vars.size() > 1){
+                            throw new RuntimeException(UPDATER_ERRORS[1] + " " + (i + 1) + " " + UPDATER_ERRORS[2]);
+                        }
                         TextElement el = list.getElements().get(i);
                         Variable<Double> var = vars.get(0);
                         if (var.getName().equals("y") && f.abscissa) {
@@ -262,10 +271,10 @@ public class ModelUpdater {
                         ((Parametric) g).updateX(funcX, varX);
                         parameters += 2;
                     } else if (g instanceof Implicit) {
-                        List<Variable<Double>> vars = calculator.getExpressionVars().get(parameters);
-                        Expression<Double> func = calculator.getExpressions().get(parameters + 1);
+                        List<Variable<Double>> vars = calculator.getVars().get(funcs);
+                        Expression<Double> func = calculator.getGraphics().get(funcs);
                         if (vars.size() > 2)
-                            throw new RuntimeException("We need x and y wars in Implicit");
+                            throw new RuntimeException(UPDATER_ERRORS[3]);
                         Variable<Double> varX = null;
                         Variable<Double> varY = null;
                         checkingVars:
@@ -279,7 +288,7 @@ public class ModelUpdater {
                             } else if (vars.get(0).getName().equals("y")) {
                                 varY = vars.get(0);
                             } else {
-                                throw new RuntimeException("We need x and y wars in Implicit");
+                                throw new RuntimeException(UPDATER_ERRORS[3]);
                             }
                             if (vars.size() == 1 && varX == null) {
                                 varX = new Variable<>();
@@ -290,12 +299,12 @@ public class ModelUpdater {
                             } else if (vars.get(1).getName().equals("y")) {
                                 varY = vars.get(1);
                             } else {
-                                throw new RuntimeException("We need x and y wars in Implicit");
+                                throw new RuntimeException(UPDATER_ERRORS[3]);
                             }
                         }
                         g.update(func, varX);
                         ((Implicit) g).updateY(varY);
-                        ++parameters;
+                        ++funcs;
                     }
                 }
                 dangerState = false;
@@ -306,6 +315,7 @@ public class ModelUpdater {
             } catch (Exception e) {
                 if (e instanceof NullPointerException) {
                     setState(e.toString());
+                    e.printStackTrace();
                 } else
                     setState(e.getMessage());
                 dangerState = true;
@@ -394,5 +404,9 @@ public class ModelUpdater {
 
     public void setTime(double time) {
         calculator.resetConstant("tm", time);
+    }
+    public void updateLanguage(){
+        mainPanel.updateLanguage();
+        supportFrameManager.updateLanguage();
     }
 }

@@ -1,6 +1,6 @@
 package view.elements;
-import controller.Language;
-import controller.ViewElement;
+import model.Language;
+import model.ViewElement;
 
 import javax.swing.*;
 
@@ -20,10 +20,11 @@ public class FunctionsView extends ViewElement {
         area = new JTextArea();
         area.setLineWrap(true);
         scrollPane = new JScrollPane(area);
-        name = new JLabel(Language.FUNCTIONS);
+        name = new JLabel();
         name.setFont(name_font);
-        btn_update = new JButton(Language.UPDATE);
+        btn_update = new JButton();
         btn_update.addActionListener(e -> onUpdate.run());
+        updateLanguage();
     }
     @Override
     public void addTo(Container c){
@@ -37,6 +38,10 @@ public class FunctionsView extends ViewElement {
     public void setBounds(int x, int y){
         name.setBounds(x + OFFSET,y,WIDTH / 2 - OFFSET, HEIGHT);
         btn_update.setBounds(x + WIDTH / 2 + OFFSET, y, WIDTH / 2 - 2 * OFFSET, HEIGHT);
-        scrollPane.setBounds(x + OFFSET,y + HEIGHT + OFFSET, WIDTH - 2 * OFFSET, AREA_HEIGHT);
+        scrollPane.setBounds(x + OFFSET,y + HEIGHT + OFFSET, TextElement.WIDTH, AREA_HEIGHT);
+    }
+    public void updateLanguage(){
+        name.setText(Language.FUNCTIONS);
+        btn_update.setText(Language.UPDATE);
     }
 }

@@ -1,15 +1,19 @@
 package controller;
 
 import framesLib.MyFrame;
-import framesLib.Screen;
 import framesLib.TextPanel;
+import model.GraphType;
+import model.Language;
+import model.Settings;
+import view.elements.ComboBoxParameter;
+import view.elements.Item;
 import view.elements.TextElement;
 import view.grapher.graphics.Function;
 import view.grapher.graphics.Implicit;
 import view.grapher.graphics.Parametric;
-import view.settings.*;
+import view.support_panels.*;
 
-import javax.swing.*;
+import java.awt.event.ItemEvent;
 
 public class SupportFrameManager {
     private MyFrame frame;
@@ -17,11 +21,15 @@ public class SupportFrameManager {
     private final ParametricSettings parametricSettings;
     private final ImplicitSettings implicitSettings;
     private final TimerSettings timerSettings;
+    private final HelperFrame helperFrame;
+    private final MainSettings mainSettings;
     SupportFrameManager(ModelUpdater updater){
         functionSettings = new FunctionSettings(updater);
         parametricSettings = new ParametricSettings(updater);
         timerSettings = new TimerSettings(updater);
         implicitSettings = new ImplicitSettings(updater);
+        helperFrame = new HelperFrame(updater);
+        mainSettings = new MainSettings(updater);
     }
     void openFunctionSettings(Function f, TextElement e){
         checkFrame();
@@ -51,26 +59,53 @@ public class SupportFrameManager {
         frame.changeScreen(new UpdaterFrame(version));
         frame.setFocusable(true);
     }
+    public void openHelperFrame(){
+        checkFrame();
+        frame.changeScreen(helperFrame);
+        frame.setFocusable(true);
+    }
     public void openTextFrame(TextPanel panel){
         if(frame == null || !frame.isVisible())
             frame = new MyFrame(true);
         frame.changeScreen(panel);
         frame.setFocusable(true);
     }
+    public void openMainSettings(){
+        checkFrame();
+        frame.changeScreen(mainSettings);
+        frame.setFocusable(true);
+    }
     void close(){
         if(frame != null && frame.isVisible())
             frame.dispose();
     }
-    public static JComboBox<String> createSpinner(Screen screen, int y, int width){
-        JLabel spinnerName = new JLabel("Type");
-        spinnerName.setBounds(10,y + 10, width,30);
-        spinnerName.setFont(ViewElement.name_font);
-        screen.add(spinnerName);
-        JComboBox<String> spinner = new JComboBox<>();
-        screen.add(spinner);
-        for(int i = 0; i < GraphType.titles.length; ++i)
-            spinner.addItem(GraphType.titles[i]);
-        spinner.setBounds(10,y + 40, width, 30);
+    public static ComboBoxParameter createSpinner(ModelUpdater updater, Settings settings, int y){
+        ComboBoxParameter spinner = new ComboBoxParameter(Language.TYPE, Language.TYPE_TITLES);
+        spinner.setBounds(10, y);
+        spinner.addTo(settings);
+        if(settings instanceof FunctionSettings)
+            spinner.setSelectedIndex(GraphType.FUNCTION.ordinal());
+        else if(settings instanceof ParametricSettings)
+            spinner.setSelectedIndex(GraphType.PARAMETER.ordinal());
+        else if(settings instanceof ImplicitSettings)
+            spinner.setSelectedIndex(GraphType.IMPLICIT.ordinal());
+        spinner.addItemListener(e -> {
+            if(!(e.getStateChange() == ItemEvent.SELECTED))
+                return;
+            Object item = ((Item)e.getItem()).name;
+            if (Language.TYPE_TITLES[GraphType.FUNCTION.ordinal()] == item)
+                updater.makeFunction(settings.getGraphic(), settings.getTextElement());
+            else if (Language.TYPE_TITLES[GraphType.PARAMETER.ordinal()] == item)
+                updater.makeParameter(settings.getGraphic(), settings.getTextElement());
+            else if (Language.TYPE_TITLES[GraphType.IMPLICIT.ordinal()] == item)
+                updater.makeImplicit(settings.getGraphic(), settings.getTextElement());
+            if(settings instanceof FunctionSettings)
+                spinner.setSelectedIndex(GraphType.FUNCTION.ordinal());
+            else if(settings instanceof ParametricSettings)
+                spinner.setSelectedIndex(GraphType.PARAMETER.ordinal());
+            else if(settings instanceof ImplicitSettings)
+                spinner.setSelectedIndex(GraphType.IMPLICIT.ordinal());
+        });
         return spinner;
     }
     private void checkFrame(){
@@ -82,5 +117,13 @@ public class SupportFrameManager {
     }
     Double getTime(){
         return timerSettings.getT();
+    }
+    public void updateLanguage(){
+        helperFrame.updateLanguage();
+        mainSettings.updateLanguage();
+        functionSettings.updateLanguage();
+        implicitSettings.updateLanguage();
+        parametricSettings.updateLanguage();
+        timerSettings.updateLanguage();
     }
 }

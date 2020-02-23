@@ -1,6 +1,6 @@
 package view.grapher;
 
-import controller.Language;
+import model.Language;
 import controller.ModelUpdater;
 import view.elements.ElementsList;
 import view.grapher.graphics.Graphic;

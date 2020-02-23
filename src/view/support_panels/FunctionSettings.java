@@ -1,25 +1,23 @@
-package view.settings;
+package view.support_panels;
 
-import controller.GraphType;
-import controller.Language;
+import model.Language;
 import controller.ModelUpdater;
 import controller.SupportFrameManager;
-import framesLib.Screen;
+import model.Settings;
+import view.elements.ComboBoxParameter;
 import view.elements.Parameter;
 import view.elements.TextElement;
 import view.grapher.graphics.Function;
+import view.grapher.graphics.Graphic;
 
-import javax.swing.*;
-import java.awt.event.ItemEvent;
-
-public class FunctionSettings extends Screen {
+public class FunctionSettings extends Settings {
     private static final int WIDTH = 200;
     private static final int HEIGHT = 300;
 
     private final Parameter mapSize;
     private Function f;
     private TextElement el;
-    private final JComboBox<String> spinner;
+    private ComboBoxParameter spinner;
     public FunctionSettings(ModelUpdater updater){
         setLayout(null);
         mapSize = new Parameter(Language.DISCRETIZATION, (e)->{
@@ -30,25 +28,32 @@ public class FunctionSettings extends Screen {
         });
         mapSize.addTo(this);
         mapSize.setBounds(0,0, 150);
-        spinner = SupportFrameManager.createSpinner(this,  90, 150);
-        spinner.addItemListener((e)->{
-            if(e.getStateChange() == ItemEvent.SELECTED){
-                if(e.getItem() == GraphType.titles[GraphType.PARAMETER.ordinal()])
-                    updater.makeParameter(f, el);
-                else if(e.getItem() == GraphType.titles[GraphType.IMPLICIT.ordinal()])
-                    updater.makeImplicit(f, el);
-            }
-        });
+        spinner = SupportFrameManager.createSpinner(updater, this,  90);
     }
+
+    @Override
+    public Graphic getGraphic() {
+        return f;
+    }
+
+    @Override
+    public TextElement getTextElement() {
+        return el;
+    }
+
     public void setInfo(Function f, TextElement e){
         this.f = f;
         this.el = e;
-        spinner.setSelectedIndex(GraphType.FUNCTION.ordinal());
         mapSize.setDefault(String.valueOf(f.MAP_SIZE));
     }
 
     @Override
     public void onSetSize() {
         setSize(WIDTH, HEIGHT);
+    }
+    public void updateLanguage(){
+        mapSize.setName(Language.DISCRETIZATION);
+        spinner.setName(Language.TYPE);
+        spinner.setElementNames(Language.TYPE_TITLES);
     }
 }

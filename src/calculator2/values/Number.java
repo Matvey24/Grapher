@@ -29,6 +29,8 @@ public class Number extends AbstractType<Double> {
         addSign('/', (a, b)-> a.calculate() / b.calculate(), 3);
         addSign('%', (a, b)-> a.calculate() % b.calculate(), 3);
         addSign('^', pow, 4);
+        addSign('=', (a,b)-> ((a.calculate().equals(b.calculate()))?1d:0d), 1);
+
         Sign<Double> mulp = addSign('!', mul, 5);
 
         functions();
@@ -43,7 +45,7 @@ public class Number extends AbstractType<Double> {
         addFunction("cbrt", Math::cbrt, 10);
         addFunction("pow", pow, 10);
         addFunction("exp", Math::exp, 10);
-        addFunction("signum", (UnarFunc<Double>)Math::signum, 10);
+        addFunction("sign", (UnarFunc<Double>)Math::signum, 10);
         addFunction("ln", Math::log, 10);
         addFunction("ld", (a)->Math.log(a) / ln2, 10);
         addFunction("lg", Math::log10, 10);
@@ -67,6 +69,7 @@ public class Number extends AbstractType<Double> {
         addFunction("arccosd", a->Math.acos(a)/PI*180, 10);
         addFunction("arctgd", a->Math.atan(a)/PI*180, 10);
         addFunction("arcctgd", a->Math.atan(1/a)/PI*180, 10);
+        addFunction("arctgTwod", (a,b)->Math.atan2(a.calculate(), b.calculate())/PI*180, 10);
 
 
         addFunction("abs", (UnarFunc<Double>) Math::abs, 10);

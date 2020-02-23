@@ -1,6 +1,6 @@
 package view;
 
-import controller.Language;
+import model.Language;
 import controller.ModelUpdater;
 import controller.VersionController;
 import framesLib.Screen;
@@ -23,32 +23,29 @@ public class MainPanel extends Screen {
 
     private final Point mousePosition;
     private int resizeType;
+    private ElementsList graphics;
+    private CalculatorView calculator;
+    private FunctionsView functions;
+    private JButton btn_help, btn_resize, btn_timer, btn_settings;
     public MainPanel(){
         setLayout(null);
-        JButton btn_help = new JButton(Language.HELP);
-        btn_help.setBounds(OFFSET,620, TextElement.WIDTH / 3 - OFFSET/2, TextElement.HEIGHT);
+        btn_help = new JButton(Language.HELP);
         add(btn_help);
-        JButton btn_calc_help = new JButton(Language.CALC_HELP);
-        btn_calc_help.setBounds(3*OFFSET/2+TextElement.WIDTH / 3, 620, 2 * TextElement.WIDTH / 3 - OFFSET/2, TextElement.HEIGHT);
-        add(btn_calc_help);
         mousePosition = new Point();
+        ModelUpdater updater = new ModelUpdater(this::repaint, this);
 
-        ModelUpdater updater = new ModelUpdater(this::repaint);
+        btn_help.addActionListener((e)-> updater.getSupportFrameManager().openHelperFrame());
 
-        btn_help.addActionListener((e)-> updater.getSupportFrameManager().openTextFrame(TextViewer.openText("User help")));
-        btn_calc_help.addActionListener((e)->  updater.getSupportFrameManager().openTextFrame(TextViewer.openText("Calculator help")));
-
-        ElementsList graphics = new ElementsList(Language.GRAPHICS, 0, 0, updater::addVRemove, updater::startSettings);
+        graphics = new ElementsList(0, 0, updater::addVRemove, updater::startSettings);
+        graphics.setName(Language.GRAPHICS);
         graphics.addTo(this);
         graphicsView = new GraphicsView(graphics, updater);
 
-        CalculatorView calculator = new CalculatorView(updater::recalculate);
+        calculator = new CalculatorView(updater::recalculate);
         calculator.addTo(this);
-        calculator.setBounds(0,ElementsList.MAX_HEIGHT + 4 * OFFSET + FunctionsView.FUNC_HEIGHT);
 
-        FunctionsView functions = new FunctionsView(updater::recalculate);
+        functions = new FunctionsView(updater::recalculate);
         functions.addTo(this);
-        functions.setBounds(0, ElementsList.MAX_HEIGHT + 2 * OFFSET);
 
         updater.setStringElements(functions, calculator);
 
@@ -72,9 +69,8 @@ public class MainPanel extends Screen {
             updater.resize(e.getPreciseWheelRotation(), e.getX() - ElementsList.WIDTH, e.getY(), line);
         });
 
-        JButton btn_resize = new JButton(Language.RESIZERS[0]);
         resizeType = 0;
-        btn_resize.setBounds(OFFSET, 620 + TextElement.HEIGHT + OFFSET, TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
+        btn_resize = new JButton(Language.RESIZERS[resizeType]);
         btn_resize.addActionListener(e -> {
             switch (resizeType){
                 case 0:
@@ -99,10 +95,36 @@ public class MainPanel extends Screen {
         });
         add(btn_resize);
 
-        JButton btn_timer = new JButton(Language.TIMER);
-        btn_timer.setBounds(3 * OFFSET / 2 + TextElement.WIDTH / 2, 620 + TextElement.HEIGHT + OFFSET, TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
+        btn_timer = new JButton(Language.TIMER);
         btn_timer.addActionListener(e -> updater.openTimer());
         add(btn_timer);
+        btn_settings = new JButton(Language.MAIN_SETTINGS);
+        btn_settings.addActionListener(e -> updater.getSupportFrameManager().openMainSettings());
+        add(btn_settings);
+        setGraphicsHeight();
+    }
+    public void setGraphicsHeight(){
+        int height = graphics.getHeight();
+        functions.setBounds(0, height + OFFSET);
+        calculator.setBounds(0,height + 3 * OFFSET + FunctionsView.FUNC_HEIGHT);
+        btn_help.setBounds(OFFSET,height + 3 * OFFSET + FunctionsView.FUNC_HEIGHT + CalculatorView.CALC_HEIGHT,
+                TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
+        btn_settings.setBounds(3 * OFFSET / 2 + TextElement.WIDTH / 2, height + 3 * OFFSET + FunctionsView.FUNC_HEIGHT + CalculatorView.CALC_HEIGHT,
+                TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
+        btn_resize.setBounds(OFFSET, height + 4 * OFFSET + FunctionsView.FUNC_HEIGHT + CalculatorView.CALC_HEIGHT + TextElement.HEIGHT,
+                TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
+        btn_timer.setBounds(3 * OFFSET / 2 + TextElement.WIDTH / 2, height + 4 * OFFSET + FunctionsView.FUNC_HEIGHT + CalculatorView.CALC_HEIGHT + TextElement.HEIGHT,
+                TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
+    }
+    public void updateLanguage(){
+        btn_help.setText(Language.HELP);
+        graphics.setName(Language.GRAPHICS);
+        btn_resize.setText(Language.RESIZERS[resizeType]);
+        btn_timer.setText(Language.TIMER);
+        btn_settings.setText(Language.MAIN_SETTINGS);
+        functions.updateLanguage();
+        calculator.updateLanguage();
+        setTitle(Language.GRAPHER + VersionController.VERSION_NAME + " by Math_way");
     }
     @Override
     public void onSetSize() {

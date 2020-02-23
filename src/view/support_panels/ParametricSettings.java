@@ -1,18 +1,16 @@
-package view.settings;
+package view.support_panels;
 
-import controller.GraphType;
-import controller.Language;
+import model.Language;
 import controller.ModelUpdater;
 import controller.SupportFrameManager;
-import framesLib.Screen;
+import model.Settings;
+import view.elements.ComboBoxParameter;
 import view.elements.Parameter;
 import view.elements.TextElement;
+import view.grapher.graphics.Graphic;
 import view.grapher.graphics.Parametric;
 
-import javax.swing.*;
-import java.awt.event.ItemEvent;
-
-public class ParametricSettings extends Screen {
+public class ParametricSettings extends Settings {
     private static final int WIDTH = 200;
     private static final int HEIGHT = 400;
 
@@ -20,7 +18,7 @@ public class ParametricSettings extends Screen {
     private Parameter dimension;
     private Parametric p;
     private TextElement el;
-    private final JComboBox<String> spinner;
+    private ComboBoxParameter spinner;
     public ParametricSettings(ModelUpdater updater){
         setLayout(null);
         mapSize = new Parameter(Language.DISCRETIZATION, (e)->{
@@ -46,25 +44,33 @@ public class ParametricSettings extends Screen {
         mapSize.setBounds(0,0, 150);
         dimension.addTo(this);
         dimension.setBounds(0,80,150);
-        spinner = SupportFrameManager.createSpinner(this, 200, 150);
-        spinner.addItemListener((e)->{
-            if(e.getStateChange() == ItemEvent.SELECTED){
-                if(e.getItem() == GraphType.titles[GraphType.FUNCTION.ordinal()])
-                    updater.makeFunction(p, el);
-                else if(e.getItem() == GraphType.titles[GraphType.IMPLICIT.ordinal()])
-                    updater.makeImplicit(p, el);
-            }
-        });
+        spinner = SupportFrameManager.createSpinner(updater, this, 200);
     }
     public void setInfo(Parametric p, TextElement e){
         this.p = p;
         this.el = e;
-        spinner.setSelectedIndex(GraphType.PARAMETER.ordinal());
         mapSize.setDefault(p.MAP_SIZE + "");
         dimension.setDefault(p.getStartT() + ":" + p.getEndT());
     }
+
+    @Override
+    public Graphic getGraphic() {
+        return p;
+    }
+
+    @Override
+    public TextElement getTextElement() {
+        return el;
+    }
+
     @Override
     public void onSetSize() {
         setSize(WIDTH, HEIGHT);
+    }
+    public void updateLanguage(){
+        mapSize.setName(Language.DISCRETIZATION);
+        dimension.setName(Language.DIMENSION);
+        spinner.setName(Language.TYPE);
+        spinner.setElementNames(Language.TYPE_TITLES);
     }
 }

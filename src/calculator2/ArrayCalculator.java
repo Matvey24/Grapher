@@ -6,6 +6,7 @@ import calculator2.calculator.executors.Expression;
 import calculator2.calculator.executors.Variable;
 import calculator2.values.util.AbstractType;
 import calculator2.values.util.actions.AbstractFunc;
+import model.Language;
 
 import java.util.*;
 
@@ -34,7 +35,7 @@ public class ArrayCalculator<T> {
         director = new Director<>();
     }
 
-    public void calculate(List<String> funcs, List<String> graphics, List<String> calc, AbstractType<T> type) {
+    public void calculate(List<String> funcs, List<String> graphs, List<String> calc, AbstractType<T> type) {
         this.type = type;
         director.renewType(type);
         funcNames.clear();
@@ -48,19 +49,19 @@ public class ArrayCalculator<T> {
                 continue;
             type.addFuncName(funcs.get(i).substring(0, n));
         }
-        for (int i = 0; i < graphics.size(); ++i) {
-            graphics.set(i, graphics.get(i).replaceAll("[ \t]", ""));
-            type.addFuncName(graphics.get(i).substring(0, graphics.get(i).indexOf("=")));
+        for (int i = 0; i < graphs.size(); ++i) {
+            graphs.set(i, graphs.get(i).replaceAll("[ \t]", ""));
+            type.addFuncName(graphs.get(i).substring(0, graphs.get(i).indexOf("=")));
         }
         int err = 0;
         try {
-            for (; err < graphics.size(); ++err) {
-                String s = graphics.get(err);
+            for (; err < graphs.size(); ++err) {
+                String s = graphs.get(err);
                 int n = s.indexOf('=');
-                analise(s.substring(0, n), s.substring(n + 1), true);
+                analise(s.substring(0, n), s.substring(n + 1));
             }
         }catch (RuntimeException e){
-            throw new RuntimeException(e.getMessage() + " in " + (err + 1) + " graphic");
+            throw new RuntimeException(e.getMessage() + " " + Language.CALCULATOR_ERRORS[0] + " " + (err + 1) + " " + Language.CALCULATOR_ERRORS[1]);
         }
         err = 0;
         try {
@@ -68,29 +69,24 @@ public class ArrayCalculator<T> {
                 String s = funcs.get(err);
                 int n = s.indexOf('=');
                 if (n != -1)
-                    analise(s.substring(0, n), s.substring(n + 1), false);
+                    analise(s.substring(0, n), s.substring(n + 1));
             }
         }catch (RuntimeException e){
-            throw new RuntimeException(e.getMessage() + " in " + (err + 1) + " function");
+            throw new RuntimeException(e.getMessage() + " " + Language.CALCULATOR_ERRORS[0] + " " + (err + 1) + " " + Language.CALCULATOR_ERRORS[2]);
         }
         director.renewType(type);
         for (int i = 0; i < this.funcs.size(); ++i) {
             try {
                 director.update(funcNames.get(i));
             } catch (RuntimeException e) {
-                throw new RuntimeException(e.getMessage() + " in " + (i + 1) + " func grammar");
-            }
-            if ((director.getVars().size() == 0) && i < graphics.size()) {
-                Variable<T> var = new Variable<>();
-                var.setName("x");
-                director.getVars().add(var);
+                throw new RuntimeException(e.getMessage() + " " + Language.CALCULATOR_ERRORS[0] + " " + Language.CALCULATOR_ERRORS[3] + " " + (i + 1) + " " + Language.CALCULATOR_ERRORS[2]);
             }
             try {
                 this.funcs.get(i).setFunc(director.getTree(), director.getVars());
             } catch (RuntimeException e) {
-                throw new RuntimeException(e.getMessage() + " in " + (i + 1) + " func vars");
+                throw new RuntimeException(e.getMessage() + " " + Language.CALCULATOR_ERRORS[0] + " " + Language.CALCULATOR_ERRORS[4] + " " + (i + 1) + " " + Language.CALCULATOR_ERRORS[2]);
             }
-            if (i < graphics.size()) {
+            if (i < graphs.size()) {
                 this.graphics.add(director.getTree());
                 if (this.vars.size() == i)
                     this.vars.add(new ArrayList<>());
@@ -112,16 +108,13 @@ public class ArrayCalculator<T> {
                 expressionVars.get(i - 1).addAll(director.getVars());
             }
         } catch (RuntimeException e) {
-            throw new RuntimeException(e.getMessage() + " in calc");
+            throw new RuntimeException(e.getMessage() + " " + Language.CALCULATOR_ERRORS[0] + " " + Language.CALCULATOR_ERRORS[5]);
         }
     }
 
-    private void analise(String start, String end, boolean needVar) {
+    private void analise(String start, String end) {
         AbstractFunc<T> func = new AbstractFunc<>();
         int args = director.parse(end);
-        if (needVar) {
-            type.addFunction(start, func.getUnary(), 10);
-        } else {
             switch (args) {
                 case 2:
                     type.addFunction(start, func.getBinary(), 10);
@@ -132,7 +125,6 @@ public class ArrayCalculator<T> {
                 default:
                     type.addFunction(start, func.getMulti(args), args, 10);
             }
-        }
         funcs.add(func);
         funcNames.add(director.getStack());
     }

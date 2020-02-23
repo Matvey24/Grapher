@@ -1,8 +1,8 @@
 package view.elements;
 
 import calculator2.calculator.executors.Expression;
-import controller.Language;
-import controller.ViewElement;
+import model.Language;
+import model.ViewElement;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +17,7 @@ public class CalculatorView extends ViewElement {
     private final JTextField field;
     private Expression<Double> func;
     public CalculatorView(Runnable calculate){
-        name = new JLabel(Language.CALCULATOR);
+        name = new JLabel();
         name.setFont(name_font);
         answer = new JTextField();
         answer.setEditable(false);
@@ -25,6 +25,7 @@ public class CalculatorView extends ViewElement {
         answer.setFont(new Font("arial", Font.PLAIN, 11));
         field = new JTextField();
         field.addActionListener(e->calculate.run());
+        updateLanguage();
     }
     @Override
     public void addTo(Container c){
@@ -46,5 +47,8 @@ public class CalculatorView extends ViewElement {
     }
     public String getText() {
         return field.getText();
+    }
+    public void updateLanguage(){
+        name.setText(Language.CALCULATOR);
     }
 }

@@ -1,6 +1,6 @@
 package view.elements;
 
-import controller.ViewElement;
+import model.ViewElement;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,5 +30,8 @@ public class Parameter extends ViewElement {
     public void setBounds(int x, int y, int width){
         label.setBounds(x + 10, y + 10, width, 30);
         field.setBounds(x + 10, y + 40, width, 30);
+    }
+    public void setName(String name){
+        label.setText(name);
     }
 }

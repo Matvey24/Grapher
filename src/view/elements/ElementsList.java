@@ -1,6 +1,7 @@
 package view.elements;
 
-import controller.ViewElement;
+import model.IntFunc;
+import model.ViewElement;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,14 +20,13 @@ public class ElementsList extends ViewElement {
     private static final int MAX_SIZE = 10;
     public static final int OFFSET = 5;
     private static final int NAME_HEIGHT = 30;
-    public static final int MAX_HEIGHT = OFFSET + NAME_HEIGHT + MAX_SIZE * (TextElement.HEIGHT + OFFSET);
     public static final int WIDTH = TextElement.WIDTH + 2 * OFFSET;
     private final Point pos;
     private Container c;
-    public ElementsList(String name, int x, int y, ActionListener sizeChanged, ActionListener settings) {
+    public ElementsList(int x, int y, ActionListener sizeChanged, IntFunc settings) {
         elements = new ArrayList<>();
         pos = new Point();
-        this.name = new JLabel(name);
+        this.name = new JLabel();
         this.name.setFont(name_font);
         btn_make_element = new JButton("+");
         state = new JTextField();
@@ -50,7 +50,7 @@ public class ElementsList extends ViewElement {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if(e.getButton() == MouseEvent.BUTTON3){
-                        settings.actionPerformed(new ActionEvent(0, elements.indexOf(el), null));
+                        settings.execute(elements.indexOf(el));
                     }
                 }
             });
@@ -63,6 +63,9 @@ public class ElementsList extends ViewElement {
                 c.remove(btn_make_element);
             }
         });
+    }
+    public void setName(String name){
+        this.name.setText(name);
     }
     public void addTo(Container c){
         c.add(name);
@@ -82,8 +85,14 @@ public class ElementsList extends ViewElement {
             height += TextElement.HEIGHT + OFFSET;
         }
         btn_make_element.setBounds(x + OFFSET, height + y, TextElement.WIDTH, TextElement.HEIGHT);
-        height += OFFSET + TextElement.HEIGHT;
+        if(elements.size() != MAX_SIZE)
+            height += OFFSET + TextElement.HEIGHT;
     }
+
+    public int getHeight() {
+        return height;
+    }
+
     public ArrayList<TextElement> getElements(){
         return elements;
     }

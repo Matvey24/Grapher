@@ -2,6 +2,7 @@ package calculator2.calculator;
 
 import calculator2.calculator.helpers.Helper;
 import calculator2.values.util.actions.Sign;
+import model.Language;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +109,7 @@ class Parser<T> {
                         }
                     }
                     if (e.symbol.length() != 0) {
-                        throw new RuntimeException("Undefined symbol '" + e.symbol + "'");
+                        throw new RuntimeException(Language.PARSER_ERRORS[0] + " '" + e.symbol + "'");
                     }
                 }else if(helper.isVar(e.symbol)){
                     e.type = VAR;
@@ -186,9 +187,9 @@ class Parser<T> {
         }
         int returns = valsCount - needArgs;
         if(returns < 1)
-            throw new RuntimeException("Too many funcs!");
+            throw new RuntimeException(Language.PARSER_ERRORS[1]);
         else if(returns > 1)
-            throw new RuntimeException("Too many args!");
+            throw new RuntimeException(Language.PARSER_ERRORS[2]);
     }
     private int calculateVars(List<Element> list){
         varNames.clear();

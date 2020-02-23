@@ -1,18 +1,20 @@
-package view.settings;
+package view.support_panels;
 
-import controller.GraphType;
-import controller.Language;
+import model.Language;
 import controller.ModelUpdater;
 import controller.SupportFrameManager;
-import framesLib.Screen;
+import model.Settings;
+import view.elements.ComboBoxParameter;
+import view.elements.Item;
 import view.elements.Parameter;
 import view.elements.TextElement;
+import view.grapher.graphics.Graphic;
 import view.grapher.graphics.Implicit;
 
 import javax.swing.*;
 import java.awt.event.ItemEvent;
 
-public class ImplicitSettings extends Screen {
+public class ImplicitSettings extends Settings {
     private static final int WIDTH = 200;
     private static final int HEIGHT = 400;
 
@@ -20,8 +22,8 @@ public class ImplicitSettings extends Screen {
     private final Parameter sensitivity;
     private Implicit imp;
     private TextElement el;
-    private final JComboBox<String> spinner;
-    private final JComboBox<String> spectrum;
+    private final JComboBox<Item> spectrum;
+    private ComboBoxParameter spinner;
     public ImplicitSettings(ModelUpdater updater){
         setLayout(null);
         mapSize = new Parameter(Language.DISCRETIZATION, (e)->{
@@ -40,23 +42,14 @@ public class ImplicitSettings extends Screen {
         });
         sensitivity.addTo(this);
         sensitivity.setBounds(0, 70, 150);
-        spinner = SupportFrameManager.createSpinner(this, 200, 150);
-        spinner.addItemListener((e)->{
-            if(e.getStateChange() == ItemEvent.SELECTED){
-                if(e.getItem() == GraphType.titles[GraphType.FUNCTION.ordinal()])
-                    updater.makeFunction(imp, el);
-                else if(e.getItem() == GraphType.titles[GraphType.PARAMETER.ordinal()])
-                    updater.makeParameter(imp, el);
-            }
-        });
         spectrum = new JComboBox<>();
         spectrum.setBounds(10, 150, 150, 40);
         add(spectrum);
-        spectrum.addItem(Language.INEQUALITY);
-        spectrum.addItem(Language.SPECTRUM);
+        spectrum.addItem(new Item(Language.INEQUALITY));
+        spectrum.addItem(new Item(Language.SPECTRUM));
         spectrum.addItemListener((e)->{
             if(e.getStateChange() == ItemEvent.SELECTED){
-                if(e.getItem().equals(Language.INEQUALITY)){
+                if(((Item)e.getItem()).equal(Language.INEQUALITY)){
                     imp.setSpectrum(false);
                 }else{
                     imp.setSpectrum(true);
@@ -64,17 +57,39 @@ public class ImplicitSettings extends Screen {
                 updater.frameResize();
             }
         });
+        spinner = SupportFrameManager.createSpinner(updater, this, 200);
     }
     public void setInfo(Implicit imp, TextElement e){
         this.imp = imp;
         this.el = e;
         sensitivity.setDefault(imp.getSensitivity() + "");
         spectrum.setSelectedIndex((imp.isSpectrum())?1:0);
-        spinner.setSelectedIndex(GraphType.IMPLICIT.ordinal());
         mapSize.setDefault(imp.MAP_SIZE + "");
     }
+
+    @Override
+    public Graphic getGraphic() {
+        return imp;
+    }
+
+    @Override
+    public TextElement getTextElement() {
+        return el;
+    }
+
     @Override
     public void onSetSize() {
         setSize(WIDTH, HEIGHT);
+    }
+    public void updateLanguage(){
+        mapSize.setName(Language.DISCRETIZATION);
+        sensitivity.setName(Language.SENSITIVITY);
+
+        spectrum.getItemAt(0).name = Language.INEQUALITY;
+        spectrum.getItemAt(1).name = Language.SPECTRUM;
+        spectrum.updateUI();
+
+        spinner.setName(Language.TYPE);
+        spinner.setElementNames(Language.TYPE_TITLES);
     }
 }
