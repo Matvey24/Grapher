@@ -35,6 +35,9 @@ public class FunctionsView extends ViewElement {
     public String getText(){
         return area.getText();
     }
+    public void setText(String s){
+        area.setText(s);
+    }
     public void setBounds(int x, int y){
         name.setBounds(x + OFFSET,y,WIDTH / 2 - OFFSET, HEIGHT);
         btn_update.setBounds(x + WIDTH / 2 + OFFSET, y, WIDTH / 2 - 2 * OFFSET, HEIGHT);

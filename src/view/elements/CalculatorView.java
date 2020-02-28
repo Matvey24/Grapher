@@ -15,7 +15,7 @@ public class CalculatorView extends ViewElement {
     private final JTextField answer;
     private final JLabel name;
     private final JTextField field;
-    private Expression<Double> func;
+    private Expression<?> func;
     public CalculatorView(Runnable calculate){
         name = new JLabel();
         name.setFont(name_font);
@@ -38,7 +38,7 @@ public class CalculatorView extends ViewElement {
         answer.setBounds(x + WIDTH / 2 - 3*OFFSET, y, 2*OFFSET + WIDTH / 2, HEIGHT);
         field.setBounds(x + OFFSET, y + HEIGHT + OFFSET, WIDTH - 2 * OFFSET, HEIGHT);
     }
-    public void setAnswer(Expression<Double> func){
+    public void setAnswer(Expression<?> func){
         this.func = func;
     }
     public void update(){
@@ -47,6 +47,9 @@ public class CalculatorView extends ViewElement {
     }
     public String getText() {
         return field.getText();
+    }
+    public void setText(String s){
+       field.setText(s);
     }
     public void updateLanguage(){
         name.setText(Language.CALCULATOR);

@@ -4,6 +4,7 @@ import model.Language;
 import controller.ModelUpdater;
 import controller.VersionController;
 import framesLib.Screen;
+import model.help.FullModel;
 import view.elements.*;
 import view.grapher.GraphicsView;
 
@@ -20,7 +21,7 @@ public class MainPanel extends Screen {
     public static int HEIGHT = HEIGHT_0;
     public static int GRAPH_WIDTH = WIDTH - ElementsList.WIDTH;
     private final GraphicsView graphicsView;
-
+    private ModelUpdater updater;
     private final Point mousePosition;
     private int resizeType;
     private ElementsList graphics;
@@ -32,7 +33,7 @@ public class MainPanel extends Screen {
         btn_help = new JButton(Language.HELP);
         add(btn_help);
         mousePosition = new Point();
-        ModelUpdater updater = new ModelUpdater(this::repaint, this);
+        updater = new ModelUpdater(this::repaint, this);
 
         btn_help.addActionListener((e)-> updater.getSupportFrameManager().openHelperFrame());
 
@@ -66,7 +67,7 @@ public class MainPanel extends Screen {
             int line = 0;
             if(resizeType == 1 || resizeType == 2)
                 line = resizeType;
-            updater.resize(e.getPreciseWheelRotation(), e.getX() - ElementsList.WIDTH, e.getY(), line);
+            updater.rescale(e.getPreciseWheelRotation(), e.getX() - ElementsList.WIDTH, e.getY(), line);
         });
 
         resizeType = 0;
@@ -80,7 +81,7 @@ public class MainPanel extends Screen {
                     updater.recalculate();
                     break;
                 case 3:
-                    updater.resizeBack();
+                    updater.rescaleBack();
                     break;
             }
         });
@@ -96,7 +97,15 @@ public class MainPanel extends Screen {
         add(btn_resize);
 
         btn_timer = new JButton(Language.TIMER);
-        btn_timer.addActionListener(e -> updater.openTimer());
+        btn_timer.addActionListener(e ->updater.openTimer());
+        btn_timer.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(e.getButton() == MouseEvent.BUTTON3){
+                    updater.getSupportFrameManager().getTimer().onClick();
+                }
+            }
+        });
         add(btn_timer);
         btn_settings = new JButton(Language.MAIN_SETTINGS);
         btn_settings.addActionListener(e -> updater.getSupportFrameManager().openMainSettings());
@@ -139,5 +148,13 @@ public class MainPanel extends Screen {
         super.paint(g);
         g.translate(ElementsList.WIDTH, 0);
         graphicsView.paint(g);
+    }
+    public void makeModel(FullModel m){
+        m.resize_idx = String.valueOf(resizeType);
+        m.language = Language.language_Names.get(Language.LANGUAGE_INDEX);
+    }
+    public void fromModel(FullModel m){
+        resizeType = Integer.parseInt(m.resize_idx);
+        btn_resize.setText(Language.RESIZERS[resizeType]);
     }
 }

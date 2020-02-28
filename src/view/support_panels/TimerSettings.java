@@ -3,6 +3,7 @@ package view.support_panels;
 import model.Language;
 import controller.ModelUpdater;
 import framesLib.Screen;
+import model.help.FullModel;
 import view.elements.Parameter;
 
 import javax.swing.*;
@@ -104,6 +105,8 @@ public class TimerSettings extends Screen {
         timeDir = new JToggleButton(Language.BOOMERANG);
         add(timeDir);
         timeDir.setBounds(10,220, 150, 40);
+        duration.setDefault(dur + ":" + FPS);
+        dimension.setDefault(startT + ":" + endT);
         timeDir.addActionListener(e->boomerang = timeDir.isSelected());
     }
 
@@ -112,14 +115,14 @@ public class TimerSettings extends Screen {
         duration.setDefault(dur + ":" + FPS);
         dimension.setDefault(startT + ":" + endT);
     }
-
-    @Override
-    public void onHide() {
-        if(timer.isRunning()){
-           timer.stop();
-           start.setSelected(false);
+    public void onClick(){
+        start.setSelected(!start.isSelected());
+        if(start.isSelected()){
+            timeBefore = System.currentTimeMillis();
+            timer.start();
+        }else{
+            timer.stop();
         }
-
     }
     public void updateLanguage(){
         duration.setName(Language.DURATION_FPS);
@@ -130,7 +133,18 @@ public class TimerSettings extends Screen {
     public double getT() {
         return value;
     }
-
+    public void makeModel(FullModel m){
+        m.timer_info = duration.getText() + "\n" + dimension.getText() + "\n" + timeDir.isSelected();
+    }
+    public void fromModel(FullModel m){
+        String[] info = m.timer_info.split("\n");
+        duration.setDefault(info[0]);
+        duration.activate();
+        dimension.setDefault(info[1]);
+        dimension.activate();
+        timeDir.setSelected(Boolean.parseBoolean(info[2]));
+        boomerang = timeDir.isSelected();
+    }
     @Override
     public void onSetSize() {
         setSize(WIDTH, HEIGHT);

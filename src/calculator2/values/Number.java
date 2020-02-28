@@ -22,6 +22,7 @@ public class Number extends AbstractType<Double> {
     public Number(){
         addSign('<', (a, b)->((a.calculate() < b.calculate())?1d:0), 1);
         addSign('>', (a, b)->((a.calculate() > b.calculate())?1d:0), 1);
+        addSign('=', (a,b)-> ((a.calculate().equals(b.calculate()))?1d:0d), 1);
 
         addSign('+', (a,b)-> a.calculate() + b.calculate(), 2);
         Sign<Double> minus = addSign('-', (a, b)-> a.calculate() - b.calculate(), 2);
@@ -29,7 +30,6 @@ public class Number extends AbstractType<Double> {
         addSign('/', (a, b)-> a.calculate() / b.calculate(), 3);
         addSign('%', (a, b)-> a.calculate() % b.calculate(), 3);
         addSign('^', pow, 4);
-        addSign('=', (a,b)-> ((a.calculate().equals(b.calculate()))?1d:0d), 1);
 
         Sign<Double> mulp = addSign('!', mul, 5);
 

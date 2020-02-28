@@ -11,15 +11,18 @@ public class Implicit extends Graphic {
     private float[][] data;
     private int yMAP_SIZE;
     private Variable<Double> yVar;
-    private boolean spectrum;
     private Color c;
+    private boolean spectrum;
     private double sensitivity;
 
     public Implicit() {
         setMAP_SIZE(200);
         sensitivity = 1;
     }
-
+    public Implicit(int map_size){
+        setMAP_SIZE(map_size);
+        sensitivity = 1;
+    }
     @Override
     public void resize(double offsetX, double offsetY, double scaleX, double scaleY) {
         if (needResize || offsetX != this.offsetX || this.scaleX != scaleX || offsetY != this.offsetY || this.scaleY != scaleY) {
@@ -47,28 +50,28 @@ public class Implicit extends Graphic {
         if (spectrum) {
             for (int i = 0; i < MAP_SIZE; ++i) {
                 for (int j = 0; j < yMAP_SIZE; ++j) {
-                    float val = (float)(1 / (1 + Math.exp(-data[i][j] * sensitivity)));
+                    float val = (float) (1 / (1 + Math.exp(-data[i][j] * sensitivity)));
                     int re = 0, gr = 0, bl = 0;
                     val *= 5;
-                    int p = (int)Math.floor(val);
+                    int p = (int) Math.floor(val);
                     val %= 1;
-                    int col = (int)(val * 255);
-                    if(p == 0){
+                    int col = (int) (val * 255);
+                    if (p == 0) {
                         re = 255;
                         gr = col;
-                    }else if(p == 1){
+                    } else if (p == 1) {
                         gr = 255;
                         re = 255 - col;
-                    }else if(p == 2){
+                    } else if (p == 2) {
                         gr = 255;
                         bl = col;
-                    }else if(p == 3){
+                    } else if (p == 3) {
                         bl = 255;
                         gr = 255 - col;
-                    }else if(p == 4){
+                    } else if (p == 4) {
                         bl = 255;
                         re = col;
-                    }else{
+                    } else {
                         bl = 255;
                         re = 255;
                     }
@@ -94,7 +97,7 @@ public class Implicit extends Graphic {
 
     public void updateY(Variable<Double> yVar) {
         this.yVar = yVar;
-        c = new Color(color.getRed(), color.getGreen(), color.getBlue(), 100);
+        c = new Color(color.getRed(), color.getGreen(), color.getBlue(), 130);
     }
 
     public void setSensitivity(double sensitivity) {

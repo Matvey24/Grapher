@@ -2,14 +2,15 @@ package view.grapher.graphics;
 
 import calculator2.calculator.executors.Expression;
 import calculator2.calculator.executors.Variable;
+
 import java.awt.*;
+import java.math.BigDecimal;
 
 public abstract class Graphic {
     public int MAP_SIZE = 500;
     public String name;
     final int MAX_DELTA = 1000;
     double[] map;
-
     protected Expression<Double> func;
     Variable<Double> var;
     Color color;
@@ -23,7 +24,11 @@ public abstract class Graphic {
         map = new double[MAP_SIZE];
         color = Color.BLACK;
     }
-
+    Graphic(int MAP_SIZE){
+        this.map = new double[MAP_SIZE];
+        this.MAP_SIZE = MAP_SIZE;
+        color = Color.BLACK;
+    }
     public void update(Expression<Double> func, Variable<Double> var) {
         this.var = var;
         this.func = func;
@@ -31,14 +36,18 @@ public abstract class Graphic {
     }
 
     public abstract void resize(double offsetX, double offsetY, double scaleX, double scaleY);
+
     public void setColor(Color color) {
         this.color = color;
     }
+
     public abstract void paint(Graphics g);
-    public void funcChanged(){
+
+    public void funcChanged() {
         needResize = true;
     }
-    public void setMAP_SIZE(int map_size){
+
+    public void setMAP_SIZE(int map_size) {
         MAP_SIZE = map_size;
         needResize = true;
         map = new double[map_size];

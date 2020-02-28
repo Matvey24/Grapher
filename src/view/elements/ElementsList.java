@@ -1,6 +1,6 @@
 package view.elements;
 
-import model.IntFunc;
+import model.help.IntFunc;
 import model.ViewElement;
 
 import javax.swing.*;
@@ -23,7 +23,11 @@ public class ElementsList extends ViewElement {
     public static final int WIDTH = TextElement.WIDTH + 2 * OFFSET;
     private final Point pos;
     private Container c;
+    private ActionListener sizeChanged;
+    private IntFunc settings;
     public ElementsList(int x, int y, ActionListener sizeChanged, IntFunc settings) {
+        this.sizeChanged = sizeChanged;
+        this.settings = settings;
         elements = new ArrayList<>();
         pos = new Point();
         this.name = new JLabel();
@@ -34,34 +38,8 @@ public class ElementsList extends ViewElement {
         state.setFont(new Font("arial", Font.PLAIN, 12));
         setBounds(x,y);
         btn_make_element.addActionListener((e)->{
-            int y2 = height - OFFSET - TextElement.HEIGHT;
-            TextElement el = new TextElement(x + OFFSET, y2);
-            el.addRemoveListener((e2)->{
-                int id = elements.indexOf(el);
-                elements.remove(id);
-                el.removeFrom(c);
-                setBounds(pos.x, pos.y);
-                sizeChanged.actionPerformed(new ActionEvent(0, id, "remove"));
-                if(elements.size() == MAX_SIZE - 1){
-                    c.add(btn_make_element);
-                }
-            });
-            el.addSettingsListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if(e.getButton() == MouseEvent.BUTTON3){
-                        settings.execute(elements.indexOf(el));
-                    }
-                }
-            });
-            int id = elements.size();
-            elements.add(el);
-            el.addTo(c);
-            setBounds(pos.x, pos.y);
-            sizeChanged.actionPerformed(new ActionEvent(0, id, "add"));
-            if(elements.size() == MAX_SIZE){
-                c.remove(btn_make_element);
-            }
+            addElement();
+            sizeChanged.actionPerformed(new ActionEvent(0, elements.size() - 1, "add"));
         });
     }
     public void setName(String name){
@@ -88,7 +66,44 @@ public class ElementsList extends ViewElement {
         if(elements.size() != MAX_SIZE)
             height += OFFSET + TextElement.HEIGHT;
     }
-
+    public void clear(){
+        for(int i = elements.size() - 1; i >= 0; --i){
+            TextElement e = elements.remove(i);
+            e.removeFrom(c);
+            sizeChanged.actionPerformed(new ActionEvent("", i, "remove"));
+            if(elements.size() == MAX_SIZE - 1){
+                c.add(btn_make_element);
+            }
+        }
+        setBounds(pos.x, pos.y);
+    }
+    public void addElement(){
+        TextElement e = new TextElement();
+        e.addRemoveListener((e2)->{
+            int id = elements.indexOf(e);
+            elements.remove(id);
+            e.removeFrom(c);
+            setBounds(pos.x, pos.y);
+            sizeChanged.actionPerformed(new ActionEvent(0, id, "remove"));
+            if(elements.size() == MAX_SIZE - 1){
+                c.add(btn_make_element);
+            }
+        });
+        e.addSettingsListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent el) {
+                if(el.getButton() == MouseEvent.BUTTON3){
+                    settings.execute(elements.indexOf(e));
+                }
+            }
+        });
+        e.addTo(c);
+        elements.add(e);
+        setBounds(pos.x, pos.y);
+        if(elements.size() == MAX_SIZE){
+            c.remove(btn_make_element);
+        }
+    }
     public int getHeight() {
         return height;
     }

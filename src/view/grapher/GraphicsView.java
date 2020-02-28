@@ -6,6 +6,7 @@ import view.elements.ElementsList;
 import view.grapher.graphics.Graphic;
 
 import java.awt.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class GraphicsView {
@@ -22,17 +23,19 @@ public class GraphicsView {
         updater.setGraphics(graphics);
         updater.setResize(this::resize);
     }
+
     private void resize() {
         updater.setState(Language.UPDATING);
-        double offsetX = updater.getOffsetX();
-        double offsetY = updater.getOffsetY();
         double scaleX = updater.getScaleX();
         double scaleY = updater.getScaleY();
+        double offsetX = updater.getOffsetX();
+        double offsetY = updater.getOffsetY();
         coordinateSystem.resize(offsetX, offsetY, scaleX, scaleY);
         for (Graphic g : graphics)
             g.resize(offsetX, offsetY, scaleX, scaleY);
         updater.setState(Language.FINE);
     }
+
     public void paint(Graphics g) {
         coordinateSystem.draw(g);
         try {

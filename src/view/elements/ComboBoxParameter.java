@@ -9,8 +9,11 @@ import java.awt.event.ItemListener;
 import static view.elements.ElementsList.OFFSET;
 
 public class ComboBoxParameter extends ViewElement {
+    public static final int HEIGHT = TextElement.HEIGHT * 2 + OFFSET;
+    public static final int WIDTH = TextElement.WIDTH;
     private final JLabel name;
     private final JComboBox<Item> items;
+
     public ComboBoxParameter(String name, String... items){
         this.name = new JLabel(name);
         this.name.setFont(name_font);
@@ -33,17 +36,14 @@ public class ComboBoxParameter extends ViewElement {
         container.add(items);
     }
     public void setBounds(int x, int y){
-        name.setBounds(x, y, 150, TextElement.HEIGHT);
-        items.setBounds(x, y + TextElement.HEIGHT + OFFSET, 150, TextElement.HEIGHT);
+        name.setBounds(x, y, WIDTH, TextElement.HEIGHT);
+        items.setBounds(x, y + TextElement.HEIGHT + OFFSET, WIDTH, TextElement.HEIGHT);
     }
     public void addItemListener(ItemListener listener){
         items.addItemListener(listener);
     }
     public void setSelectedIndex(int selected){
         items.setSelectedIndex(selected);
-    }
-    public void setSelectedItem(String selected){
-        items.setSelectedItem(selected);
     }
     public void setName(String name){
         this.name.setText(name);

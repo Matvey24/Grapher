@@ -1,4 +1,4 @@
-package model;
+package model.help;
 
 import java.io.IOException;
 import java.util.Properties;

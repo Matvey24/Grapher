@@ -10,10 +10,9 @@ import view.elements.TextElement;
 import view.grapher.graphics.Function;
 import view.grapher.graphics.Graphic;
 
-public class FunctionSettings extends Settings {
-    private static final int WIDTH = 200;
-    private static final int HEIGHT = 300;
+import static view.elements.ElementsList.OFFSET;
 
+public class FunctionSettings extends Settings {
     private final Parameter mapSize;
     private Function f;
     private TextElement el;
@@ -27,8 +26,8 @@ public class FunctionSettings extends Settings {
             }
         });
         mapSize.addTo(this);
-        mapSize.setBounds(0,0, 150);
-        spinner = SupportFrameManager.createSpinner(updater, this,  90);
+        mapSize.setBounds(OFFSET,OFFSET, ComboBoxParameter.WIDTH);
+        spinner = SupportFrameManager.createSpinner(updater, this,  OFFSET * 2 + ComboBoxParameter.HEIGHT);
     }
 
     @Override
@@ -49,7 +48,7 @@ public class FunctionSettings extends Settings {
 
     @Override
     public void onSetSize() {
-        setSize(WIDTH, HEIGHT);
+        setSize(ComboBoxParameter.WIDTH + 2 * OFFSET + 40, ComboBoxParameter.HEIGHT * 2 + 3 * OFFSET + 80);
     }
     public void updateLanguage(){
         mapSize.setName(Language.DISCRETIZATION);

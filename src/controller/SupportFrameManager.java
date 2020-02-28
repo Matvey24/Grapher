@@ -13,7 +13,10 @@ import view.grapher.graphics.Implicit;
 import view.grapher.graphics.Parametric;
 import view.support_panels.*;
 
+import javax.swing.*;
 import java.awt.event.ItemEvent;
+
+import static view.elements.ElementsList.OFFSET;
 
 public class SupportFrameManager {
     private MyFrame frame;
@@ -35,34 +38,34 @@ public class SupportFrameManager {
         checkFrame();
         functionSettings.setInfo(f, e);
         frame.changeScreen(functionSettings);
-        frame.setFocusable(true);
+        setOnTop();
     }
     void openParameterSettings(Parametric p, TextElement e){
         checkFrame();
         parametricSettings.setInfo(p, e);
         frame.changeScreen(parametricSettings);
-        frame.setFocusable(true);
+        setOnTop();
     }
     void openImplicitSettings(Implicit imp, TextElement e){
         checkFrame();
         implicitSettings.setInfo(imp, e);
         frame.changeScreen(implicitSettings);
-        frame.setFocusable(true);
+        setOnTop();
     }
     void openTimerSettings(){
         checkFrame();
         frame.changeScreen(timerSettings);
-        frame.setFocusable(true);
+        setOnTop();
     }
-    void openUpdaterFrame(String version){
+    void openUpdaterFrame(VersionController.UpdateInfo info){
         checkFrame();
-        frame.changeScreen(new UpdaterFrame(version));
-        frame.setFocusable(true);
+        frame.changeScreen(new UpdaterFrame(info));
+        setOnTop();
     }
     public void openHelperFrame(){
         checkFrame();
         frame.changeScreen(helperFrame);
-        frame.setFocusable(true);
+        setOnTop();
     }
     public void openTextFrame(TextPanel panel){
         if(frame == null || !frame.isVisible())
@@ -75,13 +78,17 @@ public class SupportFrameManager {
         frame.changeScreen(mainSettings);
         frame.setFocusable(true);
     }
+    private void setOnTop(){
+        frame.setFocusable(true);
+        frame.setFocusableWindowState(true);
+    }
     void close(){
         if(frame != null && frame.isVisible())
             frame.dispose();
     }
     public static ComboBoxParameter createSpinner(ModelUpdater updater, Settings settings, int y){
         ComboBoxParameter spinner = new ComboBoxParameter(Language.TYPE, Language.TYPE_TITLES);
-        spinner.setBounds(10, y);
+        spinner.setBounds(OFFSET, y);
         spinner.addTo(settings);
         if(settings instanceof FunctionSettings)
             spinner.setSelectedIndex(GraphType.FUNCTION.ordinal());
@@ -118,6 +125,14 @@ public class SupportFrameManager {
     Double getTime(){
         return timerSettings.getT();
     }
+    public TimerSettings getTimer(){
+        return timerSettings;
+    }
+
+    public MainSettings getMainSettings() {
+        return mainSettings;
+    }
+
     public void updateLanguage(){
         helperFrame.updateLanguage();
         mainSettings.updateLanguage();

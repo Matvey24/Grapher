@@ -1,6 +1,6 @@
 import framesLib.MyFrame;
 import model.Language;
-import model.Property;
+import model.help.Property;
 import view.MainPanel;
 
 import java.io.IOException;

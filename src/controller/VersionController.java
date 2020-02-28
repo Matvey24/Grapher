@@ -3,37 +3,43 @@ package controller;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.Properties;
 
 public class VersionController {
-    public static final int VERSION_CODE = 6;
+    public static final int VERSION_CODE = 7;
     public static final String VERSION_NAME = getName(VERSION_CODE);
-    private static final String URL_VERSION = "https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/Version.bin";
-    private static final String URL_APP = "https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/Grapher.jar";
+    private static final String URL_VERSION =
+            "https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/VersionInfo.xml";
     private static int newVersion = -1;
-
+    private static String URL_APP;
+    public static class UpdateInfo{
+        public String changes;
+        public String version_name;
+        public boolean version_is_new;
+    }
     public static String getName(int code){
         int a = code / 10 + 1;
         int b = code % 10;
         return String.format("%d.%d", a, b);
     }
-    public static int checkUpdates(){
+    public static UpdateInfo checkUpdates(){
+        UpdateInfo u = new UpdateInfo();
         try {
             URL url = new URL(URL_VERSION);
             InputStream input = url.openStream();
-            byte[] list = new byte[100];
-            int i = 0;
-            for(; i < list.length; ++i){
-                int n = input.read();
-                if(n == -1)
-                    break;
-                list[i] = (byte)n;
+            Properties properties = new Properties();
+            properties.loadFromXML(input);
+            URL_APP = properties.getProperty("file_path");
+            newVersion = Integer.parseInt(properties.getProperty("version"));
+            if(newVersion > VERSION_CODE){
+                u.version_is_new = true;
+                u.version_name = getName(newVersion);
+                u.changes = properties.getProperty("changes");
             }
-            String file = new String(list, 0, i);
-            newVersion = Integer.parseInt(file);
-            return (newVersion > VERSION_CODE)? newVersion : -1;
         }catch (Exception e){
-            return -1;
+            return u;
         }
+        return u;
     }
     public static boolean update(){
         File newFile = findFileName();

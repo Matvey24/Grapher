@@ -14,10 +14,9 @@ import view.grapher.graphics.Implicit;
 import javax.swing.*;
 import java.awt.event.ItemEvent;
 
-public class ImplicitSettings extends Settings {
-    private static final int WIDTH = 200;
-    private static final int HEIGHT = 400;
+import static view.elements.ElementsList.OFFSET;
 
+public class ImplicitSettings extends Settings {
     private final Parameter mapSize;
     private final Parameter sensitivity;
     private Implicit imp;
@@ -33,7 +32,7 @@ public class ImplicitSettings extends Settings {
             }
         });
         mapSize.addTo(this);
-        mapSize.setBounds(0,0, 150);
+        mapSize.setBounds(OFFSET, OFFSET, ComboBoxParameter.WIDTH);
         sensitivity = new Parameter(Language.SENSITIVITY, e->{
             if(imp != null){
                 imp.setSensitivity(Double.parseDouble(e.getSource().toString()));
@@ -41,9 +40,9 @@ public class ImplicitSettings extends Settings {
             }
         });
         sensitivity.addTo(this);
-        sensitivity.setBounds(0, 70, 150);
+        sensitivity.setBounds(OFFSET, 2 * OFFSET + ComboBoxParameter.HEIGHT, ComboBoxParameter.WIDTH);
         spectrum = new JComboBox<>();
-        spectrum.setBounds(10, 150, 150, 40);
+        spectrum.setBounds(OFFSET, 3 * OFFSET + 2 * ComboBoxParameter.HEIGHT, ComboBoxParameter.WIDTH, TextElement.HEIGHT);
         add(spectrum);
         spectrum.addItem(new Item(Language.INEQUALITY));
         spectrum.addItem(new Item(Language.SPECTRUM));
@@ -57,7 +56,8 @@ public class ImplicitSettings extends Settings {
                 updater.frameResize();
             }
         });
-        spinner = SupportFrameManager.createSpinner(updater, this, 200);
+        spinner = SupportFrameManager.createSpinner(updater, this,
+                4 * OFFSET + 2 * ComboBoxParameter.HEIGHT + TextElement.HEIGHT);
     }
     public void setInfo(Implicit imp, TextElement e){
         this.imp = imp;
@@ -79,7 +79,8 @@ public class ImplicitSettings extends Settings {
 
     @Override
     public void onSetSize() {
-        setSize(WIDTH, HEIGHT);
+        setSize(ComboBoxParameter.WIDTH + 2 * OFFSET + 40,
+                ComboBoxParameter.HEIGHT * 3 + 5 * OFFSET + TextElement.HEIGHT + 80);
     }
     public void updateLanguage(){
         mapSize.setName(Language.DISCRETIZATION);

@@ -10,10 +10,9 @@ import view.elements.TextElement;
 import view.grapher.graphics.Graphic;
 import view.grapher.graphics.Parametric;
 
-public class ParametricSettings extends Settings {
-    private static final int WIDTH = 200;
-    private static final int HEIGHT = 400;
+import static view.elements.ElementsList.OFFSET;
 
+public class ParametricSettings extends Settings {
     private final Parameter mapSize;
     private Parameter dimension;
     private Parametric p;
@@ -41,10 +40,10 @@ public class ParametricSettings extends Settings {
             }
         });
         mapSize.addTo(this);
-        mapSize.setBounds(0,0, 150);
+        mapSize.setBounds(OFFSET,OFFSET, ComboBoxParameter.WIDTH);
         dimension.addTo(this);
-        dimension.setBounds(0,80,150);
-        spinner = SupportFrameManager.createSpinner(updater, this, 200);
+        dimension.setBounds(OFFSET,2 * OFFSET + ComboBoxParameter.HEIGHT, ComboBoxParameter.WIDTH);
+        spinner = SupportFrameManager.createSpinner(updater, this, 3 * OFFSET + 2 * ComboBoxParameter.HEIGHT);
     }
     public void setInfo(Parametric p, TextElement e){
         this.p = p;
@@ -65,7 +64,7 @@ public class ParametricSettings extends Settings {
 
     @Override
     public void onSetSize() {
-        setSize(WIDTH, HEIGHT);
+        setSize(ComboBoxParameter.WIDTH + 2 * OFFSET + 40, ComboBoxParameter.HEIGHT * 3 + 4 * OFFSET + 80);
     }
     public void updateLanguage(){
         mapSize.setName(Language.DISCRETIZATION);

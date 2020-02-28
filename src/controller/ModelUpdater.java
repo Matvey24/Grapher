@@ -1,11 +1,7 @@
 package controller;
 
-import calculator2.ArrayCalculator;
-import calculator2.calculator.executors.Expression;
-import calculator2.calculator.executors.Variable;
-import calculator2.values.Number;
 import model.Language;
-import threads.Tasks;
+import model.help.FullModel;
 import view.MainPanel;
 import view.elements.CalculatorView;
 import view.elements.ElementsList;
@@ -22,41 +18,35 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static model.Language.UPDATER_ERRORS;
+
 import static java.awt.Color.*;
 
 public class ModelUpdater {
     private static final List<Color> colors = Arrays.asList(BLUE, RED, GREEN, CYAN, magenta, GRAY, ORANGE, PINK, YELLOW, LIGHT_GRAY, BLACK);
     private static final List<String> func_names = Arrays.asList("f", "i", "j", "l", "m", "n", "o", "q", "r", "s", "bl");
     private static final double deltaScale = 1.2;
-    private final Runnable repaint;
-    private Runnable resize;
-
-    private final ArrayCalculator<Double> calculator;
-    private List<Graphic> graphics;
-    private ElementsList list;
-    private FunctionsView functionsView;
-    private CalculatorView calculatorView;
+    private Calculator calculator;
     private final SupportFrameManager supportFrameManager;
     private final MainPanel mainPanel;
-    private final Tasks tasks;
+    private final DataBase dataBase;
+    List<Graphic> graphics;
+    ElementsList list;
 
     private double offsetX = -3;
     private double offsetY = 5.5;
     private double scaleX = 100;
     private double scaleY = 100;
-    private boolean dangerState = false;
+    boolean dangerState = false;
 
     public ModelUpdater(Runnable repaint, MainPanel mainPanel) {
-        this.repaint = repaint;
         this.mainPanel = mainPanel;
-        calculator = new ArrayCalculator<>();
         supportFrameManager = new SupportFrameManager(this);
-        tasks = new Tasks();
+        this.calculator = new Calculator(this, repaint);
+        dataBase = new DataBase();
         new Thread(() -> {
-            int version = VersionController.checkUpdates();
-            if (version != -1) {
-                supportFrameManager.openUpdaterFrame(VersionController.getName(version));
+            VersionController.UpdateInfo info = VersionController.checkUpdates();
+            if (info.version_is_new) {
+                supportFrameManager.openUpdaterFrame(info);
             }
         }).start();
     }
@@ -77,18 +67,64 @@ public class ModelUpdater {
         TextElement element = list.getElements().get(e.getID());
         Graphic graphic = new Function();
         graphics.add(graphic);
-        element.addTextChangedListener((e1) -> recalculate());
+        element.addTextChangedListener((e1) -> calculator.recalculate());
         int id = findFreeId();
         graphic.setColor(colors.get(id));
         element.setColor(colors.get(id));
         element.setName(func_names.get(id) + "(x)");
         graphic.name = func_names.get(id);
-        recalculate();
+        calculator.recalculate();
+    }
+
+    void add(String func, String params) {
+        String[] arr = params.split("\n");
+        String name = arr[0];
+        int map_size = Integer.parseInt(arr[1]);
+        String type = arr[2];
+        Graphic gr;
+        switch (type) {
+            case "Function":
+                gr = new Function(map_size);
+                break;
+            case "Parametric":
+                gr = new Parametric(map_size);
+                break;
+            case "Implicit":
+                gr = new Implicit(map_size);
+                break;
+            default:
+                return;
+        }
+        int id = func_names.indexOf(name);
+        gr.setColor(colors.get(id));
+        graphics.add(gr);
+        gr.name = name;
+        list.addElement();
+        TextElement e = list.getElements().get(list.getElements().size() - 1);
+        e.setColor(colors.get(id));
+        e.addTextChangedListener((e1) -> calculator.recalculate());
+        e.setText(func);
+        switch (type) {
+            case "Function":
+                e.setName(name + "(x)");
+                break;
+            case "Parametric":
+                e.setName("xy(t)");
+                String startEnd = arr[3];
+                String[] st = startEnd.split(":");
+                ((Parametric) gr).updateBoards(Double.parseDouble(st[0]), Double.parseDouble(st[1]));
+                break;
+            case "Implicit":
+                e.setName(name + "(xy)");
+                ((Implicit) gr).setSensitivity(Double.parseDouble(arr[3]));
+                ((Implicit) gr).setSpectrum(Boolean.parseBoolean(arr[4]));
+                break;
+        }
     }
 
     private void remove(ActionEvent e) {
         graphics.remove(e.getID());
-        recalculate();
+        calculator.recalculate();
     }
 
     public void startSettings(int id) {
@@ -102,10 +138,6 @@ public class ModelUpdater {
         }
     }
 
-    public void openTimer() {
-        supportFrameManager.openTimerSettings();
-    }
-
     public void makeFunction(Graphic g, TextElement e) {
         if (g instanceof Function)
             return;
@@ -116,7 +148,7 @@ public class ModelUpdater {
         int id = colors.indexOf(e.getColor());
         e.setName(func_names.get(id) + "(x)");
         function.name = func_names.get(id);
-        recalculate();
+        calculator.recalculate();
         startSettings(idx);
     }
 
@@ -129,7 +161,7 @@ public class ModelUpdater {
         graphics.set(idx, parametric);
         e.setName("xy(t)");
         parametric.name = func_names.get(colors.indexOf(e.getColor()));
-        recalculate();
+        calculator.recalculate();
         startSettings(idx);
     }
 
@@ -143,10 +175,11 @@ public class ModelUpdater {
         int id = colors.indexOf(e.getColor());
         e.setName(func_names.get(id) + "(xy)");
         implicit.name = func_names.get(id);
-        recalculate();
+        calculator.recalculate();
         startSettings(idx);
     }
-    private int findFreeId(){
+
+    private int findFreeId() {
         for (int i = 0; i < colors.size() - 1; ++i) {
             Color c = colors.get(i);
             boolean hasColor = false;
@@ -161,6 +194,7 @@ public class ModelUpdater {
         }
         return colors.size() - 1;
     }
+
     public void translate(int dScreenX, int dScreenY) {
         if (dangerState)
             return;
@@ -168,10 +202,10 @@ public class ModelUpdater {
         double dOffsetY = dScreenY / scaleY;
         offsetX -= dOffsetX;
         offsetY += dOffsetY;
-        runResize();
+        calculator.runResize();
     }
 
-    public void resize(double delta, int x, int y, int line) {
+    public void rescale(double delta, int x, int y, int line) {
         if (dangerState)
             return;
         double deltaX = x / scaleX;
@@ -188,176 +222,37 @@ public class ModelUpdater {
             scaleY /= Math.pow(deltaScale, delta);
             offsetY += y / scaleY - deltaY;
         }
-        runResize();
+        calculator.runResize();
     }
 
-    public void resizeBack() {
+    public void rescaleBack() {
         if (dangerState)
             return;
         double yc = offsetY * scaleY;
         scaleY = 1 * scaleX;
         offsetY = yc / scaleY;
-        runResize();
-    }
 
-    public void recalculate() {
-        tasks.clearTasks();
-        tasks.runTask(() -> {
-            try {
-                setState(Language.CONVERTING);
-                List<String> graphs = new ArrayList<>();
-                List<String> calc = new ArrayList<>();
-                calc.add(calculatorView.getText());
-                for (int i = 0; i < list.getElements().size(); ++i) {
-                    TextElement e = list.getElements().get(i);
-                    if (graphics.get(i) instanceof Function || graphics.get(i) instanceof Implicit) {
-                        graphs.add(graphics.get(i).name + "=" + e.getText());
-                    } else if (graphics.get(i) instanceof Parametric) {
-                        String text = list.getElements().get(i).getText();
-                        String[] expressions = text.split(":");
-                        if (expressions.length == 2) {
-                            calc.add(expressions[0]);
-                            calc.add(expressions[1]);
-                        } else {
-                            throw new RuntimeException(UPDATER_ERRORS[0]);
-                        }
-                    }
-                }
-                calculator.calculate(
-                        Arrays.asList(functionsView.getText().split("\n")),
-                        graphs,
-                        calc,
-                        new Number()
-                );
-                calculatorView.setAnswer(calculator.getExpressions().get(0));
-                int funcs = 0;
-                int parameters = 0;
-                for (int i = 0; i < graphics.size(); ++i) {
-                    Graphic g = graphics.get(i);
-                    if (g instanceof Function) {
-                        Function f = (Function) g;
-                        List<Variable<Double>> vars = calculator.getVars().get(funcs);
-                        if(vars.size() == 0) {
-                            Variable<Double> var = new Variable<>();
-                            var.setName((f.abscissa)?"x":"y");
-                            vars.add(var);
-                        }
-                        if(vars.size() > 1){
-                            throw new RuntimeException(UPDATER_ERRORS[1] + " " + (i + 1) + " " + UPDATER_ERRORS[2]);
-                        }
-                        TextElement el = list.getElements().get(i);
-                        Variable<Double> var = vars.get(0);
-                        if (var.getName().equals("y") && f.abscissa) {
-                            f.abscissa = false;
-                            el.setName(f.name + "(y)");
-                        } else if (var.getName().equals("x") && !f.abscissa) {
-                            f.abscissa = true;
-                            el.setName(f.name + "(x)");
-                        }
-                        f.update(calculator.getGraphics().get(funcs), var);
-                        ++funcs;
-                    } else if (g instanceof Parametric) {
-                        List<Variable<Double>> vars = calculator.getExpressionVars().get(parameters);
-                        if (vars.size() == 0)
-                            vars.add(new Variable<>());
-                        Variable<Double> varX = vars.get(0);
-                        vars = calculator.getExpressionVars().get(parameters + 1);
-                        if (vars.size() == 0)
-                            vars.add(new Variable<>());
-                        Variable<Double> varY = vars.get(0);
-                        Expression<Double> funcX = calculator.getExpressions().get(parameters + 1);
-                        Expression<Double> funcY = calculator.getExpressions().get(parameters + 2);
-                        g.update(funcY, varY);
-                        ((Parametric) g).updateX(funcX, varX);
-                        parameters += 2;
-                    } else if (g instanceof Implicit) {
-                        List<Variable<Double>> vars = calculator.getVars().get(funcs);
-                        Expression<Double> func = calculator.getGraphics().get(funcs);
-                        if (vars.size() > 2)
-                            throw new RuntimeException(UPDATER_ERRORS[3]);
-                        Variable<Double> varX = null;
-                        Variable<Double> varY = null;
-                        checkingVars:
-                        {
-                            if (vars.size() == 0) {
-                                varX = new Variable<>();
-                                varY = new Variable<>();
-                                break checkingVars;
-                            } else if (vars.get(0).getName().equals("x")) {
-                                varX = vars.get(0);
-                            } else if (vars.get(0).getName().equals("y")) {
-                                varY = vars.get(0);
-                            } else {
-                                throw new RuntimeException(UPDATER_ERRORS[3]);
-                            }
-                            if (vars.size() == 1 && varX == null) {
-                                varX = new Variable<>();
-                            } else if (vars.size() == 1) {
-                                varY = new Variable<>();
-                            } else if (vars.get(1).getName().equals("x")) {
-                                varX = vars.get(1);
-                            } else if (vars.get(1).getName().equals("y")) {
-                                varY = vars.get(1);
-                            } else {
-                                throw new RuntimeException(UPDATER_ERRORS[3]);
-                            }
-                        }
-                        g.update(func, varX);
-                        ((Implicit) g).updateY(varY);
-                        ++funcs;
-                    }
-                }
-                dangerState = false;
-                setTime(supportFrameManager.getTime());
-                calculatorView.update();
-                resize.run();
-                repaint.run();
-            } catch (Exception e) {
-                if (e instanceof NullPointerException) {
-                    setState(e.toString());
-                    e.printStackTrace();
-                } else
-                    setState(e.getMessage());
-                dangerState = true;
-            }
-        });
-    }
-
-    public void frameResize() {
-        tasks.clearTasks();
-        tasks.runTask(() -> {
-            if (!dangerState) {
-                try {
-                    for (Graphic g : graphics) {
-                        g.funcChanged();
-                    }
-                    calculatorView.update();
-                    resize.run();
-                    repaint.run();
-                } catch (Throwable e) {
-                    error(e.getClass().getName());
-                    e.printStackTrace();
-                }
-            }
-        });
+        calculator.runResize();
     }
 
     public void runResize() {
-        tasks.clearTasks();
-        if (!dangerState)
-            tasks.runTask(() -> {
-                try {
-                    resize.run();
-                    repaint.run();
-                } catch (Throwable t) {
-                    error(t.getClass().getName());
-                }
-            });
+        calculator.runResize();
+    }
+
+    public void openTimer() {
+        supportFrameManager.openTimerSettings();
+    }
+
+    public void frameResize() {
+        calculator.frameResize();
+    }
+
+    public void recalculate() {
+        calculator.recalculate();
     }
 
     public void setStringElements(FunctionsView functions, CalculatorView calculator) {
-        this.functionsView = functions;
-        this.calculatorView = calculator;
+        this.calculator.setElements(calculator, functions);
     }
 
     public void setState(String text) {
@@ -365,8 +260,7 @@ public class ModelUpdater {
     }
 
     public void setResize(Runnable resize) {
-        this.resize = resize;
-        runResize();
+        calculator.setResize(resize);
     }
 
     public double getOffsetX() {
@@ -397,16 +291,56 @@ public class ModelUpdater {
         return supportFrameManager;
     }
 
+    public void setTime(double time) {
+        calculator.resetConstant("tm", time);
+    }
+
     public void error(String message) {
         dangerState = true;
         setState(message);
     }
 
-    public void setTime(double time) {
-        calculator.resetConstant("tm", time);
-    }
-    public void updateLanguage(){
+    public void updateLanguage() {
         mainPanel.updateLanguage();
         supportFrameManager.updateLanguage();
+    }
+
+    public void dosave(boolean selection, java.io.File f) {
+        if (selection) {
+            calculator.run(() -> {
+                FullModel m = new FullModel();
+                calculator.makeModel(m);
+                m.view_params = offsetX + "\n" + offsetY + "\n" + scaleX + "\n" + scaleY;
+                mainPanel.makeModel(m);
+                supportFrameManager.getTimer().makeModel(m);
+                setState(dataBase.save(m, f));
+            });
+        } else {
+            calculator.run(() -> {
+                try {
+                    FullModel m = dataBase.load(f);
+                    if (m.graphics.size() != 0) {
+                        list.clear();
+                    }
+                    calculator.fromModel(m);
+                    String[] view_params = m.view_params.split("\n");
+                    offsetX = Double.parseDouble(view_params[0]);
+                    offsetY = Double.parseDouble(view_params[1]);
+                    scaleX = Double.parseDouble(view_params[2]);
+                    scaleY = Double.parseDouble(view_params[3]);
+                    mainPanel.fromModel(m);
+                    supportFrameManager.getTimer().fromModel(m);
+                    if (Language.language_Names.contains(m.language) && Language.language_Names.indexOf(m.language) != Language.LANGUAGE_INDEX) {
+                        supportFrameManager.getMainSettings().setLanguage(Language.language_Names.indexOf(m.language));
+                    }
+                    supportFrameManager.close();
+                    mainPanel.setGraphicsHeight();
+                    calculator.recalculate();
+                    calculator.run(() -> setState(f.getName() + " " + Language.LOADED));
+                } catch (Exception e) {
+                    setState(e.toString());
+                }
+            });
+        }
     }
 }
