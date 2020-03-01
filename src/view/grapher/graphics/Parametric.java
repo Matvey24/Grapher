@@ -4,6 +4,7 @@ import calculator2.calculator.executors.Expression;
 import calculator2.calculator.executors.Variable;
 
 import java.awt.*;
+
 import static view.MainPanel.GRAPH_WIDTH;
 import static view.MainPanel.HEIGHT;
 
@@ -19,29 +20,34 @@ public class Parametric extends Graphic {
         startT = 0;
         endT = 6.2832;
     }
-    public Parametric(int map_size){
+
+    public Parametric(int map_size) {
         setMAP_SIZE(map_size);
         startT = 0;
         endT = 6.2832;
     }
+
     public void updateX(Expression<Double> xFunc, Variable<Double> xVar) {
         this.xFunc = xFunc;
         this.xVar = xVar;
     }
+
     @Override
     public void resize(double offsetX, double offsetY, double scaleX, double scaleY) {
         this.offsetY = offsetY;
         this.scaleY = scaleY;
         this.offsetX = offsetX;
         this.scaleX = scaleX;
-        for (int i = 0; i < MAP_SIZE; ++i) {
-            double t = startT + (double) i * (endT - startT) / MAP_SIZE;
-            var.setValue(t);
-            xVar.setValue(t);
-            map[i] = func.calculate();
-            xMap[i] = xFunc.calculate();
+        if (needResize) {
+            for (int i = 0; i < MAP_SIZE; ++i) {
+                double t = startT + (double) i * (endT - startT) / MAP_SIZE;
+                var.setValue(t);
+                xVar.setValue(t);
+                map[i] = func.calculate();
+                xMap[i] = xFunc.calculate();
+            }
+            needResize = false;
         }
-
     }
 
     @Override
