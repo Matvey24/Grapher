@@ -23,14 +23,15 @@ public class UpdaterFrame extends Screen {
         pane.getVerticalScrollBar().setUnitIncrement(16);
         changes.setEditable(false);
         changes.setLineWrap(true);
+        changes.setText(info.changes);
         add(pane);
 
         btn_cancel = new JButton("Cancel");
-        btn_cancel.setBounds(5, 50, 120, 40);
+        btn_cancel.setBounds(5, 135, 120, 40);
         add(btn_cancel);
 
         btn_update = new JButton("Update!");
-        btn_update.setBounds(135, 50, 120, 40);
+        btn_update.setBounds(135, 135, 120, 40);
         add(btn_update);
 
         btn_cancel.addActionListener(e -> back());
@@ -51,6 +52,6 @@ public class UpdaterFrame extends Screen {
     }
     @Override
     public void onSetSize() {
-        setSize(300,150);
+        setSize(280,230);
     }
 }
