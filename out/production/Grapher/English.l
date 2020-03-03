@@ -5,15 +5,12 @@
 <entry key = "type">Type</entry>
 <entry key = "titles">Function y(x) or x(y)
 Parametric x(t): y(t)
-Implicit z(x,y)=0 or z(x,y)</entry>
+Implicit</entry>
 <entry key = "settings">Discretization
 Sensitivity
-Inequality
-Spectrum
 Dimension
 Duration:FPS
-Boomerang
-Accuracy</entry>
+Boomerang</entry>
 <entry key = "states">Converting functions..
 Calculating..
 +
@@ -164,16 +161,23 @@ part 3
 Parametric:
 Write expression for x, then put ':' and
 then write expression for y, click ENTER
-part 9
+part 16
 Implicit:
+Equality:
+Grapher will show, where it is true
+(sensitivity is maximum difference between
+two nearest pixels round 0)
+f(x,y)=g(x,y)
 Inequality:
 Write an expression using x, y and grapher
 will show color, where this expression is non-zero
+f(x,y)&lt;g(x,y)
 Spectrum:
 The same as inequality, but grapher will show color
 which depends on expression value
 from red to purple (rainbow).
 Use sensitivity to control rainbow thickness.
+z(x,y)
 part 6
 Examples:
 num = sqrt(5) - num is a constant
