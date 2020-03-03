@@ -117,7 +117,6 @@ public class ModelUpdater {
             case "Implicit":
                 e.setName(name + "(xy)");
                 ((Implicit) gr).setSensitivity(Double.parseDouble(arr[3]));
-                ((Implicit) gr).setSpectrum(Boolean.parseBoolean(arr[4]));
                 break;
         }
     }

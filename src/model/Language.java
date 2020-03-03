@@ -14,8 +14,6 @@ public class Language {
     public static String[] TYPE_TITLES;
     //implicit
     public static String SENSITIVITY;
-    public static String INEQUALITY;
-    public static String SPECTRUM;
     //parametric
     public static String DIMENSION;
     //timer
@@ -88,11 +86,9 @@ public class Language {
             arr = properties.getProperty("settings").split("\n");
             DISCRETIZATION = arr[0];
             SENSITIVITY = arr[1];
-            INEQUALITY = arr[2];
-            SPECTRUM = arr[3];
-            DIMENSION = arr[4];
-            DURATION_FPS = arr[5];
-            BOOMERANG = arr[6];
+            DIMENSION = arr[2];
+            DURATION_FPS = arr[3];
+            BOOMERANG = arr[4];
             arr = properties.getProperty("states").split("\n");
             CONVERTING = arr[0];
             UPDATING = arr[1];

@@ -229,8 +229,6 @@ public class Calculator {
             }else if(graphic instanceof Implicit){
                 sb.append("Implicit\n");
                 sb.append(((Implicit) graphic).getSensitivity());
-                sb.append('\n');
-                sb.append(((Implicit) graphic).isSpectrum());
             }
             graphicsInfo.add(sb.toString());
             sb.setLength(0);

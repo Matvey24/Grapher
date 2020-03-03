@@ -14,6 +14,10 @@ public class BinaryActor<T> implements Expression<T> {
         this.name = name;
     }
 
+    public void setFunc(BinarFunc<T> func) {
+        this.func = func;
+    }
+
     @Override
     public String getName() {
         return name;
