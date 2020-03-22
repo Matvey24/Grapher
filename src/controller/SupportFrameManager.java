@@ -2,21 +2,12 @@ package controller;
 
 import framesLib.MyFrame;
 import framesLib.TextPanel;
-import model.GraphType;
-import model.Language;
-import model.Settings;
-import view.elements.ComboBoxParameter;
-import view.elements.Item;
+
 import view.elements.TextElement;
 import view.grapher.graphics.Function;
 import view.grapher.graphics.Implicit;
 import view.grapher.graphics.Parametric;
 import view.support_panels.*;
-
-import javax.swing.*;
-import java.awt.event.ItemEvent;
-
-import static view.elements.ElementsList.OFFSET;
 
 public class SupportFrameManager {
     private MyFrame frame;
@@ -85,35 +76,6 @@ public class SupportFrameManager {
     void close(){
         if(frame != null && frame.isVisible())
             frame.dispose();
-    }
-    public static ComboBoxParameter createSpinner(ModelUpdater updater, Settings settings, int y){
-        ComboBoxParameter spinner = new ComboBoxParameter(Language.TYPE, Language.TYPE_TITLES);
-        spinner.setBounds(OFFSET, y);
-        spinner.addTo(settings);
-        if(settings instanceof FunctionSettings)
-            spinner.setSelectedIndex(GraphType.FUNCTION.ordinal());
-        else if(settings instanceof ParametricSettings)
-            spinner.setSelectedIndex(GraphType.PARAMETER.ordinal());
-        else if(settings instanceof ImplicitSettings)
-            spinner.setSelectedIndex(GraphType.IMPLICIT.ordinal());
-        spinner.addItemListener(e -> {
-            if(!(e.getStateChange() == ItemEvent.SELECTED))
-                return;
-            Object item = ((Item)e.getItem()).name;
-            if (Language.TYPE_TITLES[GraphType.FUNCTION.ordinal()] == item)
-                updater.makeFunction(settings.getGraphic(), settings.getTextElement());
-            else if (Language.TYPE_TITLES[GraphType.PARAMETER.ordinal()] == item)
-                updater.makeParameter(settings.getGraphic(), settings.getTextElement());
-            else if (Language.TYPE_TITLES[GraphType.IMPLICIT.ordinal()] == item)
-                updater.makeImplicit(settings.getGraphic(), settings.getTextElement());
-            if(settings instanceof FunctionSettings)
-                spinner.setSelectedIndex(GraphType.FUNCTION.ordinal());
-            else if(settings instanceof ParametricSettings)
-                spinner.setSelectedIndex(GraphType.PARAMETER.ordinal());
-            else if(settings instanceof ImplicitSettings)
-                spinner.setSelectedIndex(GraphType.IMPLICIT.ordinal());
-        });
-        return spinner;
     }
     private void checkFrame(){
         if(frame == null || !frame.isVisible())

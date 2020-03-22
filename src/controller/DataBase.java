@@ -21,7 +21,6 @@ public class DataBase {
         properties.setProperty("functions", m.functions);
         properties.setProperty("calculator", m.calculator);
         properties.setProperty("timer_info", m.timer_info);
-        properties.setProperty("language", m.language);
         properties.setProperty("resize_idx", m.resize_idx);
         properties.setProperty("view_params", m.view_params);
         try {
@@ -47,7 +46,7 @@ public class DataBase {
         m.functions = properties.getProperty("functions", "");
         m.calculator = properties.getProperty("calculator", "");
         m.timer_info = properties.getProperty("timer_info", "");
-        m.language = properties.getProperty("language", Language.DEFAULT_LANGUAGE);
+        m.language = properties.getProperty("language", null);
         m.resize_idx = properties.getProperty("resize_idx", "");
         m.view_params = properties.getProperty("view_params", "");
         return m;

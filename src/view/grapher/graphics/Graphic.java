@@ -2,11 +2,13 @@ package view.grapher.graphics;
 
 import calculator2.calculator.executors.Expression;
 import calculator2.calculator.executors.Variable;
+import model.GraphType;
 
 import java.awt.*;
 import java.math.BigDecimal;
 
 public abstract class Graphic {
+    public GraphType type;
     public int MAP_SIZE = 500;
     public String name;
     final int MAX_DELTA = 1000;

@@ -151,7 +151,6 @@ public class MainPanel extends Screen {
     }
     public void makeModel(FullModel m){
         m.resize_idx = String.valueOf(resizeType);
-        m.language = Language.language_Names.get(Language.LANGUAGE_INDEX);
     }
     public void fromModel(FullModel m){
         resizeType = Integer.parseInt(m.resize_idx);

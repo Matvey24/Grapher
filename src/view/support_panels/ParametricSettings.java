@@ -17,7 +17,6 @@ public class ParametricSettings extends Settings {
     private Parameter dimension;
     private Parametric p;
     private TextElement el;
-    private ComboBoxParameter spinner;
     public ParametricSettings(ModelUpdater updater){
         setLayout(null);
         mapSize = new Parameter(Language.DISCRETIZATION, (e)->{
@@ -43,7 +42,6 @@ public class ParametricSettings extends Settings {
         mapSize.setBounds(OFFSET,OFFSET, ComboBoxParameter.WIDTH);
         dimension.addTo(this);
         dimension.setBounds(OFFSET,2 * OFFSET + ComboBoxParameter.HEIGHT, ComboBoxParameter.WIDTH);
-        spinner = SupportFrameManager.createSpinner(updater, this, 3 * OFFSET + 2 * ComboBoxParameter.HEIGHT);
     }
     public void setInfo(Parametric p, TextElement e){
         this.p = p;
@@ -64,12 +62,10 @@ public class ParametricSettings extends Settings {
 
     @Override
     public void onSetSize() {
-        setSize(ComboBoxParameter.WIDTH + 2 * OFFSET + 40, ComboBoxParameter.HEIGHT * 3 + 4 * OFFSET + 80);
+        setSize(ComboBoxParameter.WIDTH + 2 * OFFSET + 40, ComboBoxParameter.HEIGHT * 2 + 3 * OFFSET + 80);
     }
     public void updateLanguage(){
         mapSize.setName(Language.DISCRETIZATION);
         dimension.setName(Language.DIMENSION);
-        spinner.setName(Language.TYPE);
-        spinner.setElementNames(Language.TYPE_TITLES);
     }
 }

@@ -1,5 +1,7 @@
 package view.grapher.graphics;
 
+import model.GraphType;
+
 import java.awt.*;
 import static view.MainPanel.GRAPH_WIDTH;
 import static view.MainPanel.HEIGHT;
@@ -8,9 +10,11 @@ public class Function extends Graphic {
     public boolean abscissa = true;
     public Function(){
         super();
+        type = GraphType.FUNCTION;
     }
     public Function(int map_size){
         super(map_size);
+        type = GraphType.FUNCTION;
     }
     @Override
     public void resize(double offsetX, double offsetY, double scaleX, double scaleY) {

@@ -4,6 +4,7 @@ import calculator2.ArrayCalculator;
 import calculator2.calculator.executors.Expression;
 import calculator2.calculator.executors.Variable;
 import calculator2.values.Number;
+import model.GraphType;
 import model.Language;
 import model.help.FullModel;
 import threads.Tasks;
@@ -47,9 +48,9 @@ public class Calculator {
                 calc.add(calculatorView.getText());
                 for (int i = 0; i < updater.list.getElements().size(); ++i) {
                     TextElement e = updater.list.getElements().get(i);
-                    if (updater.graphics.get(i) instanceof Function || updater.graphics.get(i) instanceof Implicit) {
-                        graphs.add(updater.graphics.get(i).name + "=" + e.getText());
-                    } else if (updater.graphics.get(i) instanceof Parametric) {
+                    if (e.getText().contains(":")) {
+                        if (updater.graphics.get(i).type != GraphType.PARAMETRIC)
+                            updater.makeParametric(i, e);
                         String text = updater.list.getElements().get(i).getText();
                         String[] expressions = text.split(":");
                         if (expressions.length == 2) {
@@ -58,6 +59,10 @@ public class Calculator {
                         } else {
                             throw new RuntimeException(UPDATER_ERRORS[0]);
                         }
+                    } else {
+                        if (updater.graphics.get(i).type == GraphType.PARAMETRIC)
+                            updater.graphics.get(i).type = GraphType.FUNCTION;
+                        graphs.add(updater.graphics.get(i).name + "=" + e.getText());
                     }
                 }
                 calculator.calculate(
@@ -71,29 +76,7 @@ public class Calculator {
                 int parameters = 0;
                 for (int i = 0; i < updater.graphics.size(); ++i) {
                     Graphic g = updater.graphics.get(i);
-                    if (g instanceof Function) {
-                        Function f = (Function) g;
-                        List<Variable<Double>> vars = calculator.getVars().get(funcs);
-                        if (vars.size() == 0) {
-                            Variable<Double> var = new Variable<>();
-                            var.setName((f.abscissa) ? "x" : "y");
-                            vars.add(var);
-                        }
-                        if (vars.size() > 1) {
-                            throw new RuntimeException(UPDATER_ERRORS[1] + " " + (i + 1) + " " + UPDATER_ERRORS[2]);
-                        }
-                        TextElement el = updater.list.getElements().get(i);
-                        Variable<Double> var = vars.get(0);
-                        if (var.getName().equals("y") && f.abscissa) {
-                            f.abscissa = false;
-                            el.setName(f.name + "(y)");
-                        } else if (var.getName().equals("x") && !f.abscissa) {
-                            f.abscissa = true;
-                            el.setName(f.name + "(x)");
-                        }
-                        f.update(calculator.getGraphics().get(funcs), var);
-                        ++funcs;
-                    } else if (g instanceof Parametric) {
+                    if (g.type == GraphType.PARAMETRIC) {
                         List<Variable<Double>> vars = calculator.getExpressionVars().get(parameters);
                         if (vars.size() == 0)
                             vars.add(new Variable<>());
@@ -107,40 +90,59 @@ public class Calculator {
                         g.update(funcY, varY);
                         ((Parametric) g).updateX(funcX, varX);
                         parameters += 2;
-                    } else if (g instanceof Implicit) {
+                    } else {
                         List<Variable<Double>> vars = calculator.getVars().get(funcs);
-                        Expression<Double> func = calculator.getGraphics().get(funcs);
-                        if (vars.size() > 2)
-                            throw new RuntimeException(UPDATER_ERRORS[3]);
-                        Variable<Double> varX = null;
-                        Variable<Double> varY = null;
-                        checkingVars:
-                        {
+                        if (vars.size() >= 2) {
+                            if (g.type != GraphType.IMPLICIT) {
+                                updater.makeImplicit(i, updater.list.getElements().get(i));
+                                g = updater.graphics.get(i);
+                            }
+                            Expression<Double> func = calculator.getGraphics().get(funcs);
+                            if (vars.size() > 2)
+                                throw new RuntimeException(UPDATER_ERRORS[3]);
+                            Variable<Double> varX = null;
+                            Variable<Double> varY = null;
+                            {
+                                if (vars.get(0).getName().equals("x")) {
+                                    varX = vars.get(0);
+                                } else if (vars.get(0).getName().equals("y")) {
+                                    varY = vars.get(0);
+                                } else {
+                                    throw new RuntimeException(UPDATER_ERRORS[3]);
+                                }
+                                if (vars.get(1).getName().equals("x")) {
+                                    varX = vars.get(1);
+                                } else if (vars.get(1).getName().equals("y")) {
+                                    varY = vars.get(1);
+                                } else {
+                                    throw new RuntimeException(UPDATER_ERRORS[3]);
+                                }
+                            }
+                            g.update(func, varX);
+                            ((Implicit) g).updateY(varY);
+                        } else {
+                            if(g.type != GraphType.FUNCTION || !(g instanceof Function)) {
+                                updater.makeFunction(i, updater.list.getElements().get(i));
+                                g = updater.graphics.get(i);
+                            }
+                            Function f = (Function) g;
+
                             if (vars.size() == 0) {
-                                varX = new Variable<>();
-                                varY = new Variable<>();
-                                break checkingVars;
-                            } else if (vars.get(0).getName().equals("x")) {
-                                varX = vars.get(0);
-                            } else if (vars.get(0).getName().equals("y")) {
-                                varY = vars.get(0);
-                            } else {
-                                throw new RuntimeException(UPDATER_ERRORS[3]);
+                                Variable<Double> var = new Variable<>();
+                                var.setName((f.abscissa) ? "x" : "y");
+                                vars.add(var);
                             }
-                            if (vars.size() == 1 && varX == null) {
-                                varX = new Variable<>();
-                            } else if (vars.size() == 1) {
-                                varY = new Variable<>();
-                            } else if (vars.get(1).getName().equals("x")) {
-                                varX = vars.get(1);
-                            } else if (vars.get(1).getName().equals("y")) {
-                                varY = vars.get(1);
-                            } else {
-                                throw new RuntimeException(UPDATER_ERRORS[3]);
+                            TextElement el = updater.list.getElements().get(i);
+                            Variable<Double> var = vars.get(0);
+                            if (var.getName().equals("y") && f.abscissa) {
+                                f.abscissa = false;
+                                el.setName(f.name + "(y)");
+                            } else if (var.getName().equals("x") && !f.abscissa) {
+                                f.abscissa = true;
+                                el.setName(f.name + "(x)");
                             }
+                            f.update(calculator.getGraphics().get(funcs), var);
                         }
-                        g.update(func, varX);
-                        ((Implicit) g).updateY(varY);
                         ++funcs;
                     }
                 }
@@ -204,29 +206,31 @@ public class Calculator {
         this.calculatorView = calculatorView;
         this.functionsView = functionsView;
     }
-    void run(Runnable r){
+
+    void run(Runnable r) {
         tasks.runTask(r);
     }
-    void makeModel(FullModel m){
+
+    void makeModel(FullModel m) {
         List<String> graphs = new ArrayList<>();
         List<String> graphicsInfo = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < updater.graphics.size(); ++i){
-            TextElement view= updater.list.getElements().get(i);
+        for (int i = 0; i < updater.graphics.size(); ++i) {
+            TextElement view = updater.list.getElements().get(i);
             graphs.add(view.getText());
             Graphic graphic = updater.graphics.get(i);
             sb.append(graphic.name);
             sb.append('\n');
             sb.append(graphic.MAP_SIZE);
             sb.append('\n');
-            if(graphic instanceof Function){
+            if (graphic instanceof Function) {
                 sb.append("Function");
-            }else if(graphic instanceof Parametric){
+            } else if (graphic instanceof Parametric) {
                 sb.append("Parametric\n");
                 sb.append(((Parametric) graphic).getStartT());
                 sb.append(':');
                 sb.append(((Parametric) graphic).getEndT());
-            }else if(graphic instanceof Implicit){
+            } else if (graphic instanceof Implicit) {
                 sb.append("Implicit\n");
                 sb.append(((Implicit) graphic).getSensitivity());
             }
@@ -238,11 +242,12 @@ public class Calculator {
         m.functions = this.functionsView.getText();
         m.calculator = this.calculatorView.getText();
     }
-    public void fromModel(FullModel m){
-        for(int i = 0; i < m.graphics.size(); ++i){
+
+    public void fromModel(FullModel m) {
+        for (int i = 0; i < m.graphics.size(); ++i) {
             String graphic = m.graphics.get(i);
             String params = m.graphics_info.get(i);
-            if(params.equals(""))
+            if (params.equals(""))
                 continue;
             updater.add(graphic, params);
         }

@@ -90,7 +90,7 @@ public class ModelUpdater {
                 gr = new Parametric(map_size);
                 break;
             case "Implicit":
-                gr = new Implicit(map_size);
+                gr = new Implicit(mainPanel, map_size);
                 break;
             default:
                 return;
@@ -137,47 +137,54 @@ public class ModelUpdater {
         }
     }
 
-    public void makeFunction(Graphic g, TextElement e) {
+    public void makeFunctionGUI(Graphic g, TextElement e) {
         if (g instanceof Function)
             return;
         int idx = graphics.indexOf(g);
+        makeFunction(idx, e);
+        calculator.recalculate();
+        startSettings(idx);
+    }
+    public void makeParametricGUI(Graphic g, TextElement e) {
+        if (g instanceof Parametric)
+            return;
+        int idx = graphics.indexOf(g);
+        makeParametric(idx, e);
+        calculator.recalculate();
+        startSettings(idx);
+    }
+    public void makeImplicitGUI(Graphic g, TextElement e) {
+        if (g instanceof Implicit)
+            return;
+        int idx = graphics.indexOf(g);
+        makeImplicit(idx, e);
+        calculator.recalculate();
+        startSettings(idx);
+    }
+
+    public void makeFunction(int idx, TextElement e){
         Function function = new Function();
         function.setColor(e.getColor());
         graphics.set(idx, function);
         int id = colors.indexOf(e.getColor());
         e.setName(func_names.get(id) + "(x)");
         function.name = func_names.get(id);
-        calculator.recalculate();
-        startSettings(idx);
     }
-
-    public void makeParameter(Graphic g, TextElement e) {
-        if (g instanceof Parametric)
-            return;
-        int idx = graphics.indexOf(g);
+    public void makeParametric(int idx, TextElement e){
         Parametric parametric = new Parametric();
         parametric.setColor(e.getColor());
         graphics.set(idx, parametric);
         e.setName("xy(t)");
         parametric.name = func_names.get(colors.indexOf(e.getColor()));
-        calculator.recalculate();
-        startSettings(idx);
     }
-
-    public void makeImplicit(Graphic g, TextElement e) {
-        if (g instanceof Implicit)
-            return;
-        int idx = graphics.indexOf(g);
-        Implicit implicit = new Implicit();
+    public void makeImplicit(int idx, TextElement e){
+        Implicit implicit = new Implicit(mainPanel);
         implicit.setColor(e.getColor());
         graphics.set(idx, implicit);
         int id = colors.indexOf(e.getColor());
         e.setName(func_names.get(id) + "(xy)");
         implicit.name = func_names.get(id);
-        calculator.recalculate();
-        startSettings(idx);
     }
-
     private int findFreeId() {
         for (int i = 0; i < colors.size() - 1; ++i) {
             Color c = colors.get(i);
@@ -329,7 +336,7 @@ public class ModelUpdater {
                     scaleY = Double.parseDouble(view_params[3]);
                     mainPanel.fromModel(m);
                     supportFrameManager.getTimer().fromModel(m);
-                    if (Language.language_Names.contains(m.language) && Language.language_Names.indexOf(m.language) != Language.LANGUAGE_INDEX) {
+                    if (m.language != null && Language.language_Names.contains(m.language) && Language.language_Names.indexOf(m.language) != Language.LANGUAGE_INDEX) {
                         supportFrameManager.getMainSettings().setLanguage(Language.language_Names.indexOf(m.language));
                     }
                     supportFrameManager.close();

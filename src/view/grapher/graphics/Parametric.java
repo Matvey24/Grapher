@@ -2,6 +2,7 @@ package view.grapher.graphics;
 
 import calculator2.calculator.executors.Expression;
 import calculator2.calculator.executors.Variable;
+import model.GraphType;
 
 import java.awt.*;
 
@@ -19,12 +20,14 @@ public class Parametric extends Graphic {
         xMap = new double[MAP_SIZE];
         startT = 0;
         endT = 6.2832;
+        type = GraphType.PARAMETRIC;
     }
 
     public Parametric(int map_size) {
         setMAP_SIZE(map_size);
         startT = 0;
         endT = 6.2832;
+        type = GraphType.PARAMETRIC;
     }
 
     public void updateX(Expression<Double> xFunc, Variable<Double> xVar) {

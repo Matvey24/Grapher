@@ -16,7 +16,6 @@ public class FunctionSettings extends Settings {
     private final Parameter mapSize;
     private Function f;
     private TextElement el;
-    private ComboBoxParameter spinner;
     public FunctionSettings(ModelUpdater updater){
         setLayout(null);
         mapSize = new Parameter(Language.DISCRETIZATION, (e)->{
@@ -27,7 +26,6 @@ public class FunctionSettings extends Settings {
         });
         mapSize.addTo(this);
         mapSize.setBounds(OFFSET,OFFSET, ComboBoxParameter.WIDTH);
-        spinner = SupportFrameManager.createSpinner(updater, this,  OFFSET * 2 + ComboBoxParameter.HEIGHT);
     }
 
     @Override
@@ -48,11 +46,9 @@ public class FunctionSettings extends Settings {
 
     @Override
     public void onSetSize() {
-        setSize(ComboBoxParameter.WIDTH + 2 * OFFSET + 40, ComboBoxParameter.HEIGHT * 2 + 3 * OFFSET + 80);
+        setSize(ComboBoxParameter.WIDTH + 2 * OFFSET + 40, ComboBoxParameter.HEIGHT + 2 * OFFSET + 80);
     }
     public void updateLanguage(){
         mapSize.setName(Language.DISCRETIZATION);
-        spinner.setName(Language.TYPE);
-        spinner.setElementNames(Language.TYPE_TITLES);
     }
 }

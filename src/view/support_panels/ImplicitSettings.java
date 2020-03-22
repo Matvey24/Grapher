@@ -16,7 +16,6 @@ public class ImplicitSettings extends Settings {
     private final Parameter sensitivity;
     private Implicit imp;
     private TextElement el;
-    private ComboBoxParameter spinner;
     public ImplicitSettings(ModelUpdater updater){
         setLayout(null);
         mapSize = new Parameter(Language.DISCRETIZATION, (e)->{
@@ -35,8 +34,6 @@ public class ImplicitSettings extends Settings {
         });
         sensitivity.addTo(this);
         sensitivity.setBounds(OFFSET, 2 * OFFSET + ComboBoxParameter.HEIGHT, ComboBoxParameter.WIDTH);
-        spinner = SupportFrameManager.createSpinner(updater, this,
-                3 * OFFSET + 2 * ComboBoxParameter.HEIGHT);
     }
     public void setInfo(Implicit imp, TextElement e){
         this.imp = imp;
@@ -58,13 +55,10 @@ public class ImplicitSettings extends Settings {
     @Override
     public void onSetSize() {
         setSize(ComboBoxParameter.WIDTH + 2 * OFFSET + 40,
-                ComboBoxParameter.HEIGHT * 3 + 5 * OFFSET + TextElement.HEIGHT + 80);
+                ComboBoxParameter.HEIGHT * 2 + 3 * OFFSET + 80);
     }
     public void updateLanguage(){
         mapSize.setName(Language.DISCRETIZATION);
         sensitivity.setName(Language.SENSITIVITY);
-
-        spinner.setName(Language.TYPE);
-        spinner.setElementNames(Language.TYPE_TITLES);
     }
 }

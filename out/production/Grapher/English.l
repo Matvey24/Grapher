@@ -47,11 +47,22 @@ Rescale back</entry>
 Functions
 Calculator</entry>
 <entry key = "language">Language</entry>
-<entry key = "help">help 5
-part 3
-Make a graphic
-Click "+" and write function in the text field.
-Then press ENTER.
+<entry key = "help">help 7
+part 6
+How to use?
+Enter an example in calculator field and press Enter
+If you want, you also can add your
+own functions and constants,
+You can write them in 'Functions' area,
+separate each one by pressing ENTER.
+part 2
+Constants:
+Write name + "=" + write an example.
+part 4
+How to write your own functions?
+This is the same as writing constant.
+You can call vars by these names:
+x; y; z; t; x + some letter, like x\u9f99.
 part 6
 Signs:
 +, -, *, / standard math signs
@@ -63,12 +74,12 @@ part 16
 Functions:
 sqrt, cbrt - quadratic and cubic roots
 pow - power
-exp - exponent, it works faster than 'e^x'
+exp - exponent (it works faster than 'e^x')
 sign - signum of number (1, 0, -1)
 lg, ln, ld, log - logarithms
 sigm - sigmoid - sigm(x) = 1 / (1 + e^-x)
 sin, cos, tg, ctg, arcsin, arccos, arctg, arcctg, arctgTwo
-- trigonometric functions
+- trigonometric functions,
 put 'd' after them to convert radians to degrees.
 abs - absolute value
 floor - max integer less then given
@@ -103,22 +114,11 @@ ln(e) = 1
 log(8, 2) = 3
 arcsind(1) = 90
 arctgTwo(1, 0) = pi / 2
-help 10
-part 6
-How to use?
-Enter an example in calculator field and press Enter
-If you want, you also can add your
-own functions and constants,
-You can write them in 'Functions' area,
-separate each one by pressing ENTER.
-part 2
-Constants:
-Write name + "=" + write an example.
-part 4
-How to write your own functions?
-This is the same as writing constant.
-You can call vars by these names:
-x; y; z; t; x + some letter, like x\u9f99.
+help 8
+part 3
+Make a graphic
+Click "+" and write function in the text field.
+Then press ENTER.
 part 6
 Timer:
 Write a graphic using time var 'tm',
@@ -136,6 +136,31 @@ rotation/touchPad gestures
 will change only abscissa's/ordinate's size.
 Return back - left click will change
 ordinate's size to abscissa's size.
+part 3
+Extra:
+'Right' click on '-' button in expression in graphics.
+Extra info window will be opened.
+part 3
+Parametric:
+Write expression for x, then put ':' and
+then write expression for y, click ENTER
+part 16
+Implicit:
+Equality:
+Grapher will show, where the expression is true
+(sensitivity is maximum difference between
+two neighboring pixels close to 0)
+f(x,y)=g(x,y)
+Inequality:
+Write an inequality using x, y and grapher
+will show color, where this expression is true.
+f(x,y)&lt;g(x,y)
+Spectrum:
+Write a function like z(x, y) and grapher will show color
+which depends on expression value
+from red to purple (rainbow).
+Use sensitivity to control rainbow thickness.
+z(x,y)
 part 14
 Recursion:
 You can use recursion, but be careful:
@@ -151,39 +176,12 @@ fact = if(x &lt; 2, 1, fact(x-1) * x)
 everytime returns 1 when x is integer
 fact = if(x &lt; 2, 1, x * fact(x-1))
 is normal factorial when x is integer
-part 5
-Extra:
-'Right' click on '-' button in expression in graphics.
-Extra info window will be opened.
-You can choose between Function,
-Parametric and Implicit there.
-part 3
-Parametric:
-Write expression for x, then put ':' and
-then write expression for y, click ENTER
-part 16
-Implicit:
-Equality:
-Grapher will show, where it is true
-(sensitivity is maximum difference between
-two nearest pixels round 0)
-f(x,y)=g(x,y)
-Inequality:
-Write an expression using x, y and grapher
-will show color, where this expression is non-zero
-f(x,y)&lt;g(x,y)
-Spectrum:
-The same as inequality, but grapher will show color
-which depends on expression value
-from red to purple (rainbow).
-Use sensitivity to control rainbow thickness.
-z(x,y)
 part 6
 Examples:
 num = sqrt(5) - num is a constant
 lb = ld(x) - the same as ld(x) = logarithm of x with basis 2
 myfunc = sin(x) + cos(y) - use it like myfunc(x,y)
-(parameter) 2sin(x):cos(x) - draws ellipse
-(Implicit Spectrum) cos(x) + sin(x) - pretty picture
+2sin(x):cos(x) - draws ellipse
+cos(x) + sin(x) - pretty picture
 </entry>
 </properties>
