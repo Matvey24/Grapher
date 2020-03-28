@@ -7,6 +7,7 @@ import view.elements.CalculatorView;
 import view.elements.ElementsList;
 import view.elements.FunctionsView;
 import view.elements.TextElement;
+import view.grapher.CoordinateSystem;
 import view.grapher.graphics.Function;
 import view.grapher.graphics.Graphic;
 import view.grapher.graphics.Implicit;
@@ -117,6 +118,8 @@ public class ModelUpdater {
             case "Implicit":
                 e.setName(name + "(xy)");
                 ((Implicit) gr).setSensitivity(Double.parseDouble(arr[3]));
+                if(arr.length > 4)
+                    ((Implicit) gr).setViewType(Integer.parseInt(arr[4]));
                 break;
         }
     }
@@ -244,7 +247,7 @@ public class ModelUpdater {
     public void runResize() {
         calculator.runResize();
     }
-
+    public void runRepaint(){calculator.runRepaint();}
     public void openTimer() {
         supportFrameManager.openTimerSettings();
     }
@@ -300,7 +303,9 @@ public class ModelUpdater {
     public void setTime(double time) {
         calculator.resetConstant("tm", time);
     }
-
+    public CoordinateSystem getCoordinateSystem(){
+        return mainPanel.getCoordinateSystem();
+    }
     public void error(String message) {
         dangerState = true;
         setState(message);

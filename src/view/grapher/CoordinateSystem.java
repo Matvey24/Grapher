@@ -7,8 +7,8 @@ import static view.MainPanel.GRAPH_WIDTH;
 import static view.MainPanel.HEIGHT;
 
 public class CoordinateSystem {
-    private static final int MIN_DELTA = 80;
-    private static final int MAX_DELTA = MIN_DELTA * 5 / 2;
+    private int MIN_DELTA;
+    private int MAX_DELTA;
     private static final Color EXTRA_LINE_COLOR = new Color(0.3f, 0.3f, 0.3f, 0.4f);
     private static final Color MAIN_COLOR = Color.BLACK;
     private double offsetX;
@@ -19,8 +19,14 @@ public class CoordinateSystem {
     private double deltaY = 1;
     private int deltaXpow = 0;
     private int deltaYpow = 0;
-    private int maxDeltaX = MAX_DELTA * 4 / 5;
-    private int maxDeltaY = MAX_DELTA * 4 / 5;
+    private int maxDeltaX;
+    private int maxDeltaY;
+    public CoordinateSystem(){
+        MIN_DELTA = 80;
+        MAX_DELTA = MIN_DELTA * 5 / 2;
+        maxDeltaY = MAX_DELTA * 4 / 5;
+        maxDeltaX = MAX_DELTA * 4 / 5;
+    }
     public void resize(double offsetX, double offsetY, double scaleX, double scaleY) {
         this.offsetX = offsetX;
         this.offsetY = offsetY;
@@ -34,7 +40,17 @@ public class CoordinateSystem {
         }
         resizeNet();
     }
-    private void resizeNet(){
+    public void setMIN_DELTA(int min_delta){
+        MIN_DELTA = min_delta;
+        MAX_DELTA = MIN_DELTA * 5 / 2;
+        maxDeltaY = MAX_DELTA * 4 / 5;
+        maxDeltaX = MAX_DELTA * 4 / 5;
+        resizeNet();
+    }
+    public int getMinDelta(){
+        return MIN_DELTA;
+    }
+    public void resizeNet(){
         boolean redo = true;
         while (redo){
             redo = false;

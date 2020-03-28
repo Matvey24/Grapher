@@ -56,6 +56,7 @@ public class MyFrame extends JFrame {
         screen.onSetSize();
         Dimension d = screen.getSize();
         setSize(d.width, d.height + 1);
+        this.update(getGraphics());
         setSize(d);
     }
     private void onHideScreen(){

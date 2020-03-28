@@ -8,9 +8,12 @@ Parametric x(t): y(t)
 Implicit</entry>
 <entry key = "settings">Discretization
 Sensitivity
+View colors
 Dimension
 Duration:FPS
 Boomerang</entry>
+<entry key = "colors">Ray spectrum
+Infrared imager</entry>
 <entry key = "states">Converting functions..
 Calculating..
 +
@@ -46,7 +49,8 @@ Rescale back</entry>
 <entry key = "text_elements">Graphics
 Functions
 Calculator</entry>
-<entry key = "language">Language</entry>
+<entry key = "main_settings">Language
+Lines &lt;->(pixels)</entry>
 <entry key = "help">help 7
 part 6
 How to use?
@@ -114,7 +118,7 @@ ln(e) = 1
 log(8, 2) = 3
 arcsind(1) = 90
 arctgTwo(1, 0) = pi / 2
-help 8
+help 10
 part 3
 Make a graphic
 Click "+" and write function in the text field.
@@ -183,5 +187,25 @@ lb = ld(x) - the same as ld(x) = logarithm of x with basis 2
 myfunc = sin(x) + cos(y) - use it like myfunc(x,y)
 2sin(x):cos(x) - draws ellipse
 cos(x) + sin(x) - pretty picture
+part 5
+Settings:
+Changing language in settings.
+Save/load grapher project here.
+Lines &lt;-> is minimum distance
+between lines of net on view.
+part 13
+Warning:
+Grapher can answer the incomprehensible
+for it questions incorrect, for example,
+if you write f(x)=g(x,x) and g=x+y
+grapher will show error, because will think anyway
+that g is the gravity constant.
+The following happens too:
+f(x)=rx, r=2
+Too many arguments!
+r is a function, so if there something is
+following continuously, grapher think like here:
+r(x), but not r*x, and r doesn't have arguments.
+xr all is a variable, xra (ra=2) is working good.
 </entry>
 </properties>

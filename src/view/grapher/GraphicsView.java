@@ -35,7 +35,9 @@ public class GraphicsView {
             g.resize(offsetX, offsetY, scaleX, scaleY);
         updater.setState(Language.FINE);
     }
-
+    public CoordinateSystem getCoordinateSystem(){
+        return coordinateSystem;
+    }
     public void paint(Graphics g) {
         coordinateSystem.draw(g);
         try {

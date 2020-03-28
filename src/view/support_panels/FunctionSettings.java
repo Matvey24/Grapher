@@ -2,7 +2,6 @@ package view.support_panels;
 
 import model.Language;
 import controller.ModelUpdater;
-import controller.SupportFrameManager;
 import model.Settings;
 import view.elements.ComboBoxParameter;
 import view.elements.Parameter;
@@ -13,19 +12,25 @@ import view.grapher.graphics.Graphic;
 import static view.elements.ElementsList.OFFSET;
 
 public class FunctionSettings extends Settings {
-    private final Parameter mapSize;
+    private Parameter mapSize;
     private Function f;
     private TextElement el;
-    public FunctionSettings(ModelUpdater updater){
+
+    public FunctionSettings(ModelUpdater updater) {
         setLayout(null);
-        mapSize = new Parameter(Language.DISCRETIZATION, (e)->{
-            if(f != null) {
-                f.setMAP_SIZE(Integer.parseInt(e.getSource().toString()));
-                updater.runResize();
+        mapSize = new Parameter(Language.DISCRETIZATION, (s) -> {
+            if (f != null) {
+                int n = Integer.parseInt(s);
+                if (n < 1) {
+                    mapSize.setDefault(f.MAP_SIZE + "");
+                } else {
+                    f.setMAP_SIZE(Integer.parseInt(s));
+                    updater.runResize();
+                }
             }
         });
         mapSize.addTo(this);
-        mapSize.setBounds(OFFSET,OFFSET, ComboBoxParameter.WIDTH);
+        mapSize.setBounds(OFFSET, OFFSET, ComboBoxParameter.WIDTH);
     }
 
     @Override
@@ -38,7 +43,7 @@ public class FunctionSettings extends Settings {
         return el;
     }
 
-    public void setInfo(Function f, TextElement e){
+    public void setInfo(Function f, TextElement e) {
         this.f = f;
         this.el = e;
         mapSize.setDefault(String.valueOf(f.MAP_SIZE));
@@ -48,7 +53,8 @@ public class FunctionSettings extends Settings {
     public void onSetSize() {
         setSize(ComboBoxParameter.WIDTH + 2 * OFFSET + 40, ComboBoxParameter.HEIGHT + 2 * OFFSET + 80);
     }
-    public void updateLanguage(){
+
+    public void updateLanguage() {
         mapSize.setName(Language.DISCRETIZATION);
     }
 }

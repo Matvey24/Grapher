@@ -2,7 +2,7 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
     <entry key="file_path">https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/Grapher.jar</entry>
-    <entry key="version">11</entry>
-    <entry key="changes">Optimized spectrum plot,
-    added auto change between function, parametric, implicit</entry>
+    <entry key="version">12</entry>
+    <entry key="changes">Added printing last dot
+    changing space between lines available</entry>
 </properties>

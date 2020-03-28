@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.util.Properties;
 
 public class VersionController {
-    public static final int VERSION_CODE = 11;
+    public static final int VERSION_CODE = 12;
     public static final String VERSION_NAME = getName(VERSION_CODE);
     private static final String URL_VERSION =
             "https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/VersionInfo.xml";

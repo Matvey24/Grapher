@@ -2,7 +2,6 @@ package view.support_panels;
 
 import model.Language;
 import controller.ModelUpdater;
-import controller.SupportFrameManager;
 import model.Settings;
 import view.elements.ComboBoxParameter;
 import view.elements.Parameter;
@@ -13,37 +12,40 @@ import view.grapher.graphics.Parametric;
 import static view.elements.ElementsList.OFFSET;
 
 public class ParametricSettings extends Settings {
-    private final Parameter mapSize;
+    private Parameter mapSize;
     private Parameter dimension;
     private Parametric p;
     private TextElement el;
-    public ParametricSettings(ModelUpdater updater){
+
+    public ParametricSettings(ModelUpdater updater) {
         setLayout(null);
-        mapSize = new Parameter(Language.DISCRETIZATION, (e)->{
-            if(p != null){
-                p.setMAP_SIZE(Integer.parseInt(e.getSource().toString()));
-                updater.runResize();
-            }
-        });
-        dimension = new Parameter(Language.DIMENSION, (e)->{
-            if(p != null){
-                try {
-                    String[] dim = e.getSource().toString().split(":");
-                    double start = Double.parseDouble(dim[0]);
-                    double end = Double.parseDouble(dim[1]);
-                    p.updateBoards(start, end);
+        mapSize = new Parameter(Language.DISCRETIZATION, (s) -> {
+            if (p != null) {
+                int n = Integer.parseInt(s);
+                if (n < 1) {
+                    mapSize.setDefault(p.MAP_SIZE + "");
+                } else {
+                    p.setMAP_SIZE(Integer.parseInt(s));
                     updater.runResize();
-                }catch (RuntimeException ex){
-                    dimension.setDefault(p.getStartT() + ":" + p.getEndT());
                 }
             }
         });
+        dimension = new Parameter(Language.DIMENSION, (s) -> {
+            if (p != null) {
+                String[] dim = s.split(":");
+                double start = Double.parseDouble(dim[0]);
+                double end = Double.parseDouble(dim[1]);
+                p.updateBoards(start, end);
+                updater.runResize();
+            }
+        });
         mapSize.addTo(this);
-        mapSize.setBounds(OFFSET,OFFSET, ComboBoxParameter.WIDTH);
+        mapSize.setBounds(OFFSET, OFFSET, ComboBoxParameter.WIDTH);
         dimension.addTo(this);
-        dimension.setBounds(OFFSET,2 * OFFSET + ComboBoxParameter.HEIGHT, ComboBoxParameter.WIDTH);
+        dimension.setBounds(OFFSET, 2 * OFFSET + ComboBoxParameter.HEIGHT, ComboBoxParameter.WIDTH);
     }
-    public void setInfo(Parametric p, TextElement e){
+
+    public void setInfo(Parametric p, TextElement e) {
         this.p = p;
         this.el = e;
         mapSize.setDefault(p.MAP_SIZE + "");
@@ -64,7 +66,8 @@ public class ParametricSettings extends Settings {
     public void onSetSize() {
         setSize(ComboBoxParameter.WIDTH + 2 * OFFSET + 40, ComboBoxParameter.HEIGHT * 2 + 3 * OFFSET + 80);
     }
-    public void updateLanguage(){
+
+    public void updateLanguage() {
         mapSize.setName(Language.DISCRETIZATION);
         dimension.setName(Language.DIMENSION);
     }

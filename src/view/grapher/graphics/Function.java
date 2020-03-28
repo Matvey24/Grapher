@@ -25,7 +25,7 @@ public class Function extends Graphic {
                 needResize = false;
                 this.offsetX = offsetX;
                 this.scaleX = scaleX;
-                for (int i = 0; i < MAP_SIZE; ++i) {
+                for (int i = 0; i < MAP_SIZE + 1; ++i) {
                     var.setValue(offsetX + (double) i * GRAPH_WIDTH / MAP_SIZE / scaleX);
                     map[i] = func.calculate();
                 }
@@ -37,7 +37,7 @@ public class Function extends Graphic {
                 needResize = false;
                 this.offsetY = offsetY;
                 this.scaleY = scaleY;
-                for (int i = 0; i < MAP_SIZE; ++i) {
+                for (int i = 0; i < MAP_SIZE + 1; ++i) {
                     var.setValue(offsetY - (double) i * HEIGHT / MAP_SIZE / scaleY);
                     map[i] = func.calculate();
                 }
@@ -49,7 +49,7 @@ public class Function extends Graphic {
     public void paint(Graphics g) {
         g.setColor(color);
         if (abscissa) {
-            for (int i = 0; i < MAP_SIZE - 1; ++i) {
+            for (int i = 0; i < MAP_SIZE; ++i) {
                 if (Double.isNaN(map[i]) || Double.isNaN(map[i + 1]) || Math.abs(map[i] - map[i + 1]) * scaleY > MAX_DELTA)
                     continue;
                 int y1 = (int) ((offsetY - map[i]) * scaleY);
@@ -60,7 +60,7 @@ public class Function extends Graphic {
                         (i + 1) * GRAPH_WIDTH / MAP_SIZE, y2);
             }
         } else {
-            for (int i = 0; i < MAP_SIZE - 1; ++i) {
+            for (int i = 0; i < MAP_SIZE; ++i) {
                 if (Double.isNaN(map[i]) || Double.isNaN(map[i + 1]) || Math.abs(map[i] - map[i + 1]) * scaleX > MAX_DELTA)
                     continue;
                 int x1 = (int) ((-offsetX + map[i]) * scaleX);

@@ -14,6 +14,8 @@ public class Language {
     public static String[] TYPE_TITLES;
     //implicit
     public static String SENSITIVITY;
+    public static String VIEW_COLOR;
+    public static String[] COLORS;
     //parametric
     public static String DIMENSION;
     //timer
@@ -22,6 +24,7 @@ public class Language {
     public static String BOOMERANG;
     //main settings
     public static String LANGUAGE;
+    public static String LINES_SPACE;
     //states
     public static String CONVERTING;
     public static String UPDATING;
@@ -86,9 +89,11 @@ public class Language {
             arr = properties.getProperty("settings").split("\n");
             DISCRETIZATION = arr[0];
             SENSITIVITY = arr[1];
-            DIMENSION = arr[2];
-            DURATION_FPS = arr[3];
-            BOOMERANG = arr[4];
+            VIEW_COLOR = arr[2];
+            DIMENSION = arr[3];
+            DURATION_FPS = arr[4];
+            BOOMERANG = arr[5];
+            COLORS = properties.getProperty("colors").split("\n");
             arr = properties.getProperty("states").split("\n");
             CONVERTING = arr[0];
             UPDATING = arr[1];
@@ -115,7 +120,9 @@ public class Language {
             GRAPHICS = arr[0];
             FUNCTIONS = arr[1];
             CALCULATOR = arr[2];
-            LANGUAGE = properties.getProperty("language");
+            arr = properties.getProperty("main_settings").split("\n");
+            LANGUAGE = arr[0];
+            LINES_SPACE = arr[1];
             //////////////////////////////////////////////
             String s = properties.getProperty("help");
             List<String> list = Arrays.asList(s.split("\n"));

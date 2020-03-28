@@ -6,6 +6,7 @@ import controller.VersionController;
 import framesLib.Screen;
 import model.help.FullModel;
 import view.elements.*;
+import view.grapher.CoordinateSystem;
 import view.grapher.GraphicsView;
 
 import javax.swing.*;
@@ -142,6 +143,9 @@ public class MainPanel extends Screen {
     @Override
     public void onShow() {
         setTitle(Language.GRAPHER + VersionController.VERSION_NAME + " by Math_way");
+    }
+    public CoordinateSystem getCoordinateSystem(){
+        return graphicsView.getCoordinateSystem();
     }
     @Override
     public void paint(Graphics g) {

@@ -45,7 +45,7 @@ public class ArrayCalculator<T> {
         for (int i = 0; i < funcs.size(); ++i) {
             funcs.set(i, funcs.get(i).replaceAll("[ \t]", ""));
             int n = funcs.get(i).indexOf("=");
-            if(n == -1)
+            if (n == -1)
                 continue;
             type.addFuncName(funcs.get(i).substring(0, n));
         }
@@ -60,7 +60,7 @@ public class ArrayCalculator<T> {
                 int n = s.indexOf('=');
                 analise(s.substring(0, n), s.substring(n + 1));
             }
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             throw new RuntimeException(e.getMessage() + " " + Language.CALCULATOR_ERRORS[0] + " " + (err + 1) + " " + Language.CALCULATOR_ERRORS[1]);
         }
         err = 0;
@@ -71,7 +71,7 @@ public class ArrayCalculator<T> {
                 if (n != -1)
                     analise(s.substring(0, n), s.substring(n + 1));
             }
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             throw new RuntimeException(e.getMessage() + " " + Language.CALCULATOR_ERRORS[0] + " " + (err + 1) + " " + Language.CALCULATOR_ERRORS[2]);
         }
         director.renewType(type);
@@ -113,18 +113,18 @@ public class ArrayCalculator<T> {
     }
 
     private void analise(String start, String end) {
-        AbstractFunc<T> func = new AbstractFunc<>();
         int args = director.parse(end);
-            switch (args) {
-                case 2:
-                    type.addFunction(start, func.getBinary(), 10);
-                    break;
-                case 1:
-                    type.addFunction(start, func.getUnary(), 10);
-                    break;
-                default:
-                    type.addFunction(start, func.getMulti(args), args, 10);
-            }
+        AbstractFunc<T> func = new AbstractFunc<>();
+        switch (args) {
+            case 2:
+                type.addFunction(start, func.getBinary(), 10);
+                break;
+            case 1:
+                type.addFunction(start, func.getUnary(), 10);
+                break;
+            default:
+                type.addFunction(start, func.getMulti(args), args, 10);
+        }
         funcs.add(func);
         funcNames.add(director.getStack());
     }

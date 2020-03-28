@@ -121,7 +121,7 @@ public class Calculator {
                             g.update(func, varX);
                             ((Implicit) g).updateY(varY);
                         } else {
-                            if(g.type != GraphType.FUNCTION || !(g instanceof Function)) {
+                            if (g.type != GraphType.FUNCTION || !(g instanceof Function)) {
                                 updater.makeFunction(i, updater.list.getElements().get(i));
                                 g = updater.graphics.get(i);
                             }
@@ -172,6 +172,12 @@ public class Calculator {
                     updater.error(t.getClass().getName());
                 }
             });
+    }
+
+    public void runRepaint() {
+        tasks.clearTasks();
+        if (!updater.dangerState)
+            tasks.runTask(repaint);
     }
 
     public void frameResize() {
@@ -233,6 +239,8 @@ public class Calculator {
             } else if (graphic instanceof Implicit) {
                 sb.append("Implicit\n");
                 sb.append(((Implicit) graphic).getSensitivity());
+                sb.append("\n");
+                sb.append(((Implicit) graphic).viewType);
             }
             graphicsInfo.add(sb.toString());
             sb.setLength(0);

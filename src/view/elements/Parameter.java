@@ -1,27 +1,30 @@
 package view.elements;
 
 import model.ViewElement;
+import model.help.Exeptable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.time.OffsetTime;
 
 import static view.elements.ElementsList.OFFSET;
 
 public class Parameter extends ViewElement {
     private final JLabel label;
     private final JTextField field;
-    private ActionListener onChange;
-    public Parameter(String name, ActionListener onChange){
+    private Exeptable onChange;
+    private String def;
+    public Parameter(String name, Exeptable onChange){
         this.onChange = onChange;
         label = new JLabel(name);
         label.setFont(name_font);
         field = new JTextField();
         field.addActionListener((e)->{
-            e.setSource(field.getText());
-            onChange.actionPerformed(e);
+            try{
+                onChange.execute(field.getText());
+                def = field.getText();
+            }catch (Exception ex){
+                field.setText(def);
+            }
         });
     }
     @Override
@@ -30,11 +33,15 @@ public class Parameter extends ViewElement {
         container.add(field);
     }
     public void setDefault(String text){
+        def = text;
         field.setText(text);
     }
     public void activate(){
-        ActionEvent e = new ActionEvent(field.getText(), 0, "");
-        onChange.actionPerformed(e);
+        try{
+            onChange.execute(field.getText());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     public void setBounds(int x, int y, int width){
         label.setBounds(x, y, width, TextElement.HEIGHT);

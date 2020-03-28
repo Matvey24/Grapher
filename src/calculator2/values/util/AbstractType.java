@@ -51,7 +51,6 @@ public abstract class AbstractType<T> {
     public void addFunction(String name, MultiFunc<T> multiFunc, int args, int priority){
         funcs.add(new Func<>(name, multiFunc, args, priority));
     }
-
     public abstract T toValue(String text);
 
     public Sign<T> getMissingSign() {

@@ -23,11 +23,11 @@ public abstract class Graphic {
     boolean needResize;
 
     Graphic() {
-        map = new double[MAP_SIZE];
+        map = new double[MAP_SIZE + 1];
         color = Color.BLACK;
     }
     Graphic(int MAP_SIZE){
-        this.map = new double[MAP_SIZE];
+        this.map = new double[MAP_SIZE + 1];
         this.MAP_SIZE = MAP_SIZE;
         color = Color.BLACK;
     }
@@ -52,6 +52,6 @@ public abstract class Graphic {
     public void setMAP_SIZE(int map_size) {
         MAP_SIZE = map_size;
         needResize = true;
-        map = new double[map_size];
+        map = new double[map_size + 1];
     }
 }

@@ -17,7 +17,7 @@ public class Parametric extends Graphic {
     private Variable<Double> xVar;
 
     public Parametric() {
-        xMap = new double[MAP_SIZE];
+        xMap = new double[MAP_SIZE + 1];
         startT = 0;
         endT = 6.2832;
         type = GraphType.PARAMETRIC;
@@ -42,7 +42,7 @@ public class Parametric extends Graphic {
         this.offsetX = offsetX;
         this.scaleX = scaleX;
         if (needResize) {
-            for (int i = 0; i < MAP_SIZE; ++i) {
+            for (int i = 0; i < MAP_SIZE + 1; ++i) {
                 double t = startT + (double) i * (endT - startT) / MAP_SIZE;
                 var.setValue(t);
                 xVar.setValue(t);
@@ -56,7 +56,7 @@ public class Parametric extends Graphic {
     @Override
     public void paint(Graphics g) {
         g.setColor(color);
-        for (int i = 0; i < MAP_SIZE - 1; ++i) {
+        for (int i = 0; i < MAP_SIZE; ++i) {
             if (Double.isNaN(map[i] + map[i + 1] + xMap[i] + xMap[i + 1])
                     || ((map[i] - map[i + 1]) * (map[i] - map[i + 1]) * scaleY * scaleY + (xMap[i] - xMap[i + 1]) * (xMap[i] - xMap[i + 1]) * scaleX * scaleX)
                     > MAX_DELTA * MAX_DELTA)
@@ -90,6 +90,6 @@ public class Parametric extends Graphic {
     @Override
     public void setMAP_SIZE(int map_size) {
         super.setMAP_SIZE(map_size);
-        xMap = new double[map_size];
+        xMap = new double[map_size + 1];
     }
 }
