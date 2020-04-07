@@ -82,7 +82,7 @@ public class Calculator {
                                 || ax != -1 || ay != -1 || bx != -1 || by != -1){
                             if(varsA.size() > 2 || varsB.size() > 2 || notContainsOnly(varsA, "x", "y")
                                     || notContainsOnly(varsB, "x", "y"))
-                                throw new RuntimeException(UPDATER_ERRORS[1] + " " + i + " " + UPDATER_ERRORS[2]);
+                                throw new RuntimeException(UPDATER_ERRORS[3] + " " + i + " " + UPDATER_ERRORS[2]);
                             Variable<Double> varAX, varAY, varBX, varBY;
                             varAX = (ax != -1)?varsA.get(ax):new Variable<>();
                             varAY = (ay != -1)?varsA.get(ay):new Variable<>();
@@ -122,7 +122,7 @@ public class Calculator {
                             }
                             Expression<Double> func = calculator.getGraphics().get(funcs);
                             if (vars.size() > 2)
-                                throw new RuntimeException(UPDATER_ERRORS[3]);
+                                throw new RuntimeException(UPDATER_ERRORS[3] + " " + Language.TYPE_TITLES[2]);
                             Variable<Double> varX = null;
                             Variable<Double> varY = null;
                             {

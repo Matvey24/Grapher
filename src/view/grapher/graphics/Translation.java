@@ -92,11 +92,11 @@ public class Translation extends Graphic {
                     continue;
                 int y1 = (int) ((offsetY - map[i]) * scaleY);
                 int y2 = (int) ((offsetY - map[i + 1]) * scaleY);
-                if (y1 < 0 && y2 < 0 /*|| y1 > HEIGHT && y2 > HEIGHT*/)
+                if (y1 < 0 && y2 < 0 || y1 > HEIGHT && y2 > HEIGHT)
                     continue;
                 int x1 = (int) ((-offsetX + xMap[i]) * scaleX);
                 int x2 = (int) ((-offsetX + xMap[i + 1]) * scaleX);
-                if (x1 < 0 || x2 < 0 /*|| x1 > GRAPH_WIDTH && x2 > GRAPH_WIDTH*/)
+                if (x1 < 0 || x2 < 0 || x1 > GRAPH_WIDTH && x2 > GRAPH_WIDTH)
                     continue;
                 g.drawLine(x1, y1, x2, y2);
             }

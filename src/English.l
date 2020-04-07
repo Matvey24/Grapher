@@ -25,7 +25,7 @@ Saved to</entry>
 <entry key = "updater_errors">We need 2 funcs in parametric and translation.
 Too many vars in
 graphic
-We need x and y vars in Implicit</entry>
+We need t or x and y vars in</entry>
 <entry key = "calculator_errors">in
 graphic
 function
