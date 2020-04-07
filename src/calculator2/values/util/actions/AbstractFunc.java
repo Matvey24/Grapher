@@ -14,6 +14,7 @@ public class AbstractFunc<T>{
     private Variable<T> a;
     private Variable<T> b;
     private List<Variable<T>> arr;
+    private List<T> buffer;
     private int args;
 
     private T execute(T a) {
@@ -21,13 +22,17 @@ public class AbstractFunc<T>{
         return expression.calculate();
     }
     private T execute(Expression<T> a, Expression<T> b) {
-        this.a.setValue(a.calculate());
-        this.b.setValue(b.calculate());
+        T va = a.calculate();
+        T vb = b.calculate();
+        this.a.setValue(va);
+        this.b.setValue(vb);
         return expression.calculate();
     }
     private T execute(Expression<T>[] arr){
         for(int i = 0; i < arr.length; ++i)
-            this.arr.get(i).setValue(arr[i].calculate());
+            buffer.set(i, arr[i].calculate());
+        for(int i = 0; i < arr.length; ++i)
+            this.arr.get(i).setValue(buffer.get(i));
         return expression.calculate();
     }
     public void setFunc(Expression<T> expression, List<Variable<T>> vars){
@@ -43,6 +48,9 @@ public class AbstractFunc<T>{
                 break;
             default:
                 arr = new ArrayList<>(vars);
+                buffer = new ArrayList<>(vars.size());
+                for(int i = 0; i < vars.size(); ++i)
+                    buffer.add(null);
         }
     }
     public UnarFunc<T> getUnary(){

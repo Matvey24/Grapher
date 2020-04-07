@@ -8,10 +8,8 @@ import view.elements.ElementsList;
 import view.elements.FunctionsView;
 import view.elements.TextElement;
 import view.grapher.CoordinateSystem;
-import view.grapher.graphics.Function;
-import view.grapher.graphics.Graphic;
-import view.grapher.graphics.Implicit;
-import view.grapher.graphics.Parametric;
+import view.grapher.graphics.*;
+import view.support_panels.TranslationSettings;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -93,6 +91,9 @@ public class ModelUpdater {
             case "Implicit":
                 gr = new Implicit(mainPanel, map_size);
                 break;
+            case "Translation":
+                gr = new Translation(getCoordinateSystem(), map_size);
+                break;
             default:
                 return;
         }
@@ -121,6 +122,11 @@ public class ModelUpdater {
                 if(arr.length > 4)
                     ((Implicit) gr).setViewType(Integer.parseInt(arr[4]));
                 break;
+            case "Translation":
+                e.setName("Tran");
+                ((Translation) gr).multiplyer = Integer.parseInt(arr[3]);
+                gr.setMAP_SIZE(gr.MAP_SIZE);
+                break;
         }
     }
 
@@ -128,7 +134,9 @@ public class ModelUpdater {
         graphics.remove(e.getID());
         calculator.recalculate();
     }
-
+    public void run(Runnable r){
+        calculator.run(r);
+    }
     public void startSettings(int id) {
         Graphic g = graphics.get(id);
         if (g instanceof Function) {
@@ -137,34 +145,10 @@ public class ModelUpdater {
             supportFrameManager.openParameterSettings((Parametric) g, list.getElements().get(id));
         } else if (g instanceof Implicit) {
             supportFrameManager.openImplicitSettings((Implicit) g, list.getElements().get(id));
+        }else if(g instanceof Translation){
+            supportFrameManager.openTranslationSettings((Translation)g, list.getElements().get(id));
         }
     }
-
-    public void makeFunctionGUI(Graphic g, TextElement e) {
-        if (g instanceof Function)
-            return;
-        int idx = graphics.indexOf(g);
-        makeFunction(idx, e);
-        calculator.recalculate();
-        startSettings(idx);
-    }
-    public void makeParametricGUI(Graphic g, TextElement e) {
-        if (g instanceof Parametric)
-            return;
-        int idx = graphics.indexOf(g);
-        makeParametric(idx, e);
-        calculator.recalculate();
-        startSettings(idx);
-    }
-    public void makeImplicitGUI(Graphic g, TextElement e) {
-        if (g instanceof Implicit)
-            return;
-        int idx = graphics.indexOf(g);
-        makeImplicit(idx, e);
-        calculator.recalculate();
-        startSettings(idx);
-    }
-
     public void makeFunction(int idx, TextElement e){
         Function function = new Function();
         function.setColor(e.getColor());
@@ -172,6 +156,7 @@ public class ModelUpdater {
         int id = colors.indexOf(e.getColor());
         e.setName(func_names.get(id) + "(x)");
         function.name = func_names.get(id);
+        supportFrameManager.close();
     }
     public void makeParametric(int idx, TextElement e){
         Parametric parametric = new Parametric();
@@ -179,6 +164,7 @@ public class ModelUpdater {
         graphics.set(idx, parametric);
         e.setName("xy(t)");
         parametric.name = func_names.get(colors.indexOf(e.getColor()));
+        supportFrameManager.close();
     }
     public void makeImplicit(int idx, TextElement e){
         Implicit implicit = new Implicit(mainPanel);
@@ -187,6 +173,15 @@ public class ModelUpdater {
         int id = colors.indexOf(e.getColor());
         e.setName(func_names.get(id) + "(xy)");
         implicit.name = func_names.get(id);
+        supportFrameManager.close();
+    }
+    public void makeTranslation(int idx, TextElement e){
+        Translation translation = new Translation(getCoordinateSystem());
+        translation.setColor(e.getColor());
+        graphics.set(idx, translation);
+        e.setName("Tran");
+        translation.name = func_names.get(colors.indexOf(e.getColor()));
+        supportFrameManager.close();
     }
     private int findFreeId() {
         for (int i = 0; i < colors.size() - 1; ++i) {
@@ -247,7 +242,6 @@ public class ModelUpdater {
     public void runResize() {
         calculator.runResize();
     }
-    public void runRepaint(){calculator.runRepaint();}
     public void openTimer() {
         supportFrameManager.openTimerSettings();
     }

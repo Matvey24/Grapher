@@ -7,6 +7,7 @@ import view.elements.TextElement;
 import view.grapher.graphics.Function;
 import view.grapher.graphics.Implicit;
 import view.grapher.graphics.Parametric;
+import view.grapher.graphics.Translation;
 import view.support_panels.*;
 
 public class SupportFrameManager {
@@ -14,6 +15,7 @@ public class SupportFrameManager {
     private final FunctionSettings functionSettings;
     private final ParametricSettings parametricSettings;
     private final ImplicitSettings implicitSettings;
+    private final TranslationSettings translationSettings;
     private final TimerSettings timerSettings;
     private final HelperFrame helperFrame;
     private final MainSettings mainSettings;
@@ -22,6 +24,7 @@ public class SupportFrameManager {
         parametricSettings = new ParametricSettings(updater);
         timerSettings = new TimerSettings(updater);
         implicitSettings = new ImplicitSettings(updater);
+        translationSettings = new TranslationSettings(updater);
         helperFrame = new HelperFrame(updater);
         mainSettings = new MainSettings(updater);
     }
@@ -41,6 +44,12 @@ public class SupportFrameManager {
         checkFrame();
         implicitSettings.setInfo(imp, e);
         frame.changeScreen(implicitSettings);
+        setOnTop();
+    }
+    void openTranslationSettings(Translation tr, TextElement e){
+        checkFrame();
+        translationSettings.setInfo(tr, e);
+        frame.changeScreen(translationSettings);
         setOnTop();
     }
     void openTimerSettings(){
@@ -99,8 +108,9 @@ public class SupportFrameManager {
         helperFrame.updateLanguage();
         mainSettings.updateLanguage();
         functionSettings.updateLanguage();
-        implicitSettings.updateLanguage();
         parametricSettings.updateLanguage();
+        implicitSettings.updateLanguage();
+        translationSettings.updateLanguage();
         timerSettings.updateLanguage();
     }
 }

@@ -3,8 +3,7 @@ package view.grapher;
 import java.awt.*;
 import java.math.BigDecimal;
 
-import static view.MainPanel.GRAPH_WIDTH;
-import static view.MainPanel.HEIGHT;
+import static view.MainPanel.*;
 
 public class CoordinateSystem {
     private int MIN_DELTA;
@@ -21,11 +20,13 @@ public class CoordinateSystem {
     private int deltaYpow = 0;
     private int maxDeltaX;
     private int maxDeltaY;
+    public int MAX_LINES;
     public CoordinateSystem(){
         MIN_DELTA = 80;
         MAX_DELTA = MIN_DELTA * 5 / 2;
         maxDeltaY = MAX_DELTA * 4 / 5;
         maxDeltaX = MAX_DELTA * 4 / 5;
+        MAX_LINES = HEIGHT / MIN_DELTA + GRAPH_WIDTH / MIN_DELTA + 6;
     }
     public void resize(double offsetX, double offsetY, double scaleX, double scaleY) {
         this.offsetX = offsetX;
@@ -45,12 +46,13 @@ public class CoordinateSystem {
         MAX_DELTA = MIN_DELTA * 5 / 2;
         maxDeltaY = MAX_DELTA * 4 / 5;
         maxDeltaX = MAX_DELTA * 4 / 5;
+        MAX_LINES = HEIGHT / MIN_DELTA + GRAPH_WIDTH / MIN_DELTA + 6;
         resizeNet();
     }
     public int getMinDelta(){
         return MIN_DELTA;
     }
-    public void resizeNet(){
+    private void resizeNet(){
         boolean redo = true;
         while (redo){
             redo = false;
@@ -182,10 +184,16 @@ public class CoordinateSystem {
 
     }
 
-    private static double mod(double a, double b) {
+    public static double mod(double a, double b) {
         double c = a % b;
         if (c <= 0)
             c += b;
         return c;
+    }
+    public double getDeltaX() {
+        return deltaX;
+    }
+    public double getDeltaY() {
+        return deltaY;
     }
 }

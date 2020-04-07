@@ -9,6 +9,7 @@ import view.elements.TextElement;
 
 import javax.swing.*;
 import java.awt.event.ItemEvent;
+import java.io.File;
 
 import static view.elements.ElementsList.OFFSET;
 
@@ -20,7 +21,6 @@ public class MainSettings extends Screen {
     private JButton btn_save;
     private Parameter lineSpace;
     private boolean selectionSave;
-
     public MainSettings(ModelUpdater modelUpdater) {
         this.modelUpdater = modelUpdater;
         setLayout(null);
@@ -31,7 +31,7 @@ public class MainSettings extends Screen {
                 return;
             }
             modelUpdater.getCoordinateSystem().setMIN_DELTA(space);
-            modelUpdater.runRepaint();
+            modelUpdater.runResize();
         });
         lineSpace.setBounds(OFFSET, 2 * OFFSET + TextElement.HEIGHT, ComboBoxParameter.WIDTH);
         lineSpace.addTo(this);
@@ -50,7 +50,16 @@ public class MainSettings extends Screen {
                 modelUpdater.updateLanguage();
             }
         });
-        fileChooser = new FileChooser(this);
+        fileChooser = new FileChooser();
+        fileChooser.setActionListener((e)->{
+            if(e.getActionCommand().equals(JFileChooser.CANCEL_SELECTION))
+                fileChooser.back();
+            if(e.getActionCommand().equals(JFileChooser.APPROVE_SELECTION)) {
+                File f = fileChooser.getSelectedFile();
+                save(f);
+                fileChooser.back();
+            }
+        });
         btn_save = new JButton(Language.SAVE_PRJ);
         btn_save.addActionListener((e) -> {
             changeScreen(fileChooser);

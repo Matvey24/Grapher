@@ -134,7 +134,7 @@ public class MainPanel extends Screen {
         btn_settings.setText(Language.MAIN_SETTINGS);
         functions.updateLanguage();
         calculator.updateLanguage();
-        setTitle(Language.GRAPHER + VersionController.VERSION_NAME + " by Math_way");
+        setTitle(VersionController.VERSION_NAME + " by Math_way");
     }
     @Override
     public void onSetSize() {
@@ -142,14 +142,16 @@ public class MainPanel extends Screen {
     }
     @Override
     public void onShow() {
-        setTitle(Language.GRAPHER + VersionController.VERSION_NAME + " by Math_way");
+        setTitle(VersionController.VERSION_NAME + " by Math_way");
     }
     public CoordinateSystem getCoordinateSystem(){
         return graphicsView.getCoordinateSystem();
     }
+    //int i = 0;
     @Override
     public void paint(Graphics g) {
         super.paint(g);
+        //System.out.println("Paint " + ++i);
         g.translate(ElementsList.WIDTH, 0);
         graphicsView.paint(g);
     }

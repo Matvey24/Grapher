@@ -11,27 +11,30 @@ import javax.swing.*;
 import static view.elements.ElementsList.OFFSET;
 
 public class HelperFrame extends Screen {
-    private JButton btn_help;
-    private JButton btn_calc_help;
+    private JButton[] btn_arr;
+    private int height;
     public HelperFrame(ModelUpdater updater){
         setLayout(null);
-        btn_help = new JButton(Language.USER_HELP);
-        btn_help.setBounds(OFFSET,OFFSET,200, TextElement.HEIGHT);
-        add(btn_help);
-        btn_help.addActionListener(e->updater.getSupportFrameManager().openTextFrame(TextViewer.openText("help")));
-        btn_calc_help = new JButton(Language.CALC_HELP);
-        btn_calc_help.setBounds(OFFSET,TextElement.HEIGHT + 2 * OFFSET,200,TextElement.HEIGHT);
-        add(btn_calc_help);
-        btn_calc_help.addActionListener((e)->  updater.getSupportFrameManager().openTextFrame(TextViewer.openText("calc_help")));
-
+        btn_arr = new JButton[Language.HELP_NAMES.length];
+        height = OFFSET;
+        for(int i = 0; i < Language.HELP_NAMES.length; ++i){
+            JButton btn = new JButton(Language.HELP_NAMES[i]);
+            btn.setBounds(OFFSET, height, TextElement.WIDTH, TextElement.HEIGHT);
+            height += OFFSET + TextElement.HEIGHT;
+            add(btn);
+            final int j = i;
+            btn.addActionListener(e->updater.getSupportFrameManager().openTextFrame(TextViewer.openText(TextViewer.help_names[j])));
+            btn_arr[i] = btn;
+        }
+        height += OFFSET + 40;
     }
     public void updateLanguage(){
-        btn_help.setText(Language.USER_HELP);
-        btn_calc_help.setText(Language.CALC_HELP);
+        for(int i = 0; i < btn_arr.length; ++i)
+            btn_arr[i].setText(Language.HELP_NAMES[i]);
         TextViewer.updateLanguage();
     }
     @Override
     public void onSetSize() {
-        setSize(230, 110);
+        setSize(TextElement.WIDTH + 40, height);
     }
 }

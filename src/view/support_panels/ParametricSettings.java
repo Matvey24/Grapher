@@ -1,5 +1,6 @@
 package view.support_panels;
 
+import model.GraphType;
 import model.Language;
 import controller.ModelUpdater;
 import model.Settings;
@@ -22,8 +23,8 @@ public class ParametricSettings extends Settings {
         mapSize = new Parameter(Language.DISCRETIZATION, (s) -> {
             if (p != null) {
                 int n = Integer.parseInt(s);
-                if (n < 1) {
-                    mapSize.setDefault(p.MAP_SIZE + "");
+                if (n < 2) {
+                    mapSize.setDefault(String.valueOf(p.MAP_SIZE));
                 } else {
                     p.setMAP_SIZE(Integer.parseInt(s));
                     updater.runResize();
@@ -48,7 +49,7 @@ public class ParametricSettings extends Settings {
     public void setInfo(Parametric p, TextElement e) {
         this.p = p;
         this.el = e;
-        mapSize.setDefault(p.MAP_SIZE + "");
+        mapSize.setDefault(String.valueOf(p.MAP_SIZE));
         dimension.setDefault(p.getStartT() + ":" + p.getEndT());
     }
 
@@ -66,7 +67,10 @@ public class ParametricSettings extends Settings {
     public void onSetSize() {
         setSize(ComboBoxParameter.WIDTH + 2 * OFFSET + 40, ComboBoxParameter.HEIGHT * 2 + 3 * OFFSET + 80);
     }
-
+    @Override
+    public void onShow() {
+        setTitle(Language.TYPE_TITLES[GraphType.PARAMETRIC.ordinal()]);
+    }
     public void updateLanguage() {
         mapSize.setName(Language.DISCRETIZATION);
         dimension.setName(Language.DIMENSION);

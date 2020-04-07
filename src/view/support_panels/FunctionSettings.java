@@ -1,5 +1,6 @@
 package view.support_panels;
 
+import model.GraphType;
 import model.Language;
 import controller.ModelUpdater;
 import model.Settings;
@@ -21,8 +22,8 @@ public class FunctionSettings extends Settings {
         mapSize = new Parameter(Language.DISCRETIZATION, (s) -> {
             if (f != null) {
                 int n = Integer.parseInt(s);
-                if (n < 1) {
-                    mapSize.setDefault(f.MAP_SIZE + "");
+                if (n < 2) {
+                    mapSize.setDefault(String.valueOf(f.MAP_SIZE));
                 } else {
                     f.setMAP_SIZE(Integer.parseInt(s));
                     updater.runResize();
@@ -47,6 +48,11 @@ public class FunctionSettings extends Settings {
         this.f = f;
         this.el = e;
         mapSize.setDefault(String.valueOf(f.MAP_SIZE));
+    }
+
+    @Override
+    public void onShow() {
+        setTitle(Language.TYPE_TITLES[GraphType.FUNCTION.ordinal()]);
     }
 
     @Override

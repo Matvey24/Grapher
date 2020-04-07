@@ -16,6 +16,9 @@ public class Language {
     public static String SENSITIVITY;
     public static String VIEW_COLOR;
     public static String[] COLORS;
+    public static String SAVE_PICTURE;
+    //Translation
+    public static String LINES_PER_CELL;
     //parametric
     public static String DIMENSION;
     //timer
@@ -38,8 +41,7 @@ public class Language {
     //gui
     //help
     public static String HELP;
-    public static String USER_HELP;
-    public static String CALC_HELP;
+    public static String[] HELP_NAMES;
     //text elements
     public static String GRAPHICS;
     public static String FUNCTIONS;
@@ -91,8 +93,10 @@ public class Language {
             SENSITIVITY = arr[1];
             VIEW_COLOR = arr[2];
             DIMENSION = arr[3];
-            DURATION_FPS = arr[4];
-            BOOMERANG = arr[5];
+            LINES_PER_CELL = arr[4];
+            SAVE_PICTURE = arr[5];
+            DURATION_FPS = arr[6];
+            BOOMERANG = arr[7];
             COLORS = properties.getProperty("colors").split("\n");
             arr = properties.getProperty("states").split("\n");
             CONVERTING = arr[0];
@@ -113,8 +117,7 @@ public class Language {
             LOAD_PRJ = arr[6];
             arr = properties.getProperty("helpers").split("\n");
             HELP = arr[0];
-            USER_HELP = arr[1];
-            CALC_HELP = arr[2];
+            HELP_NAMES = new String[]{arr[1], arr[2], arr[3]};
             RESIZERS = properties.getProperty("resizers").split("\n");
             arr = properties.getProperty("text_elements").split("\n");
             GRAPHICS = arr[0];
@@ -127,8 +130,8 @@ public class Language {
             String s = properties.getProperty("help");
             List<String> list = Arrays.asList(s.split("\n"));
             Iterator<String> it = list.iterator();
-            HELPERS = new String[2][][];
-            for(int i = 0; i < 2; ++i){
+            HELPERS = new String[3][][];
+            for(int i = 0; i < 3; ++i){
                 arr = it.next().split(" ");
                 if(!arr[0].equals("help")) {
                     return "no part 'help'";
@@ -150,7 +153,8 @@ public class Language {
             LANGUAGE_INDEX = language_Names.indexOf(name);
             return name + " " + LOADED;
         }catch (Exception e){
-            return "Error: " + e.getMessage();
+            e.printStackTrace();
+            return "Error: " + e.toString();
         }
     }
 }

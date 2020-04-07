@@ -20,6 +20,7 @@ public class Implicit extends Graphic {
     private int yMAP_SIZE;
     private Variable<Double> yVar;
     private Color c;
+
     private double sensitivity = 1;
     private int type;
     private static final int SPECTRUM = 0;
@@ -46,7 +47,8 @@ public class Implicit extends Graphic {
 
     @Override
     public void resize(double offsetX, double offsetY, double scaleX, double scaleY) {
-        if (needResize || offsetX != this.offsetX || this.scaleX != scaleX || offsetY != this.offsetY || this.scaleY != scaleY) {
+        if (needResize || offsetX != this.offsetX || this.scaleX != scaleX
+                || offsetY != this.offsetY || this.scaleY != scaleY) {
             this.offsetY = offsetY;
             this.scaleY = scaleY;
             this.offsetX = offsetX;
@@ -60,8 +62,8 @@ public class Implicit extends Graphic {
                         for (int j = 0; j < yMAP_SIZE; ++j) {
                             var.setValue(offsetX + i * deltaX);
                             yVar.setValue(offsetY - j * deltaY);
-
-                            data1.setRGB(i, j, 0xb6ffffff & Color.HSBtoRGB(2f / 3 - (float) ((2f / 3) / (1 + Math.exp(-func.calculate() * sensitivity))), 1, 1));
+                            data1.setRGB(i, j, 0xb6ffffff&Color.HSBtoRGB((float)
+                                    ((2f / 3) / (1 + Math.exp(func.calculate() * sensitivity))), 1, 1));
                         }
                     }
                 else if(viewType == RAY_SPECTRUM)
@@ -70,7 +72,8 @@ public class Implicit extends Graphic {
                             var.setValue(offsetX + i * deltaX);
                             yVar.setValue(offsetY - j * deltaY);
 
-                            data1.setRGB(i, j, 0xb6ffffff & Color.HSBtoRGB(5f/6*(float) (1 / (1 + Math.exp(-func.calculate() * sensitivity))), 1, 1));
+                            data1.setRGB(i, j, 0xb6ffffff&Color.HSBtoRGB(5f/6*(float)
+                                    (1 / (1 + Math.exp(-func.calculate() * sensitivity))), 1, 1));
                         }
                     }
             } else if (type == INEQUALITY) {
@@ -117,32 +120,29 @@ public class Implicit extends Graphic {
             }
         }
     }
-
+    public BufferedImage getData1(){
+        for(int i = 0; i < data1.getWidth(); ++i){
+            for(int j = 0; j < data1.getHeight(); ++j){
+                if(data1.getRGB(i, j) >> 24 != 0)
+                    data1.setRGB(i, j, data1.getRGB(i, j) | 0xff000000);
+            }
+        }
+        return data1;
+    }
     @Override
     public void paint(Graphics g) {
-        switch (type) {
-            case EQUALITY:
-                g.setColor(color);
-                break;
-            case INEQUALITY:
-                g.setColor(c);
-                break;
-            case SPECTRUM:
-                g.setColor(Color.WHITE);
-                break;
-        }
         g.drawImage(data1, 0, 0, GRAPH_WIDTH, HEIGHT, panel);
     }
 
     public void updateY(Variable<Double> yVar) {
         this.yVar = yVar;
-        c = new Color(color.getRed(), color.getGreen(), color.getBlue(), 130);
         if (func.getName().equals("=")) {
             type = EQUALITY;
             BinaryActor<Double> actor = (BinaryActor<Double>) func;
             actor.setFunc((a, b) -> a.calculate() - b.calculate());
         } else if (func.getName().equals("<") || func.getName().equals(">") || func.getName().equals("0.0")) {
             type = INEQUALITY;
+            c = new Color(color.getRed(), color.getGreen(), color.getBlue(), 130);
         } else {
             type = SPECTRUM;
         }
@@ -172,7 +172,5 @@ public class Implicit extends Graphic {
         yMAP_SIZE = (int) (HEIGHT / dw);
         data = new float[MAP_SIZE][yMAP_SIZE];
         data1 = new BufferedImage(MAP_SIZE, yMAP_SIZE, BufferedImage.TYPE_INT_ARGB);
-//        if (booleans != null)
-//            booleans = new boolean[MAP_SIZE][yMAP_SIZE];
     }
 }

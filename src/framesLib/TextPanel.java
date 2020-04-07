@@ -64,8 +64,9 @@ public class TextPanel extends Screen {
         int h = (int)((Math.min(height, MAX_HEIGHT) + 30) * 1.1f);
         setSize(width, h);
     }
-    public void updateLanguage(String[][] text, String title){
+    public void updateLanguage(String[][] text, String title, String back){
         this.title = title;
+        btn_back.setText(back);
         internal.removeAll();
         makeText(text);
     }

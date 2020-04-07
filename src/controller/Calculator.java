@@ -11,10 +11,7 @@ import threads.Tasks;
 import view.elements.CalculatorView;
 import view.elements.FunctionsView;
 import view.elements.TextElement;
-import view.grapher.graphics.Function;
-import view.grapher.graphics.Graphic;
-import view.grapher.graphics.Implicit;
-import view.grapher.graphics.Parametric;
+import view.grapher.graphics.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +27,6 @@ public class Calculator {
     private FunctionsView functionsView;
     private CalculatorView calculatorView;
     private Tasks tasks;
-
     public Calculator(ModelUpdater updater, Runnable repaint) {
         this.updater = updater;
         this.repaint = repaint;
@@ -49,8 +45,7 @@ public class Calculator {
                 for (int i = 0; i < updater.list.getElements().size(); ++i) {
                     TextElement e = updater.list.getElements().get(i);
                     if (e.getText().contains(":")) {
-                        if (updater.graphics.get(i).type != GraphType.PARAMETRIC)
-                            updater.makeParametric(i, e);
+                        updater.graphics.get(i).type = GraphType.DOUBLE_FUNC;
                         String text = updater.list.getElements().get(i).getText();
                         String[] expressions = text.split(":");
                         if (expressions.length == 2) {
@@ -60,40 +55,68 @@ public class Calculator {
                             throw new RuntimeException(UPDATER_ERRORS[0]);
                         }
                     } else {
-                        if (updater.graphics.get(i).type == GraphType.PARAMETRIC)
-                            updater.graphics.get(i).type = GraphType.FUNCTION;
+                        updater.graphics.get(i).type = GraphType.SINGLE_FUNC;
                         graphs.add(updater.graphics.get(i).name + "=" + e.getText());
                     }
                 }
+                Number n = new Number();
                 calculator.calculate(
                         Arrays.asList(functionsView.getText().split("\n")),
                         graphs,
                         calc,
-                        new Number()
+                        n
                 );
                 calculatorView.setAnswer(calculator.getExpressions().get(0));
                 int funcs = 0;
                 int parameters = 0;
                 for (int i = 0; i < updater.graphics.size(); ++i) {
                     Graphic g = updater.graphics.get(i);
-                    if (g.type == GraphType.PARAMETRIC) {
-                        List<Variable<Double>> vars = calculator.getExpressionVars().get(parameters);
-                        if (vars.size() == 0)
-                            vars.add(new Variable<>());
-                        Variable<Double> varX = vars.get(0);
-                        vars = calculator.getExpressionVars().get(parameters + 1);
-                        if (vars.size() == 0)
-                            vars.add(new Variable<>());
-                        Variable<Double> varY = vars.get(0);
-                        Expression<Double> funcX = calculator.getExpressions().get(parameters + 1);
-                        Expression<Double> funcY = calculator.getExpressions().get(parameters + 2);
-                        g.update(funcY, varY);
-                        ((Parametric) g).updateX(funcX, varX);
+                    if (g.type == GraphType.DOUBLE_FUNC) {
+                        List<Variable<Double>> varsA = calculator.getExpressionVars().get(parameters);
+                        List<Variable<Double>> varsB = calculator.getExpressionVars().get(parameters+1);
+                        int ax = checkFor("x", varsA);
+                        int ay = checkFor("y", varsA);
+                        int bx = checkFor("x", varsB);
+                        int by = checkFor("y", varsB);
+                        if(varsA.size() > 1 || varsB.size() > 1
+                                || ax != -1 || ay != -1 || bx != -1 || by != -1){
+                            if(varsA.size() > 2 || varsB.size() > 2 || notContainsOnly(varsA, "x", "y")
+                                    || notContainsOnly(varsB, "x", "y"))
+                                throw new RuntimeException(UPDATER_ERRORS[1] + " " + i + " " + UPDATER_ERRORS[2]);
+                            Variable<Double> varAX, varAY, varBX, varBY;
+                            varAX = (ax != -1)?varsA.get(ax):new Variable<>();
+                            varAY = (ay != -1)?varsA.get(ay):new Variable<>();
+                            varBX = (bx != -1)?varsB.get(bx):new Variable<>();
+                            varBY = (by != -1)?varsB.get(by):new Variable<>();
+                            if(!(g instanceof Translation)){
+                                updater.makeTranslation(i, updater.list.getElements().get(i));
+                                g = updater.graphics.get(i);
+                            }
+                            Expression<Double> funcX = calculator.getExpressions().get(parameters + 1);
+                            Expression<Double> funcY = calculator.getExpressions().get(parameters + 2);
+                            g.update(funcX, varAX);
+                            ((Translation)g).updateY(funcY, varAY, varBX, varBY);
+                        }else {
+                            if (varsA.size() == 0)
+                                varsA.add(new Variable<>());
+                            if (varsB.size() == 0)
+                                varsB.add(new Variable<>());
+                            Variable<Double> varX = varsA.get(0);
+                            Variable<Double> varY = varsB.get(0);
+                            Expression<Double> funcX = calculator.getExpressions().get(parameters + 1);
+                            Expression<Double> funcY = calculator.getExpressions().get(parameters + 2);
+                            if (!(g instanceof Parametric)) {
+                                updater.makeParametric(i, updater.list.getElements().get(i));
+                                g = updater.graphics.get(i);
+                            }
+                            g.update(funcY, varY);
+                            ((Parametric) g).updateX(funcX, varX);
+                        }
                         parameters += 2;
-                    } else {
+                    } else if(g.type == GraphType.SINGLE_FUNC){
                         List<Variable<Double>> vars = calculator.getVars().get(funcs);
                         if (vars.size() >= 2) {
-                            if (g.type != GraphType.IMPLICIT) {
+                            if (!(g instanceof Implicit)) {
                                 updater.makeImplicit(i, updater.list.getElements().get(i));
                                 g = updater.graphics.get(i);
                             }
@@ -121,12 +144,11 @@ public class Calculator {
                             g.update(func, varX);
                             ((Implicit) g).updateY(varY);
                         } else {
-                            if (g.type != GraphType.FUNCTION || !(g instanceof Function)) {
+                            if (!(g instanceof Function)) {
                                 updater.makeFunction(i, updater.list.getElements().get(i));
                                 g = updater.graphics.get(i);
                             }
                             Function f = (Function) g;
-
                             if (vars.size() == 0) {
                                 Variable<Double> var = new Variable<>();
                                 var.setName((f.abscissa) ? "x" : "y");
@@ -151,16 +173,30 @@ public class Calculator {
                 calculatorView.update();
                 resize.run();
                 repaint.run();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 if (e instanceof NullPointerException) {
                     updater.error(e.toString());
                     e.printStackTrace();
-                } else
+                } else if(e instanceof RuntimeException){
                     updater.error(e.getMessage());
+                }else
+                    updater.error(e.toString());
             }
         });
     }
-
+    private int checkFor(String name, List<Variable<Double>> vars){
+        for(int i = 0; i < vars.size(); ++i)
+            if(name.equals(vars.get(i).getName()))
+                return i;
+        return -1;
+    }
+    private boolean notContainsOnly(List<Variable<Double>> vars, String... names){
+        int num = 0;
+        for (String name : names)
+            if (checkFor(name, vars) != -1)
+                ++num;
+        return num != vars.size();
+    }
     public void runResize() {
         tasks.clearTasks();
         if (!updater.dangerState)
@@ -174,20 +210,13 @@ public class Calculator {
             });
     }
 
-    public void runRepaint() {
-        tasks.clearTasks();
-        if (!updater.dangerState)
-            tasks.runTask(repaint);
-    }
-
     public void frameResize() {
         tasks.clearTasks();
         tasks.runTask(() -> {
             if (!updater.dangerState) {
                 try {
-                    for (Graphic g : updater.graphics) {
+                    for (Graphic g : updater.graphics)
                         g.funcChanged();
-                    }
                     calculatorView.update();
                     resize.run();
                     repaint.run();
@@ -241,6 +270,9 @@ public class Calculator {
                 sb.append(((Implicit) graphic).getSensitivity());
                 sb.append("\n");
                 sb.append(((Implicit) graphic).viewType);
+            } else if(graphic instanceof Translation){
+                sb.append("Translation\n");
+                sb.append(((Translation) graphic).multiplyer);
             }
             graphicsInfo.add(sb.toString());
             sb.setLength(0);
