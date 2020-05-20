@@ -12,7 +12,7 @@ public class TextViewer {
     static{
         text_panels = new HashMap<>();
         for(int i = 0; i < help_names.length; ++i)
-            text_panels.put(help_names[i], new TextPanel(Language.HELPERS[i], Language.HELP_NAMES[i]));
+            text_panels.put(help_names[i], new TextPanel(Language.HELPERS[i], Language.HELP_NAMES[i], Language.BACK));
     }
     public static TextPanel openText(String name){
         return text_panels.get(name);

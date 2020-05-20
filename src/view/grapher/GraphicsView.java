@@ -6,7 +6,6 @@ import view.elements.ElementsList;
 import view.grapher.graphics.Graphic;
 
 import java.awt.*;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class GraphicsView {

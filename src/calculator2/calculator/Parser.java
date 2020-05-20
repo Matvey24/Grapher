@@ -103,7 +103,7 @@ class Parser<T> {
                         if (helper.hasName(s)) {
                             Element nE = new Element(s,
                                     (helper.isVar(s)) ? VAR :
-                                            (helper.consts.getConst(s) != null) ? CONSTANT : FUNCTION);
+                                            (helper.isConstant(s)) ? CONSTANT : FUNCTION);
                             list.add(i, nE);
                             e.symbol = e.symbol.substring(0, j);
                         }
@@ -113,7 +113,7 @@ class Parser<T> {
                     }
                 }else if(helper.isVar(e.symbol)){
                     e.type = VAR;
-                }else if(helper.consts.getConst(e.symbol) != null){
+                }else if(helper.isConstant(e.symbol)){
                     e.type = CONSTANT;
                 }
             }

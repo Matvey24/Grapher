@@ -7,7 +7,7 @@ import framesLib.Screen;
 import javax.swing.*;
 
 public class FileChooser extends Screen {
-    private JFileChooser fileChooser;
+    private final JFileChooser fileChooser;
     private ActionListener listener;
     public FileChooser(){
         fileChooser = new JFileChooser();

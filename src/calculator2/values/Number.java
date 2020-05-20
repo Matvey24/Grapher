@@ -76,7 +76,6 @@ public class Number extends AbstractType<Double> {
         addFunction("floor", Math::floor, 10);
         addFunction("ceil", Math::ceil, 10);
 
-
         addFunction("min", (a, b) -> Math.min(a.calculate(),b.calculate()), 10);
         addFunction("max", (a, b) -> Math.max(a.calculate(),b.calculate()), 10);
 
@@ -87,7 +86,6 @@ public class Number extends AbstractType<Double> {
         addConst("pi", PI);
         addConst("e", Math.E);
 
-        addConst("g", 9.8);
         addConst("G", 6.674083e-11);
         addConst("h", 6.6260700408e-34);
         addConst("c", 299792458.0);

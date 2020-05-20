@@ -11,7 +11,7 @@ import static view.elements.ElementsList.OFFSET;
 public class Parameter extends ViewElement {
     private final JLabel label;
     private final JTextField field;
-    private Exeptable onChange;
+    private final Exeptable onChange;
     private String def;
     public Parameter(String name, Exeptable onChange){
         this.onChange = onChange;

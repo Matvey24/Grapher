@@ -18,6 +18,7 @@ public abstract class Screen extends JPanel {
     public void onShow(){
         setTitle("");
     }
+    @SuppressWarnings("EmptyMethod")
     public void onHide(){}
     @SuppressWarnings("EmptyMethod")
     public void onDestroy(){}

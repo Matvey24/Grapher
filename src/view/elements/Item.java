@@ -13,10 +13,6 @@ public class Item {
         return name;
     }
 
-    public boolean equal(String s) {
-        return name.equals(s);
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(name);

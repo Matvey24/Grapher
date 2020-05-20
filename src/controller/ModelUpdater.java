@@ -9,7 +9,6 @@ import view.elements.FunctionsView;
 import view.elements.TextElement;
 import view.grapher.CoordinateSystem;
 import view.grapher.graphics.*;
-import view.support_panels.TranslationSettings;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -22,14 +21,14 @@ import static java.awt.Color.*;
 
 public class ModelUpdater {
     private static final List<Color> colors = Arrays.asList(BLUE, RED, GREEN, CYAN, magenta, GRAY, ORANGE, PINK, YELLOW, LIGHT_GRAY, BLACK);
-    private static final List<String> func_names = Arrays.asList("f", "i", "j", "l", "m", "n", "o", "q", "r", "s", "bl");
+    private static final List<String> func_names = Arrays.asList("f", "g", "i", "j", "l", "m", "n", "o", "q", "r", "bl");
     private static final double deltaScale = 1.2;
-    private Calculator calculator;
+    private final Calculator calculator;
     private final SupportFrameManager supportFrameManager;
     private final MainPanel mainPanel;
     private final DataBase dataBase;
     List<Graphic> graphics;
-    ElementsList list;
+    public ElementsList list;
 
     private double offsetX = -3;
     private double offsetY = 5.5;
@@ -79,20 +78,21 @@ public class ModelUpdater {
         String[] arr = params.split("\n");
         String name = arr[0];
         int map_size = Integer.parseInt(arr[1]);
-        String type = arr[2];
+        boolean feels_time = Boolean.parseBoolean(arr[2]);
+        String type = arr[3];
         Graphic gr;
         switch (type) {
             case "Function":
-                gr = new Function(map_size);
+                gr = new Function(map_size, feels_time);
                 break;
             case "Parametric":
-                gr = new Parametric(map_size);
+                gr = new Parametric(map_size, feels_time);
                 break;
             case "Implicit":
-                gr = new Implicit(mainPanel, map_size);
+                gr = new Implicit(mainPanel, map_size, feels_time);
                 break;
             case "Translation":
-                gr = new Translation(getCoordinateSystem(), map_size);
+                gr = new Translation(getCoordinateSystem(), map_size, feels_time);
                 break;
             default:
                 return;
@@ -112,19 +112,19 @@ public class ModelUpdater {
                 break;
             case "Parametric":
                 e.setName("xy(t)");
-                String startEnd = arr[3];
+                String startEnd = arr[4];
                 String[] st = startEnd.split(":");
                 ((Parametric) gr).updateBoards(Double.parseDouble(st[0]), Double.parseDouble(st[1]));
                 break;
             case "Implicit":
                 e.setName(name + "(xy)");
-                ((Implicit) gr).setSensitivity(Double.parseDouble(arr[3]));
-                if(arr.length > 4)
-                    ((Implicit) gr).setViewType(Integer.parseInt(arr[4]));
+                ((Implicit) gr).setSensitivity(Double.parseDouble(arr[4]));
+                if(arr.length > 5)
+                    ((Implicit) gr).setViewType(Integer.parseInt(arr[5]));
                 break;
             case "Translation":
                 e.setName("Tran");
-                ((Translation) gr).multiplyer = Integer.parseInt(arr[3]);
+                ((Translation) gr).setMultiplyer(Integer.parseInt(arr[4]));
                 gr.setMAP_SIZE(gr.MAP_SIZE);
                 break;
         }
@@ -246,8 +246,8 @@ public class ModelUpdater {
         supportFrameManager.openTimerSettings();
     }
 
-    public void frameResize() {
-        calculator.frameResize();
+    public void timerResize() {
+        calculator.timerResize();
     }
 
     public void recalculate() {
@@ -261,7 +261,9 @@ public class ModelUpdater {
     public void setState(String text) {
         list.setState(text);
     }
-
+    public void rebounds(){
+        mainPanel.setGraphicsHeight();
+    }
     public void setResize(Runnable resize) {
         calculator.setResize(resize);
     }
@@ -296,6 +298,9 @@ public class ModelUpdater {
 
     public void setTime(double time) {
         calculator.resetConstant("tm", time);
+    }
+    public void setTimerName(String name){
+        mainPanel.setTimerName(name);
     }
     public CoordinateSystem getCoordinateSystem(){
         return mainPanel.getCoordinateSystem();

@@ -1,6 +1,5 @@
 package framesLib;
 
-import model.Language;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,15 +10,16 @@ public class TextPanel extends Screen {
     private static final int MAX_HEIGHT = 500;
     private final JPanel internal;
     private String title;
-    private JButton btn_back;
-    private JScrollPane scrollPane;
-    public TextPanel(String[][] text, String title) {
+    private final JButton btn_back;
+    private final JScrollPane scrollPane;
+    public TextPanel(String[][] text, String title, String back_name) {
         setLayout(null);
         this.title = title;
         internal = new JPanel();
         internal.setLayout(null);
 
-        btn_back = new JButton(Language.BACK);
+        btn_back = new JButton(back_name);
+        btn_back.setFocusPainted(false);
         add(btn_back);
         btn_back.addActionListener((e)-> back());
 

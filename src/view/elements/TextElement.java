@@ -13,12 +13,14 @@ public class TextElement {
     private final JLabel name;
     private final JTextField text;
     private final JButton remove;
+    boolean attached;
     TextElement(){
         this.name = new JLabel("");
         text = new JTextField();
         remove = new JButton("-");
         remove.setFont(new Font("arial", Font.PLAIN, 8));
         remove.setForeground(Color.RED);
+        remove.setFocusPainted(false);
     }
     public void setBounds(int x, int y){
         name.setBounds(x,y,NAME_WIDTH, HEIGHT);

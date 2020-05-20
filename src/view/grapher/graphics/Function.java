@@ -12,8 +12,8 @@ public class Function extends Graphic {
         super();
         type = GraphType.FUNCTION;
     }
-    public Function(int map_size){
-        super(map_size);
+    public Function(int map_size, boolean feelsTime){
+        super(map_size, feelsTime);
         type = GraphType.FUNCTION;
     }
     @Override

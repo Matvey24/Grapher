@@ -40,11 +40,9 @@ public abstract class AbstractType<T> {
     public void addConst(String name, T state) {
         consts.add(new Variable<>(name, state));
     }
-
     public void addFunction(String name, UnarFunc<T> unarFunc, int priority) {
         funcs.add(new Func<>(name, unarFunc, priority));
     }
-
     public void addFunction(String name, BinarFunc<T> binarFunc, int priority) {
         funcs.add(new Func<>(name, binarFunc, priority));
     }
@@ -59,5 +57,17 @@ public abstract class AbstractType<T> {
 
     public void addFuncName(String name){
         funcNames.add(name);
+    }
+    public void removeName(String name){
+        for(int i = funcs.size() - 1; i >= 0; --i){
+            if(funcs.get(i).name.equals(name)){
+                funcs.remove(i);
+            }
+        }
+        for(int i = consts.size() - 1; i >= 0; --i){
+            if(consts.get(i).getName().equals(name)){
+                consts.remove(i);
+            }
+        }
     }
 }

@@ -14,20 +14,21 @@ public class Translation extends Graphic {
     private double[][] dataX;
     private double[][] dataY;
     private int endY;
-    private CoordinateSystem cs;
+    private final CoordinateSystem cs;
     private Expression<Double> yFunc;
     private Variable<Double> xy;
     private Variable<Double> yx;
     private Variable<Double> yy;
-    public int multiplyer = 2;
+    private int multiplyer = 2;
     public Translation(CoordinateSystem cs){
         this.cs = cs;
         setMAP_SIZE(200);
         super.type = GraphType.TRANSLATION;
     }
-    public Translation(CoordinateSystem cs, int map_size){
+    public Translation(CoordinateSystem cs, int map_size, boolean feelsTime){
         this.cs = cs;
         MAP_SIZE = map_size;
+        this.feelsTime = feelsTime;
         super.type = GraphType.TRANSLATION;
     }
     @Override
@@ -79,6 +80,17 @@ public class Translation extends Graphic {
             }
             endY = endX + endY;
         }
+    }
+
+    public void setMultiplyer(int multiplyer) {
+        if(this.multiplyer != multiplyer) {
+            this.multiplyer = multiplyer;
+            this.needResize = true;
+        }
+    }
+
+    public int getMultiplyer() {
+        return multiplyer;
     }
 
     @Override

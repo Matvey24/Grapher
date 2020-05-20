@@ -27,6 +27,9 @@ public class Helper<T> {
     public boolean hasName(String name){
         return consts.getConst(name) != null || funcs.getFunc(name) != null || isVar(name) || type.funcNames.contains(name);
     }
+    public boolean isConstant(String name){
+        return consts.getConst(name) != null;
+    }
     public T toValue(String text){
         return type.toValue(text);
     }

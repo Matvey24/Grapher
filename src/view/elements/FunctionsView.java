@@ -23,6 +23,7 @@ public class FunctionsView extends ViewElement {
         name = new JLabel();
         name.setFont(name_font);
         btn_update = new JButton();
+        btn_update.setFocusPainted(false);
         btn_update.addActionListener(e -> onUpdate.run());
         updateLanguage();
     }

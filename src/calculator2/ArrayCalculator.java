@@ -5,6 +5,7 @@ import calculator2.calculator.Element;
 import calculator2.calculator.executors.Expression;
 import calculator2.calculator.executors.Variable;
 import calculator2.values.util.AbstractType;
+import calculator2.values.util.actions.AbstractConst;
 import calculator2.values.util.actions.AbstractFunc;
 import model.Language;
 
@@ -14,51 +15,56 @@ public class ArrayCalculator<T> {
     private final Director<T> director;
     private AbstractType<T> type;
     private final List<AbstractFunc<T>> funcs;
-
+    private final List<AbstractConst<T>> consts;
     private final List<Expression<T>> graphics;
     private final List<List<Variable<T>>> vars;
-
 
     private final List<Expression<T>> expressions;
     private final List<List<Variable<T>>> expressionVars;
 
-
-    private final List<Stack<Element>> funcNames;
+    private final List<Stack<Element>> funcTexts;
 
     public ArrayCalculator() {
         vars = new ArrayList<>();
-        funcNames = new ArrayList<>();
+        funcTexts = new ArrayList<>();
         funcs = new ArrayList<>();
         graphics = new ArrayList<>();
         expressions = new ArrayList<>();
         expressionVars = new ArrayList<>();
+        consts = new ArrayList<>();
         director = new Director<>();
     }
 
     public void calculate(List<String> funcs, List<String> graphs, List<String> calc, AbstractType<T> type) {
         this.type = type;
-        director.renewType(type);
-        funcNames.clear();
+        funcTexts.clear();
         this.funcs.clear();
         this.graphics.clear();
+        consts.clear();
         expressions.clear();
         for (int i = 0; i < funcs.size(); ++i) {
             funcs.set(i, funcs.get(i).replaceAll("[ \t]", ""));
             int n = funcs.get(i).indexOf("=");
             if (n == -1)
                 continue;
-            type.addFuncName(funcs.get(i).substring(0, n));
+            String start = funcs.get(i).substring(0, n);
+            if(start.charAt(n - 1) == ':') {
+                start = start.substring(0, n - 1);
+                type.removeName(start);
+            }
+            type.addFuncName(start);
         }
         for (int i = 0; i < graphs.size(); ++i) {
             graphs.set(i, graphs.get(i).replaceAll("[ \t]", ""));
             type.addFuncName(graphs.get(i).substring(0, graphs.get(i).indexOf("=")));
         }
+        director.renewType(type);
         int err = 0;
         try {
             for (; err < graphs.size(); ++err) {
                 String s = graphs.get(err);
                 int n = s.indexOf('=');
-                analise(s.substring(0, n), s.substring(n + 1));
+                analise(s.substring(0, n), s.substring(n + 1), true);
             }
         } catch (RuntimeException e) {
             throw new RuntimeException(e.getMessage() + " " + Language.CALCULATOR_ERRORS[0] + " " + (err + 1) + " " + Language.CALCULATOR_ERRORS[1]);
@@ -68,8 +74,12 @@ public class ArrayCalculator<T> {
             for (; err < funcs.size(); ++err) {
                 String s = funcs.get(err);
                 int n = s.indexOf('=');
-                if (n != -1)
-                    analise(s.substring(0, n), s.substring(n + 1));
+                if (n == -1)
+                    continue;
+                String start = s.substring(0, n);
+                if(start.charAt(n - 1) == ':')
+                    start = start.substring(0, n - 1);
+                analise(start, s.substring(n + 1), false);
             }
         } catch (RuntimeException e) {
             throw new RuntimeException(e.getMessage() + " " + Language.CALCULATOR_ERRORS[0] + " " + (err + 1) + " " + Language.CALCULATOR_ERRORS[2]);
@@ -77,7 +87,7 @@ public class ArrayCalculator<T> {
         director.renewType(type);
         for (int i = 0; i < this.funcs.size(); ++i) {
             try {
-                director.update(funcNames.get(i));
+                director.update(funcTexts.get(i));
             } catch (RuntimeException e) {
                 throw new RuntimeException(e.getMessage() + " " + Language.CALCULATOR_ERRORS[0] + " " + Language.CALCULATOR_ERRORS[3] + " " + (i + 1) + " " + Language.CALCULATOR_ERRORS[2]);
             }
@@ -93,6 +103,10 @@ public class ArrayCalculator<T> {
                 this.vars.get(i).clear();
                 this.vars.get(i).addAll(director.getVars());
             }
+        }
+        for (AbstractConst<T> aConst : consts) {
+            director.update(aConst.stack);
+            aConst.setExpression(director.getTree());
         }
         try {
             director.parse(calc.get(0));
@@ -112,8 +126,16 @@ public class ArrayCalculator<T> {
         }
     }
 
-    private void analise(String start, String end) {
+    private void analise(String start, String end, boolean graphic) {
         int args = director.parse(end);
+        if(args == 0 && !graphic){
+            Variable<T> var = new Variable<>(start, null);
+            AbstractConst<T> c = new AbstractConst<>(var);
+            c.stack = director.getStack();
+            consts.add(c);
+            type.addFunction(start, c.getFunc(), 0, 10);
+            return;
+        }
         AbstractFunc<T> func = new AbstractFunc<>();
         switch (args) {
             case 2:
@@ -126,7 +148,7 @@ public class ArrayCalculator<T> {
                 type.addFunction(start, func.getMulti(args), args, 10);
         }
         funcs.add(func);
-        funcNames.add(director.getStack());
+        funcTexts.add(director.getStack());
     }
 
     public List<Expression<T>> getGraphics() {
@@ -143,6 +165,10 @@ public class ArrayCalculator<T> {
 
     public List<List<Variable<T>>> getExpressionVars() {
         return expressionVars;
+    }
+
+    public List<AbstractConst<T>> getConsts() {
+        return consts;
     }
 
     public void resetConstant(String name, T val) {

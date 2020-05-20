@@ -13,24 +13,11 @@ import view.grapher.graphics.Parametric;
 import static view.elements.ElementsList.OFFSET;
 
 public class ParametricSettings extends Settings {
-    private Parameter mapSize;
-    private Parameter dimension;
+    private final Parameter dimension;
     private Parametric p;
-    private TextElement el;
 
     public ParametricSettings(ModelUpdater updater) {
-        setLayout(null);
-        mapSize = new Parameter(Language.DISCRETIZATION, (s) -> {
-            if (p != null) {
-                int n = Integer.parseInt(s);
-                if (n < 2) {
-                    mapSize.setDefault(String.valueOf(p.MAP_SIZE));
-                } else {
-                    p.setMAP_SIZE(Integer.parseInt(s));
-                    updater.runResize();
-                }
-            }
-        });
+        super(updater);
         dimension = new Parameter(Language.DIMENSION, (s) -> {
             if (p != null) {
                 String[] dim = s.split(":");
@@ -40,16 +27,13 @@ public class ParametricSettings extends Settings {
                 updater.runResize();
             }
         });
-        mapSize.addTo(this);
-        mapSize.setBounds(OFFSET, OFFSET, ComboBoxParameter.WIDTH);
         dimension.addTo(this);
-        dimension.setBounds(OFFSET, 2 * OFFSET + ComboBoxParameter.HEIGHT, ComboBoxParameter.WIDTH);
+        dimension.setBounds(OFFSET, HEIGHT, ComboBoxParameter.WIDTH);
     }
 
     public void setInfo(Parametric p, TextElement e) {
+        super.setInfo(p, e);
         this.p = p;
-        this.el = e;
-        mapSize.setDefault(String.valueOf(p.MAP_SIZE));
         dimension.setDefault(p.getStartT() + ":" + p.getEndT());
     }
 
@@ -59,20 +43,15 @@ public class ParametricSettings extends Settings {
     }
 
     @Override
-    public TextElement getTextElement() {
-        return el;
-    }
-
-    @Override
     public void onSetSize() {
-        setSize(ComboBoxParameter.WIDTH + 2 * OFFSET + 40, ComboBoxParameter.HEIGHT * 2 + 3 * OFFSET + 80);
+        setSize(WIDTH,HEIGHT + ComboBoxParameter.HEIGHT + OFFSET+ 80);
     }
     @Override
     public void onShow() {
         setTitle(Language.TYPE_TITLES[GraphType.PARAMETRIC.ordinal()]);
     }
     public void updateLanguage() {
-        mapSize.setName(Language.DISCRETIZATION);
+        super.updateLanguage();
         dimension.setName(Language.DIMENSION);
     }
 }

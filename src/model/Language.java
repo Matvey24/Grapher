@@ -4,20 +4,19 @@ import model.help.Property;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.List;
 
 public class Language {
     public static String GRAPHER;
     //settings
     public static String DISCRETIZATION;
-    public static String TYPE;
+    public static String FEELS_TIME;
     public static String[] TYPE_TITLES;
     //implicit
     public static String SENSITIVITY;
     public static String VIEW_COLOR;
     public static String[] COLORS;
     public static String SAVE_PICTURE;
-    //Translation
+    //translation
     public static String LINES_PER_CELL;
     //parametric
     public static String DIMENSION;
@@ -26,8 +25,7 @@ public class Language {
     public static String BEGIN;
     public static String BOOMERANG;
     //main settings
-    public static String LANGUAGE;
-    public static String LINES_SPACE;
+    public static String[] SETTINGS;
     //states
     public static String CONVERTING;
     public static String UPDATING;
@@ -86,7 +84,6 @@ public class Language {
             Properties properties = property.getProperties(name + ".l");
             String[] arr;
             GRAPHER = properties.getProperty("name");
-            TYPE = properties.getProperty("type");
             TYPE_TITLES = properties.getProperty("titles").split("\n");
             arr = properties.getProperty("settings").split("\n");
             DISCRETIZATION = arr[0];
@@ -97,6 +94,7 @@ public class Language {
             SAVE_PICTURE = arr[5];
             DURATION_FPS = arr[6];
             BOOMERANG = arr[7];
+            FEELS_TIME = arr[8];
             COLORS = properties.getProperty("colors").split("\n");
             arr = properties.getProperty("states").split("\n");
             CONVERTING = arr[0];
@@ -123,9 +121,7 @@ public class Language {
             GRAPHICS = arr[0];
             FUNCTIONS = arr[1];
             CALCULATOR = arr[2];
-            arr = properties.getProperty("main_settings").split("\n");
-            LANGUAGE = arr[0];
-            LINES_SPACE = arr[1];
+            SETTINGS = properties.getProperty("main_settings").split("\n");
             //////////////////////////////////////////////
             String s = properties.getProperty("help");
             List<String> list = Arrays.asList(s.split("\n"));

@@ -22,16 +22,20 @@ public class MainPanel extends Screen {
     public static int HEIGHT = HEIGHT_0;
     public static int GRAPH_WIDTH = WIDTH - ElementsList.WIDTH;
     private final GraphicsView graphicsView;
-    private ModelUpdater updater;
+    private final ModelUpdater updater;
     private final Point mousePosition;
     private int resizeType;
-    private ElementsList graphics;
-    private CalculatorView calculator;
-    private FunctionsView functions;
-    private JButton btn_help, btn_resize, btn_timer, btn_settings;
+    private final ElementsList graphics;
+    private final CalculatorView calculator;
+    private final FunctionsView functions;
+    private final JButton btn_help;
+    private final JButton btn_resize;
+    private final JButton btn_timer;
+    private final JButton btn_settings;
     public MainPanel(){
         setLayout(null);
         btn_help = new JButton(Language.HELP);
+        btn_help.setFocusPainted(false);
         add(btn_help);
         mousePosition = new Point();
         updater = new ModelUpdater(this::repaint, this);
@@ -73,6 +77,7 @@ public class MainPanel extends Screen {
 
         resizeType = 0;
         btn_resize = new JButton(Language.RESIZERS[resizeType]);
+        btn_resize.setFocusPainted(false);
         btn_resize.addActionListener(e -> {
             switch (resizeType){
                 case 0:
@@ -98,17 +103,19 @@ public class MainPanel extends Screen {
         add(btn_resize);
 
         btn_timer = new JButton(Language.TIMER);
+        btn_timer.setFocusPainted(false);
         btn_timer.addActionListener(e ->updater.openTimer());
         btn_timer.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(e.getButton() == MouseEvent.BUTTON3){
-                    updater.getSupportFrameManager().getTimer().onClick();
+                   updater.getSupportFrameManager().getTimer().onClick();
                 }
             }
         });
         add(btn_timer);
         btn_settings = new JButton(Language.MAIN_SETTINGS);
+        btn_settings.setFocusPainted(false);
         btn_settings.addActionListener(e -> updater.getSupportFrameManager().openMainSettings());
         add(btn_settings);
         setGraphicsHeight();
@@ -119,11 +126,14 @@ public class MainPanel extends Screen {
         calculator.setBounds(0,height + 3 * OFFSET + FunctionsView.FUNC_HEIGHT);
         btn_help.setBounds(OFFSET,height + 3 * OFFSET + FunctionsView.FUNC_HEIGHT + CalculatorView.CALC_HEIGHT,
                 TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
-        btn_settings.setBounds(3 * OFFSET / 2 + TextElement.WIDTH / 2, height + 3 * OFFSET + FunctionsView.FUNC_HEIGHT + CalculatorView.CALC_HEIGHT,
+        btn_settings.setBounds(3 * OFFSET / 2 + TextElement.WIDTH / 2,
+                height + 3 * OFFSET + FunctionsView.FUNC_HEIGHT + CalculatorView.CALC_HEIGHT,
                 TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
-        btn_resize.setBounds(OFFSET, height + 4 * OFFSET + FunctionsView.FUNC_HEIGHT + CalculatorView.CALC_HEIGHT + TextElement.HEIGHT,
+        btn_resize.setBounds(OFFSET,
+                height + 4 * OFFSET + FunctionsView.FUNC_HEIGHT + CalculatorView.CALC_HEIGHT + TextElement.HEIGHT,
                 TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
-        btn_timer.setBounds(3 * OFFSET / 2 + TextElement.WIDTH / 2, height + 4 * OFFSET + FunctionsView.FUNC_HEIGHT + CalculatorView.CALC_HEIGHT + TextElement.HEIGHT,
+        btn_timer.setBounds(3 * OFFSET / 2 + TextElement.WIDTH / 2,
+                height + 4 * OFFSET + FunctionsView.FUNC_HEIGHT + CalculatorView.CALC_HEIGHT + TextElement.HEIGHT,
                 TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
     }
     public void updateLanguage(){
@@ -147,11 +157,9 @@ public class MainPanel extends Screen {
     public CoordinateSystem getCoordinateSystem(){
         return graphicsView.getCoordinateSystem();
     }
-    //int i = 0;
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        //System.out.println("Paint " + ++i);
         g.translate(ElementsList.WIDTH, 0);
         graphicsView.paint(g);
     }
@@ -161,5 +169,8 @@ public class MainPanel extends Screen {
     public void fromModel(FullModel m){
         resizeType = Integer.parseInt(m.resize_idx);
         btn_resize.setText(Language.RESIZERS[resizeType]);
+    }
+    public void setTimerName(String name){
+        btn_timer.setText(name);
     }
 }

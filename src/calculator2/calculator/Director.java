@@ -29,8 +29,9 @@ public class Director<T> {
     public void update(Stack<Element> stack){
         parser.simpleCheck(stack);
         calculator.clear();
-        while (!stack.empty())
+        while (!stack.empty()) {
             calculator.next(stack.pop());
+        }
         calculator.next(null);
         tree = calculator.getExpression();
         vars = calculator.getVars();

@@ -31,10 +31,12 @@ public class UpdaterFrame extends Screen {
         add(pane);
 
         btn_cancel = new JButton("Cancel");
+        btn_cancel.setFocusPainted(false);
         btn_cancel.setBounds(5, 135, 120, 40);
         add(btn_cancel);
 
         btn_update = new JButton("Update!");
+        btn_update.setFocusPainted(false);
         btn_update.setBounds(135, 135, 120, 40);
         add(btn_update);
 

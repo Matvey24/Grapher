@@ -5,7 +5,6 @@ import calculator2.calculator.executors.Variable;
 import model.GraphType;
 
 import java.awt.*;
-import java.math.BigDecimal;
 
 public abstract class Graphic {
     public GraphType type;
@@ -21,14 +20,16 @@ public abstract class Graphic {
     double scaleY;
     double scaleX;
     boolean needResize;
-
+    public boolean feelsTime;
     Graphic() {
         map = new double[MAP_SIZE];
         color = Color.BLACK;
+        feelsTime = true;
     }
-    Graphic(int MAP_SIZE){
+    Graphic(int MAP_SIZE, boolean feelsTime){
         this.map = new double[MAP_SIZE];
         this.MAP_SIZE = MAP_SIZE;
+        this.feelsTime = feelsTime;
         color = Color.BLACK;
     }
     public void update(Expression<Double> func, Variable<Double> var) {
@@ -45,8 +46,9 @@ public abstract class Graphic {
 
     public abstract void paint(Graphics g);
 
-    public void funcChanged() {
-        needResize = true;
+    public void timeChanged() {
+        if(feelsTime)
+            needResize = true;
     }
 
     public void setMAP_SIZE(int map_size) {

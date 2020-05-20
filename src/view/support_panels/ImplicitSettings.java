@@ -21,29 +21,14 @@ import java.io.IOException;
 import static view.elements.ElementsList.OFFSET;
 
 public class ImplicitSettings extends Settings {
-    private Parameter mapSize;
     private final Parameter sensitivity;
-    private ComboBoxParameter viewType;
-    private Implicit imp;
-    private TextElement el;
-    private JButton btn_save;
+    private final ComboBoxParameter viewType;
+    private final JButton btn_save;
     private FileChooser fileChooser;
+    private Implicit imp;
 
     public ImplicitSettings(ModelUpdater updater) {
-        setLayout(null);
-        mapSize = new Parameter(Language.DISCRETIZATION, (s) -> {
-            if (imp != null) {
-                int n = Integer.parseInt(s);
-                if (n < 1) {
-                    mapSize.setDefault(String.valueOf(imp.MAP_SIZE));
-                } else {
-                    imp.setMAP_SIZE(Integer.parseInt(s));
-                    updater.runResize();
-                }
-            }
-        });
-        mapSize.addTo(this);
-        mapSize.setBounds(OFFSET, OFFSET, ComboBoxParameter.WIDTH);
+        super(updater);
         sensitivity = new Parameter(Language.SENSITIVITY, s -> {
             if (imp != null) {
                 imp.setSensitivity(Double.parseDouble(s));
@@ -51,10 +36,10 @@ public class ImplicitSettings extends Settings {
             }
         });
         sensitivity.addTo(this);
-        sensitivity.setBounds(OFFSET, 2 * OFFSET + ComboBoxParameter.HEIGHT, ComboBoxParameter.WIDTH);
+        sensitivity.setBounds(OFFSET,HEIGHT,ComboBoxParameter.WIDTH);
         viewType = new ComboBoxParameter(Language.VIEW_COLOR, Language.COLORS);
         viewType.addTo(this);
-        viewType.setBounds(OFFSET, 3 * OFFSET + 2 * ComboBoxParameter.HEIGHT);
+        viewType.setBounds(OFFSET, HEIGHT + OFFSET + ComboBoxParameter.HEIGHT);
         viewType.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 if (((Item) e.getItem()).name.equals(Language.COLORS[Implicit.INFRARED_IMAGER])) {
@@ -66,7 +51,8 @@ public class ImplicitSettings extends Settings {
             }
         });
         btn_save = new JButton(Language.SAVE_PICTURE);
-        btn_save.setBounds(OFFSET, 4 * OFFSET + 3 * ComboBoxParameter.HEIGHT,
+        btn_save.setFocusPainted(false);
+        btn_save.setBounds(OFFSET, HEIGHT + 2 * OFFSET + 2 * ComboBoxParameter.HEIGHT,
                 TextElement.WIDTH, TextElement.HEIGHT);
         btn_save.addActionListener((e) -> {
             if (this.fileChooser == null) {
@@ -99,9 +85,8 @@ public class ImplicitSettings extends Settings {
 
     public void setInfo(Implicit imp, TextElement e) {
         this.imp = imp;
-        this.el = e;
+        super.setInfo(imp, e);
         sensitivity.setDefault(imp.getSensitivity() + "");
-        mapSize.setDefault(String.valueOf(imp.MAP_SIZE));
         viewType.setSelectedIndex(imp.viewType);
     }
 
@@ -111,21 +96,16 @@ public class ImplicitSettings extends Settings {
     }
 
     @Override
-    public TextElement getTextElement() {
-        return el;
-    }
-
-    @Override
     public void onSetSize() {
-        setSize(ComboBoxParameter.WIDTH + 2 * OFFSET + 40,
-                ComboBoxParameter.HEIGHT * 3 + 4 * OFFSET + 80);
+        setSize(WIDTH,
+                HEIGHT + 2 * OFFSET + 2 * ComboBoxParameter.HEIGHT + TextElement.HEIGHT + 80);
     }
     @Override
     public void onShow() {
         setTitle(Language.TYPE_TITLES[GraphType.IMPLICIT.ordinal()]);
     }
     public void updateLanguage() {
-        mapSize.setName(Language.DISCRETIZATION);
+        super.updateLanguage();
         sensitivity.setName(Language.SENSITIVITY);
         viewType.setName(Language.VIEW_COLOR);
         viewType.setElementNames(Language.COLORS);

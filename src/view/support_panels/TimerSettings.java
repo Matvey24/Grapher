@@ -27,9 +27,10 @@ public class TimerSettings extends Screen {
     private boolean fTimeDirection = true;
     private final JToggleButton start;
     private final JToggleButton timeDir;
-
+    private final ModelUpdater updater;
     public TimerSettings(ModelUpdater updater) {
         setLayout(null);
+        this.updater = updater;
         duration = new Parameter(Language.DURATION_FPS, (s) -> {
             String[] vars = s.split(":");
             if (vars.length == 0)
@@ -54,7 +55,7 @@ public class TimerSettings extends Screen {
             if (!timer.isRunning()) {
                 value = startT;
                 updater.setTime(startT);
-                updater.frameResize();
+                updater.timerResize();
             }
             time = 0;
         });
@@ -82,27 +83,31 @@ public class TimerSettings extends Screen {
                 time = 0;
                 fTimeDirection = true;
             }
-            updater.frameResize();
+            updater.timerResize();
         });
         start = new JToggleButton(Language.BEGIN);
+        start.setFocusPainted(false);
         add(start);
         start.setBounds(10, 170, 150, 40);
-        start.addActionListener(e -> {
-            if (start.isSelected()) {
-                timeBefore = System.currentTimeMillis();
-                timer.start();
-            } else {
-                timer.stop();
-            }
-        });
+        start.addActionListener(e -> start());
         timeDir = new JToggleButton(Language.BOOMERANG);
+        timeDir.setFocusPainted(false);
         add(timeDir);
         timeDir.setBounds(10, 220, 150, 40);
         duration.setDefault(dur + ":" + FPS);
         dimension.setDefault(startT + ":" + endT);
         timeDir.addActionListener(e -> boomerang = timeDir.isSelected());
     }
-
+    private void start(){
+        if(start.isSelected()) {
+            timer.start();
+            timeBefore = System.currentTimeMillis();
+            updater.setTimerName("Timer(On)");
+        }else{
+            timer.stop();
+            updater.setTimerName("Timer(Off)");
+        }
+    }
     @Override
     public void onShow() {
         duration.setDefault(dur + ":" + FPS);
@@ -111,12 +116,7 @@ public class TimerSettings extends Screen {
 
     public void onClick() {
         start.setSelected(!start.isSelected());
-        if (start.isSelected()) {
-            timeBefore = System.currentTimeMillis();
-            timer.start();
-        } else {
-            timer.stop();
-        }
+        start();
     }
 
     public void updateLanguage() {

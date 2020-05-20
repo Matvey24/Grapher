@@ -23,8 +23,9 @@ public class Parametric extends Graphic {
         type = GraphType.PARAMETRIC;
     }
 
-    public Parametric(int map_size) {
+    public Parametric(int map_size, boolean feelsTime) {
         setMAP_SIZE(map_size);
+        this.feelsTime = feelsTime;
         startT = 0;
         endT = 6.2832;
         type = GraphType.PARAMETRIC;

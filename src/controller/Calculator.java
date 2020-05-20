@@ -20,13 +20,13 @@ import java.util.List;
 import static model.Language.UPDATER_ERRORS;
 
 public class Calculator {
-    private ModelUpdater updater;
+    private final ModelUpdater updater;
     private final ArrayCalculator<Double> calculator;
     private final Runnable repaint;
     private Runnable resize;
     private FunctionsView functionsView;
     private CalculatorView calculatorView;
-    private Tasks tasks;
+    private final Tasks tasks;
     public Calculator(ModelUpdater updater, Runnable repaint) {
         this.updater = updater;
         this.repaint = repaint;
@@ -210,13 +210,13 @@ public class Calculator {
             });
     }
 
-    public void frameResize() {
+    public void timerResize() {
         tasks.clearTasks();
         tasks.runTask(() -> {
             if (!updater.dangerState) {
                 try {
                     for (Graphic g : updater.graphics)
-                        g.funcChanged();
+                        g.timeChanged();
                     calculatorView.update();
                     resize.run();
                     repaint.run();
@@ -235,6 +235,9 @@ public class Calculator {
 
     public void resetConstant(String name, double time) {
         calculator.resetConstant(name, time);
+        for(int i = 0; i < calculator.getConsts().size(); ++i){
+            calculator.getConsts().get(i).update();
+        }
     }
 
     public void setElements(CalculatorView calculatorView, FunctionsView functionsView) {
@@ -258,6 +261,8 @@ public class Calculator {
             sb.append('\n');
             sb.append(graphic.MAP_SIZE);
             sb.append('\n');
+            sb.append(graphic.feelsTime);
+            sb.append('\n');
             if (graphic instanceof Function) {
                 sb.append("Function");
             } else if (graphic instanceof Parametric) {
@@ -272,7 +277,7 @@ public class Calculator {
                 sb.append(((Implicit) graphic).viewType);
             } else if(graphic instanceof Translation){
                 sb.append("Translation\n");
-                sb.append(((Translation) graphic).multiplyer);
+                sb.append(((Translation) graphic).getMultiplyer());
             }
             graphicsInfo.add(sb.toString());
             sb.setLength(0);

@@ -16,7 +16,7 @@ public class Implicit extends Graphic {
     private static final Color VOID = new Color(0, 0, 0, 0);
     private float[][] data;
     private BufferedImage data1;
-    private MainPanel panel;
+    private final MainPanel panel;
     private int yMAP_SIZE;
     private Variable<Double> yVar;
     private Color c;
@@ -38,9 +38,10 @@ public class Implicit extends Graphic {
         viewType = INFRARED_IMAGER;
     }
 
-    public Implicit(MainPanel panel, int map_size) {
+    public Implicit(MainPanel panel, int map_size, boolean feelsTime) {
         this.panel = panel;
         setMAP_SIZE(map_size);
+        this.feelsTime = feelsTime;
         super.type = GraphType.IMPLICIT;
         viewType = INFRARED_IMAGER;
     }

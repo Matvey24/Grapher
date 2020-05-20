@@ -2,7 +2,6 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <entry key = "name">Grapher</entry>
-<entry key = "type">Type</entry>
 <entry key = "titles">Function
 Parametric
 Implicit
@@ -14,7 +13,8 @@ Dimension
 Lines per cell
 Save picture
 Duration:FPS
-Boomerang</entry>
+Boomerang
+Feels time</entry>
 <entry key = "colors">Ray spectrum
 Infrared imager</entry>
 <entry key = "states">Converting
@@ -54,7 +54,8 @@ Rescale back</entry>
 Functions
 Calculator</entry>
 <entry key = "main_settings">Language
-Lines &lt;->(pixels)</entry>
+Lines &lt;->(pixels)
+Graphics max count</entry>
 <entry key = "help">help 10
 part 3
 Make a graphic
@@ -128,15 +129,17 @@ is normal factorial when x is integer
 part 5
 Examples:
 f(x)=if(x&lt;1,1,x*f(x-1)) - factorial
-2sin(x):cos(x) - draws ellipse
-cos(x)*sin(tmx):sin(x)*sin(tmx) - polar r(a)
+2sin(t):cos(t) - draws ellipse
+cos(t)*sin(tm*t):sin(t)*sin(tm*t) - polar r(a)=sin(tm*a)
 cos(x) + cos(y) - pretty picture
-part 5
+part 7
 Settings:
 Changing language in settings.
 Save/load grapher project here.
 Lines &lt;-> is minimum distance
 between lines of net on view.
+Graphics max count - number of visible
+functions of graphics.
 help 7
 part 6
 How to use?
@@ -145,12 +148,15 @@ If you want, you also can add your
 own functions and constants,
 You can write them in 'Functions' area,
 separate each one by pressing ENTER.
-part 2
+part 5
 Your constants:
 Write name + "=" + write an example.
+Before definition, don't use it.
+If you want to override internal constant,
+put ":=" instead of "=".
 part 4
 How to write your own functions?
-This is the same as writing constant.
+Write the name + "=" + expression.
 You can call vars by these names:
 x; y; z; t; x + some letter, like x\u9f99.
 part 6
@@ -177,11 +183,10 @@ ceil - min integer bigger then given
 min, max - min / max number from two given
 if(x, y, z) - returns z if x = 0 else y
 ifs(x) - returns 0 if x = 0 else 1
-part 18
+part 17
 Constants: (SI)
 pi - pi value = 3.14
 e - exponent = 2.71
-g - gravity = 9.8
 G - gravitational constant = 6.67 * 10 ^ -11
 h - Plank constant = 6.63 * 10 ^ -34
 c - speed of light = 3 * 10 ^ 8
@@ -198,29 +203,36 @@ au - astronomical unit = 1.5 * 10 ^ 11
 pc - parsec = 3.1 * 10 ^ 16
 part 10
 Examples:
-sqrt(4) = 2
-pow(2, 4) = 16
-ln(e) = 1
-log(8, 2) = 3
-arcsind(1) = 90
-arctgTwo(1, 0) = pi / 2
+sqrt(4) == 2
+pow(2, 4) == 16
+ln(e) == 1
+log(8, 2) == 3
+arcsind(1) == 90
+arctgTwo(1, 0) == pi / 2
 num = sqrt(5) - num is a constant
 lb = ld(x) - the same as ld(x) = logarithm of x with basis 2
 myfunc = sin(x) + cos(y) - use it like myfunc(x,y)
-help 1
-part 13
+help 2
+part 15
 Warning:
 Grapher can answer the incomprehensible
 when for it questions are incorrect, for example,
-if you write f(x)=g(x,x) and g=x+y
-grapher will show error, because will think anyway
-that g is the gravity constant.
+if you write f(x)=с(x,x) and с=x+y
+grapher will show error, because will think
+that g is speed of light,
+if you want to override constant, put ':' before '=',
+for previous example write с:=x+y.
 The following happens too:
 f(x)=rx, r=2
 Too many arguments!
 r is a function, so if there something is
-following continuously, grapher think like here:
-r(x), but not r*x, and r doesn't have arguments.
+following continuously, grapher think it is an argument (sinx),
+and r doesn't have arguments.
 xr all is a variable, xra (ra=2) is working good.
+part 5
+Feels time:
+If "feels time" is turned off,
+timer won't update this graphic,
+grapher would work faster with hard animations.
 </entry>
 </properties>
