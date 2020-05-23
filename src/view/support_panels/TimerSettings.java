@@ -102,10 +102,10 @@ public class TimerSettings extends Screen {
         if(start.isSelected()) {
             timer.start();
             timeBefore = System.currentTimeMillis();
-            updater.setTimerName("Timer(On)");
+            updater.setTimerName(Language.TIMER + "(On)");
         }else{
             timer.stop();
-            updater.setTimerName("Timer(Off)");
+            updater.setTimerName(Language.TIMER + "(Off)");
         }
     }
     @Override

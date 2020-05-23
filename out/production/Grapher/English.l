@@ -70,7 +70,7 @@ You can also do right click on button 'Timer'
 to stop or start it.
 part 9
 Resize:
-Open the app fullscreen and click
+Open the app fullscreen and click.
 this button is to resize graphics view.
 'Right' click on the button will change the action:
 Abscissa/Ordinate - mouse wheel
@@ -87,7 +87,7 @@ Parametric:
 Using var t
 write an expression for x, then put ':' and
 then write an expression for y, click ENTER
-part 16
+part 17
 Implicit:
 Equality:
 Grapher will show, where the expression is true
@@ -101,13 +101,14 @@ f(x,y)&lt;g(x,y)
 Spectrum:
 Write a function like z(x, y) and grapher will show color
 which depends on expression value
-from red to purple (rainbow).
+from blue to red like in infrared imager, or
+from red to purple like in rainbow.
 Use sensitivity to control rainbow thickness.
 z(x,y)
 part 6
 Translation:
 Translation is moving dot,
-Write an expression for x and y, in relation to
+Write expressions for x and y, in relation to
 original coordinates of dot, divide them by ":",
 this is like parametric but use x and y
 instead of t.
@@ -158,7 +159,7 @@ part 4
 How to write your own functions?
 Write the name + "=" + expression.
 You can call vars by these names:
-x; y; z; t; x + some letter, like x\u9f99.
+x; y; z; t; x + some letter, like x龙.
 part 6
 Signs:
 +, -, *, / standard math signs
@@ -212,7 +213,7 @@ arctgTwo(1, 0) == pi / 2
 num = sqrt(5) - num is a constant
 lb = ld(x) - the same as ld(x) = logarithm of x with basis 2
 myfunc = sin(x) + cos(y) - use it like myfunc(x,y)
-help 2
+help 4
 part 15
 Warning:
 Grapher can answer the incomprehensible
@@ -229,10 +230,48 @@ r is a function, so if there something is
 following continuously, grapher think it is an argument (sinx),
 and r doesn't have arguments.
 xr all is a variable, xra (ra=2) is working good.
-part 5
+part 4
 Feels time:
 If "feels time" is turned off,
 timer won't update this graphic,
 grapher would work faster with hard animations.
+part 4
+Parameters:
+If you create constant with a name "lookX" or "lookY",
+Grapher will move camera to this position,
+dot (lookX; lookY) will come to the middle of screen.
+part 32
+Saves:
+All saves are in xml format in java properties.
+File contains few parameters:
+calculator - saved field "Calculator"
+functions - field "Functions"
+resize_idx - way to resize - number in range 0-3
+timer_info - four numbers, like in timer settings:
+duration:fps and interval on new line
+view_params - four numbers, each on its own line:
+offset x, offset y, scale x, scale y
+offset x и y - coordinates of left bottom
+corner of image
+scale x и y - number of pixels of display,
+which graphic unit contains
+graphs_count - count of graphics -
+any natural number or 0
+graphic+number - field of graphic
+graphic_info+the same number - information of graphic:
+1) name of graphic - for example f for f(x),
+purport of name is to define color of graphic
+2) discretization (natural number > 2)
+3) feels time (true/false)
+4) type of graphic
+(Function/Parametric/Implicit/Translation)
+further depends on type of graphic
+if it is a Function, nothing,
+if it is a Parametric, interval,
+Implicit, sensitivity and on next line
+type of rainbow(0-rainbow,1-infrared imager)
+Translation, count of lines in cell on graphic
+if you want, you can add language:
+language - name of language, for example, >Русский&lt;.
 </entry>
 </properties>

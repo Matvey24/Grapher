@@ -24,7 +24,9 @@ public class ArrayCalculator<T> {
 
     private final List<Stack<Element>> funcTexts;
 
-    public ArrayCalculator() {
+    private final List<Variable<T>> params;
+    public ArrayCalculator(List<Variable<T>> params) {
+        this.params = params;
         vars = new ArrayList<>();
         funcTexts = new ArrayList<>();
         funcs = new ArrayList<>();
@@ -124,12 +126,18 @@ public class ArrayCalculator<T> {
         } catch (RuntimeException e) {
             throw new RuntimeException(e.getMessage() + " " + Language.CALCULATOR_ERRORS[0] + " " + Language.CALCULATOR_ERRORS[5]);
         }
+        for (AbstractConst<T> aConst : consts) {
+            aConst.run();
+        }
     }
 
     private void analise(String start, String end, boolean graphic) {
         int args = director.parse(end);
         if(args == 0 && !graphic){
             Variable<T> var = new Variable<>(start, null);
+            int n = params.indexOf(var);
+            if(n != -1)
+                var = params.get(n);
             AbstractConst<T> c = new AbstractConst<>(var);
             c.stack = director.getStack();
             consts.add(c);

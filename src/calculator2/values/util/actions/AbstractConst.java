@@ -7,7 +7,7 @@ import calculator2.values.util.actions.functions.MultiFunc;
 
 import java.util.Stack;
 
-public class AbstractConst<T> {
+public class AbstractConst<T> implements Runnable{
     private Expression<T> expression;
     private final Variable<T> var;
     public Stack<Element> stack;
@@ -19,7 +19,7 @@ public class AbstractConst<T> {
         this.stack = null;
     }
 
-    public void update(){
+    public void run(){
         var.setValue(expression.calculate());
     }
 

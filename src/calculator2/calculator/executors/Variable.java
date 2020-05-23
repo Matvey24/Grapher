@@ -1,5 +1,7 @@
 package calculator2.calculator.executors;
 
+import java.util.Objects;
+
 public class Variable<T> implements Expression<T>{
     private String name;
     private T value;
@@ -24,6 +26,13 @@ public class Variable<T> implements Expression<T>{
         return value;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Variable)) return false;
+        Variable<?> variable = (Variable<?>) o;
+        return name.equals(variable.name);
+    }
     @Override
     public String toString() {
         return getName();

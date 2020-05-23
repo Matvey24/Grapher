@@ -16,10 +16,8 @@ import java.awt.event.*;
 import static view.elements.ElementsList.OFFSET;
 
 public class MainPanel extends Screen {
-    private static final int WIDTH_0 = 1280;
-    private static final int HEIGHT_0 = 720;
-    public static int WIDTH = WIDTH_0;
-    public static int HEIGHT = HEIGHT_0;
+    public static int WIDTH = 1280;
+    public static int HEIGHT = 720;
     public static int GRAPH_WIDTH = WIDTH - ElementsList.WIDTH;
     private final GraphicsView graphicsView;
     private final ModelUpdater updater;
@@ -144,11 +142,12 @@ public class MainPanel extends Screen {
         btn_settings.setText(Language.MAIN_SETTINGS);
         functions.updateLanguage();
         calculator.updateLanguage();
+        VersionController.updateLanguage();
         setTitle(VersionController.VERSION_NAME + " by Math_way");
     }
     @Override
     public void onSetSize() {
-        setSize(WIDTH_0, HEIGHT_0);
+        setSize(WIDTH, HEIGHT);
     }
     @Override
     public void onShow() {

@@ -31,7 +31,7 @@ public class Calculator {
         this.updater = updater;
         this.repaint = repaint;
         tasks = new Tasks();
-        calculator = new ArrayCalculator<>();
+        calculator = new ArrayCalculator<>(makeParams());
     }
 
     public void recalculate() {
@@ -215,6 +215,8 @@ public class Calculator {
         tasks.runTask(() -> {
             if (!updater.dangerState) {
                 try {
+                    for(int i = 0; i < calculator.getConsts().size(); ++i)
+                        calculator.getConsts().get(i).run();
                     for (Graphic g : updater.graphics)
                         g.timeChanged();
                     calculatorView.update();
@@ -235,9 +237,6 @@ public class Calculator {
 
     public void resetConstant(String name, double time) {
         calculator.resetConstant(name, time);
-        for(int i = 0; i < calculator.getConsts().size(); ++i){
-            calculator.getConsts().get(i).update();
-        }
     }
 
     public void setElements(CalculatorView calculatorView, FunctionsView functionsView) {
@@ -248,7 +247,26 @@ public class Calculator {
     void run(Runnable r) {
         tasks.runTask(r);
     }
-
+    private ArrayList<Variable<Double>> makeParams(){
+        ArrayList<Variable<Double>> params = new ArrayList<>();
+        Variable<Double> lookX = new Variable<Double>("lookX", null){
+            @Override
+            public void setValue(Double value) {
+                super.setValue(value);
+                updater.lookAtX(value);
+            }
+        };
+        params.add(lookX);
+        Variable<Double> lookY = new Variable<Double>("lookY", null){
+            @Override
+            public void setValue(Double value) {
+                super.setValue(value);
+                updater.lookAtY(value);
+            }
+        };
+        params.add(lookY);
+        return params;
+    }
     void makeModel(FullModel m) {
         List<String> graphs = new ArrayList<>();
         List<String> graphicsInfo = new ArrayList<>();

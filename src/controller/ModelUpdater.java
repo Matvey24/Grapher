@@ -18,6 +18,8 @@ import java.util.List;
 
 
 import static java.awt.Color.*;
+import static view.MainPanel.GRAPH_WIDTH;
+import static view.MainPanel.HEIGHT;
 
 public class ModelUpdater {
     private static final List<Color> colors = Arrays.asList(BLUE, RED, GREEN, CYAN, magenta, GRAY, ORANGE, PINK, YELLOW, LIGHT_GRAY, BLACK);
@@ -119,7 +121,7 @@ public class ModelUpdater {
             case "Implicit":
                 e.setName(name + "(xy)");
                 ((Implicit) gr).setSensitivity(Double.parseDouble(arr[4]));
-                if(arr.length > 5)
+                if (arr.length > 5)
                     ((Implicit) gr).setViewType(Integer.parseInt(arr[5]));
                 break;
             case "Translation":
@@ -134,9 +136,11 @@ public class ModelUpdater {
         graphics.remove(e.getID());
         calculator.recalculate();
     }
-    public void run(Runnable r){
+
+    public void run(Runnable r) {
         calculator.run(r);
     }
+
     public void startSettings(int id) {
         Graphic g = graphics.get(id);
         if (g instanceof Function) {
@@ -145,11 +149,12 @@ public class ModelUpdater {
             supportFrameManager.openParameterSettings((Parametric) g, list.getElements().get(id));
         } else if (g instanceof Implicit) {
             supportFrameManager.openImplicitSettings((Implicit) g, list.getElements().get(id));
-        }else if(g instanceof Translation){
-            supportFrameManager.openTranslationSettings((Translation)g, list.getElements().get(id));
+        } else if (g instanceof Translation) {
+            supportFrameManager.openTranslationSettings((Translation) g, list.getElements().get(id));
         }
     }
-    public void makeFunction(int idx, TextElement e){
+
+    public void makeFunction(int idx, TextElement e) {
         Function function = new Function();
         function.setColor(e.getColor());
         graphics.set(idx, function);
@@ -158,7 +163,8 @@ public class ModelUpdater {
         function.name = func_names.get(id);
         supportFrameManager.close();
     }
-    public void makeParametric(int idx, TextElement e){
+
+    public void makeParametric(int idx, TextElement e) {
         Parametric parametric = new Parametric();
         parametric.setColor(e.getColor());
         graphics.set(idx, parametric);
@@ -166,7 +172,8 @@ public class ModelUpdater {
         parametric.name = func_names.get(colors.indexOf(e.getColor()));
         supportFrameManager.close();
     }
-    public void makeImplicit(int idx, TextElement e){
+
+    public void makeImplicit(int idx, TextElement e) {
         Implicit implicit = new Implicit(mainPanel);
         implicit.setColor(e.getColor());
         graphics.set(idx, implicit);
@@ -175,7 +182,8 @@ public class ModelUpdater {
         implicit.name = func_names.get(id);
         supportFrameManager.close();
     }
-    public void makeTranslation(int idx, TextElement e){
+
+    public void makeTranslation(int idx, TextElement e) {
         Translation translation = new Translation(getCoordinateSystem());
         translation.setColor(e.getColor());
         graphics.set(idx, translation);
@@ -183,6 +191,7 @@ public class ModelUpdater {
         translation.name = func_names.get(colors.indexOf(e.getColor()));
         supportFrameManager.close();
     }
+
     private int findFreeId() {
         for (int i = 0; i < colors.size() - 1; ++i) {
             Color c = colors.get(i);
@@ -233,7 +242,7 @@ public class ModelUpdater {
         if (dangerState)
             return;
         double yc = offsetY * scaleY;
-        scaleY = 1 * scaleX;
+        scaleY = 1*scaleX;
         offsetY = yc / scaleY;
 
         calculator.runResize();
@@ -242,6 +251,7 @@ public class ModelUpdater {
     public void runResize() {
         calculator.runResize();
     }
+
     public void openTimer() {
         supportFrameManager.openTimerSettings();
     }
@@ -261,9 +271,11 @@ public class ModelUpdater {
     public void setState(String text) {
         list.setState(text);
     }
-    public void rebounds(){
+
+    public void rebounds() {
         mainPanel.setGraphicsHeight();
     }
+
     public void setResize(Runnable resize) {
         calculator.setResize(resize);
     }
@@ -288,6 +300,16 @@ public class ModelUpdater {
         this.list = list;
     }
 
+    public void lookAtX(double x) {
+        if (Double.isFinite(x))
+            offsetX = x - GRAPH_WIDTH / scaleX / 2d;
+    }
+
+    public void lookAtY(double y) {
+        if (Double.isFinite(y))
+            offsetY = y + HEIGHT / scaleY / 2d;
+    }
+
     public void setGraphics(ArrayList<Graphic> graphics) {
         this.graphics = graphics;
     }
@@ -299,12 +321,15 @@ public class ModelUpdater {
     public void setTime(double time) {
         calculator.resetConstant("tm", time);
     }
-    public void setTimerName(String name){
+
+    public void setTimerName(String name) {
         mainPanel.setTimerName(name);
     }
-    public CoordinateSystem getCoordinateSystem(){
+
+    public CoordinateSystem getCoordinateSystem() {
         return mainPanel.getCoordinateSystem();
     }
+
     public void error(String message) {
         dangerState = true;
         setState(message);

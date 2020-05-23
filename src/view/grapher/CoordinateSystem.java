@@ -121,14 +121,14 @@ public class CoordinateSystem {
         {
             int x;
             boolean drawLine = false;
-            if(offsetX * scaleX > -GRAPH_WIDTH + 60){
+            if(offsetX * scaleX > -GRAPH_WIDTH + 30){
                 x = 0;
                 if(offsetX < 0){
                     drawLine = true;
                     x = (int)(-offsetX * scaleX);
                 }
             }else{
-                x = GRAPH_WIDTH - 60;
+                x = GRAPH_WIDTH - 30;
             }
             for (int i = 0, m = (int) (HEIGHT / scaleY / deltaY) + 1; i < m; ++i) {
                 int y = (int) ((mod(offsetY, deltaY) + (m - i - 1) * deltaY) * scaleY);
