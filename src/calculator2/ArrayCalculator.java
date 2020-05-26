@@ -126,9 +126,6 @@ public class ArrayCalculator<T> {
         } catch (RuntimeException e) {
             throw new RuntimeException(e.getMessage() + " " + Language.CALCULATOR_ERRORS[0] + " " + Language.CALCULATOR_ERRORS[5]);
         }
-        for (AbstractConst<T> aConst : consts) {
-            aConst.run();
-        }
     }
 
     private void analise(String start, String end, boolean graphic) {

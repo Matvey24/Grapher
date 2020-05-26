@@ -52,8 +52,8 @@ public class TimerSettings extends Screen {
                 dimension.setDefault(startT + ":" + endT);
             startT = Double.parseDouble(vars[0]);
             endT = Double.parseDouble(vars[1]);
+            value = startT;
             if (!timer.isRunning()) {
-                value = startT;
                 updater.setTime(startT);
                 updater.timerResize();
             }
@@ -110,6 +110,7 @@ public class TimerSettings extends Screen {
     }
     @Override
     public void onShow() {
+        super.onShow();
         duration.setDefault(dur + ":" + FPS);
         dimension.setDefault(startT + ":" + endT);
     }

@@ -97,6 +97,7 @@ public class MainSettings extends Screen {
     }
     @Override
     public void onShow(){
+        setTitle(Language.MAIN_SETTINGS);
         lineSpace.setDefault(String.valueOf(modelUpdater.getCoordinateSystem().getMinDelta()));
         graphics_count.setDefault(String.valueOf(modelUpdater.list.getMAX_SIZE()));
     }
@@ -114,6 +115,7 @@ public class MainSettings extends Screen {
     }
 
     public void updateLanguage() {
+        setTitle(Language.MAIN_SETTINGS);
         language.setName(Language.SETTINGS[0]);
         btn_save.setText(Language.SAVE_PRJ);
         btn_load.setText(Language.LOAD_PRJ);

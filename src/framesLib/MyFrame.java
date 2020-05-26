@@ -26,12 +26,6 @@ public class MyFrame extends JFrame {
         });
     }
 
-    @Override
-    public void setSize(int width, int height) {
-        super.setSize(width, height);
-        System.out.println("set size");
-    }
-
     public void changeScreen(Screen screen){
         onHideScreen();
         backStack.push(screen);

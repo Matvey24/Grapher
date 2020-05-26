@@ -170,6 +170,8 @@ public class Calculator {
                 }
                 updater.dangerState = false;
                 resetConstant("tm", updater.getSupportFrameManager().getTime());
+                for(int i = 0; i < calculator.getConsts().size(); ++i)
+                    calculator.getConsts().get(i).run();
                 calculatorView.update();
                 resize.run();
                 repaint.run();
