@@ -251,6 +251,8 @@ public class Calculator {
     }
     private ArrayList<Variable<Double>> makeParams(){
         ArrayList<Variable<Double>> params = new ArrayList<>();
+        Variable<Double> def = new Variable<>("default", 0d);
+        params.add(def);
         Variable<Double> lookX = new Variable<Double>("lookX", null){
             @Override
             public void setValue(Double value) {

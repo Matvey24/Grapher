@@ -43,6 +43,7 @@ public class ElementsList extends ViewElement {
         state.setFont(new Font("arial", Font.PLAIN, 12));
         btn_make_element.addActionListener((e)->{
             addElement();
+            setBounds(pos.x, pos.y);
             sizeChanged.actionPerformed(new ActionEvent(0, elements.size() - 1, "add"));
         });
         btn_move_up = new JButton("˄");
@@ -159,7 +160,6 @@ public class ElementsList extends ViewElement {
         e.attached = true;
         elements.add(e);
         position = elements.size() - MAX_SIZE;
-        setBounds(pos.x, pos.y);
     }
     public int getHeight() {
         return height;
@@ -168,7 +168,9 @@ public class ElementsList extends ViewElement {
     public ArrayList<TextElement> getElements(){
         return elements;
     }
-
+    public void updateGUI(){
+        setBounds(pos.x, pos.y);
+    }
     public void setState(String text){
         this.state.setText(text);
     }

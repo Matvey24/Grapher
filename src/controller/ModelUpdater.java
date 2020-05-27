@@ -357,7 +357,9 @@ public class ModelUpdater {
                     if (m.graphics.size() != 0) {
                         list.clear();
                     }
+                    supportFrameManager.close();
                     calculator.fromModel(m);
+                    list.updateGUI();
                     String[] view_params = m.view_params.split("\n");
                     offsetX = Double.parseDouble(view_params[0]);
                     offsetY = Double.parseDouble(view_params[1]);
@@ -368,7 +370,6 @@ public class ModelUpdater {
                     if (m.language != null && Language.language_Names.contains(m.language) && Language.language_Names.indexOf(m.language) != Language.LANGUAGE_INDEX) {
                         supportFrameManager.getMainSettings().setLanguage(Language.language_Names.indexOf(m.language));
                     }
-                    supportFrameManager.close();
                     mainPanel.setGraphicsHeight();
                     calculator.recalculate();
                     calculator.run(() -> setState(f.getName() + " " + Language.LOADED));

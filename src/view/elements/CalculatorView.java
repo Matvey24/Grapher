@@ -6,6 +6,8 @@ import model.ViewElement;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import static view.elements.ElementsList.OFFSET;
 import static view.elements.TextElement.HEIGHT;
@@ -16,7 +18,7 @@ public class CalculatorView extends ViewElement {
     private final JLabel name;
     private final JTextField field;
     private Expression<?> func;
-    public CalculatorView(Runnable calculate){
+    public CalculatorView(Runnable calculate, Runnable resize){
         name = new JLabel();
         name.setFont(name_font);
         answer = new JTextField();
@@ -25,6 +27,14 @@ public class CalculatorView extends ViewElement {
         answer.setFont(new Font("arial", Font.PLAIN, 11));
         field = new JTextField();
         field.addActionListener(e->calculate.run());
+        field.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(e.getButton() == MouseEvent.BUTTON3){
+                    resize.run();
+                }
+            }
+        });
         updateLanguage();
     }
     @Override

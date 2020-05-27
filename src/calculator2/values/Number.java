@@ -75,6 +75,7 @@ public class Number extends AbstractType<Double> {
         addFunction("abs", (UnarFunc<Double>) Math::abs, 10);
         addFunction("floor", Math::floor, 10);
         addFunction("ceil", Math::ceil, 10);
+        addFunction("round", a->(double)Math.round(a), 10);
 
         addFunction("min", (a, b) -> Math.min(a.calculate(),b.calculate()), 10);
         addFunction("max", (a, b) -> Math.max(a.calculate(),b.calculate()), 10);

@@ -132,10 +132,22 @@ public class ArrayCalculator<T> {
         int args = director.parse(end);
         if(args == 0 && !graphic){
             Variable<T> var = new Variable<>(start, null);
-            int n = params.indexOf(var);
-            if(n != -1)
-                var = params.get(n);
             AbstractConst<T> c = new AbstractConst<>(var);
+            int n = params.indexOf(var);
+            if(n != -1) {
+                var = params.get(n);
+                c.setVar(var);
+            }else {
+                n = consts.indexOf(c);
+                if (n != -1) {
+                    var = consts.get(n).getVar();
+                    c.setVar(var);
+                    c.stack = director.getStack();
+                    consts.add(c);
+                    return;
+                }
+            }
+            var.setValue(params.get(0).calculate());
             c.stack = director.getStack();
             consts.add(c);
             type.addFunction(start, c.getFunc(), 0, 10);

@@ -142,9 +142,11 @@ between lines of net on view.
 Graphics max count - number of visible
 functions of graphics.
 help 7
-part 6
+part 8
 How to use?
-Enter an example in calculator field and press Enter
+Enter an example in calculator field and press Enter.
+Do 'right' click on calculator field to compress
+Grapher frame.
 If you want, you also can add your
 own functions and constants,
 You can write them in 'Functions' area,

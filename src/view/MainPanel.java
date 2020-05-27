@@ -1,5 +1,6 @@
 package view;
 
+import controller.Calculator;
 import model.Language;
 import controller.ModelUpdater;
 import controller.VersionController;
@@ -22,6 +23,7 @@ public class MainPanel extends Screen {
     private final GraphicsView graphicsView;
     private final ModelUpdater updater;
     private final Point mousePosition;
+    private int height;
     private int resizeType;
     private final ElementsList graphics;
     private final CalculatorView calculator;
@@ -45,7 +47,7 @@ public class MainPanel extends Screen {
         graphics.addTo(this);
         graphicsView = new GraphicsView(graphics, updater);
 
-        calculator = new CalculatorView(updater::recalculate);
+        calculator = new CalculatorView(updater::recalculate, this::resize);
         calculator.addTo(this);
 
         functions = new FunctionsView(updater::recalculate);
@@ -119,20 +121,25 @@ public class MainPanel extends Screen {
         setGraphicsHeight();
     }
     public void setGraphicsHeight(){
-        int height = graphics.getHeight();
-        functions.setBounds(0, height + OFFSET);
-        calculator.setBounds(0,height + 3 * OFFSET + FunctionsView.FUNC_HEIGHT);
-        btn_help.setBounds(OFFSET,height + 3 * OFFSET + FunctionsView.FUNC_HEIGHT + CalculatorView.CALC_HEIGHT,
+        height = graphics.getHeight();
+        height += OFFSET;
+        functions.setBounds(0, height);
+        height += 2*OFFSET + FunctionsView.FUNC_HEIGHT;
+        calculator.setBounds(0,height);
+        height += CalculatorView.CALC_HEIGHT;
+        btn_help.setBounds(OFFSET,height,
                 TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
         btn_settings.setBounds(3 * OFFSET / 2 + TextElement.WIDTH / 2,
-                height + 3 * OFFSET + FunctionsView.FUNC_HEIGHT + CalculatorView.CALC_HEIGHT,
+                height,
                 TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
+        height += TextElement.HEIGHT + OFFSET;
         btn_resize.setBounds(OFFSET,
-                height + 4 * OFFSET + FunctionsView.FUNC_HEIGHT + CalculatorView.CALC_HEIGHT + TextElement.HEIGHT,
+                height,
                 TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
         btn_timer.setBounds(3 * OFFSET / 2 + TextElement.WIDTH / 2,
-                height + 4 * OFFSET + FunctionsView.FUNC_HEIGHT + CalculatorView.CALC_HEIGHT + TextElement.HEIGHT,
+                height,
                 TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
+        height += TextElement.HEIGHT;
     }
     public void updateLanguage(){
         btn_help.setText(Language.HELP);
@@ -144,6 +151,12 @@ public class MainPanel extends Screen {
         calculator.updateLanguage();
         VersionController.updateLanguage();
         setTitle(VersionController.VERSION_NAME + " by Math_way");
+    }
+    public void resize(){
+        WIDTH = TextElement.WIDTH + 30;
+        GRAPH_WIDTH = WIDTH - TextElement.WIDTH;
+        HEIGHT = height + 60;
+        super.resize();
     }
     @Override
     public void onSetSize() {
