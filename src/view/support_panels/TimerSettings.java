@@ -4,13 +4,18 @@ import model.Language;
 import controller.ModelUpdater;
 import framesLib.Screen;
 import model.help.FullModel;
+import view.elements.ComboBoxParameter;
 import view.elements.Parameter;
+import view.elements.TextElement;
 
 import javax.swing.*;
 
+import static view.elements.ElementsList.OFFSET;
+
 public class TimerSettings extends Screen {
-    private static final int WIDTH = 200;
-    private static final int HEIGHT = 300;
+    private static final int WIDTH = TextElement.WIDTH + 2*OFFSET+40;
+    private static final int HEIGHT = 5*OFFSET+2*ComboBoxParameter.HEIGHT
+            +4*TextElement.HEIGHT+80;
 
     private Parameter duration;
     private Parameter dimension;
@@ -45,7 +50,7 @@ public class TimerSettings extends Screen {
             timer.setDelay((int) (1000 * delay));
         });
         duration.addTo(this);
-        duration.setBounds(0, 0, 150);
+        duration.setBounds(OFFSET, OFFSET, TextElement.WIDTH);
         dimension = new Parameter(Language.DIMENSION, (s) -> {
             String[] vars = s.split(":");
             if (vars.length == 0)
@@ -60,7 +65,8 @@ public class TimerSettings extends Screen {
             time = 0;
         });
         dimension.addTo(this);
-        dimension.setBounds(0, 70, 150);
+        dimension.setBounds(OFFSET, 2*OFFSET+ ComboBoxParameter.HEIGHT,
+                TextElement.WIDTH);
         timer = new Timer((int) (delay * 1000), e -> {
             long t = System.currentTimeMillis();
             double delta = (t - timeBefore) / 1000d;
@@ -88,12 +94,15 @@ public class TimerSettings extends Screen {
         start = new JToggleButton(Language.BEGIN);
         start.setFocusPainted(false);
         add(start);
-        start.setBounds(10, 170, 150, 40);
+        start.setBounds(OFFSET, 3*OFFSET+2*ComboBoxParameter.HEIGHT,
+                TextElement.WIDTH, 2*TextElement.HEIGHT);
         start.addActionListener(e -> start());
         timeDir = new JToggleButton(Language.BOOMERANG);
         timeDir.setFocusPainted(false);
         add(timeDir);
-        timeDir.setBounds(10, 220, 150, 40);
+        timeDir.setBounds(OFFSET,
+                4*OFFSET+2*ComboBoxParameter.HEIGHT+2*TextElement.HEIGHT,
+                TextElement.WIDTH, 2*TextElement.HEIGHT);
         duration.setDefault(dur + ":" + FPS);
         dimension.setDefault(startT + ":" + endT);
         timeDir.addActionListener(e -> boomerang = timeDir.isSelected());
@@ -132,7 +141,8 @@ public class TimerSettings extends Screen {
     }
 
     public void makeModel(FullModel m) {
-        m.timer_info = duration.getText() + "\n" + dimension.getText() + "\n" + timeDir.isSelected();
+        m.timer_info = duration.getText() + "\n"
+                + dimension.getText() + "\n" + timeDir.isSelected();
     }
 
     public void fromModel(FullModel m) {

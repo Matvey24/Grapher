@@ -169,7 +169,7 @@ Signs:
 % - remainder of division
 &lt;, >, = return 1 if the expression
 is true else return 0
-part 16
+part 17
 Functions:
 sqrt, cbrt - quadratic and cubic roots
 pow - power
@@ -183,6 +183,7 @@ put 'd' after them to convert radians to degrees.
 abs - absolute value
 floor - max integer less then given
 ceil - min integer bigger then given
+round - rounding according to mathematical rules
 min, max - min / max number from two given
 if(x, y, z) - returns z if x = 0 else y
 ifs(x) - returns 0 if x = 0 else 1
@@ -237,11 +238,16 @@ Feels time:
 If "feels time" is turned off,
 timer won't update this graphic,
 grapher would work faster with hard animations.
-part 4
+part 9
 Parameters:
 If you create constant with a name "lookX" or "lookY",
 Grapher will move camera to this position,
 dot (lookX; lookY) will come to the middle of screen.
+If you are using recursive constants, for save value
+to next timer iteration, before definition
+constants would be 0, if you want to
+override this value, write 'default = 'value',
+and press 'update'.
 part 32
 Saves:
 All saves are in xml format in java properties.
