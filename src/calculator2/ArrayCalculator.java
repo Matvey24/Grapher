@@ -47,7 +47,7 @@ public class ArrayCalculator<T> {
         for (int i = 0; i < funcs.size(); ++i) {
             funcs.set(i, funcs.get(i).replaceAll("[ \t]", ""));
             int n = funcs.get(i).indexOf("=");
-            if (n == -1)
+            if (n < 1)
                 continue;
             String start = funcs.get(i).substring(0, n);
             if(start.charAt(n - 1) == ':') {

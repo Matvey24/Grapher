@@ -153,15 +153,16 @@ You can write them in 'Functions' area,
 separate each one by pressing ENTER.
 part 5
 Your constants:
-Write name + "=" + write an example.
-Before definition, don't use it.
+On functions area write
+name + "=" + write an example.
 If you want to override internal constant,
 put ":=" instead of "=".
-part 4
+part 5
 How to write your own functions?
 Write the name + "=" + expression.
 You can call vars by these names:
 x; y; z; t; x + some letter, like x龙.
+Lines which doesn't contain '=' are commentaries.
 part 6
 Signs:
 +, -, *, / standard math signs
@@ -217,7 +218,7 @@ num = sqrt(5) - num is a constant
 lb = ld(x) - the same as ld(x) = logarithm of x with basis 2
 myfunc = sin(x) + cos(y) - use it like myfunc(x,y)
 help 4
-part 15
+part 16
 Warning:
 Grapher can answer the incomprehensible
 when for it questions are incorrect, for example,
@@ -230,9 +231,10 @@ The following happens too:
 f(x)=rx, r=2
 Too many arguments!
 r is a function, so if there something is
-following continuously, grapher think it is an argument (sinx),
-and r doesn't have arguments.
-xr all is a variable, xra (ra=2) is working good.
+following continuously, grapher think
+it is an argument (sinx), and r doesn't
+have arguments. xr all is a variable,
+xra (ra=2) is working good.
 part 4
 Feels time:
 If "feels time" is turned off,

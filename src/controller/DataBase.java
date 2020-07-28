@@ -23,8 +23,8 @@ public class DataBase {
         properties.setProperty("timer_info", m.timer_info);
         properties.setProperty("resize_idx", m.resize_idx);
         properties.setProperty("view_params", m.view_params);
-        try {
-            properties.storeToXML(new FileOutputStream(f), "Edit it if you are a geek!");
+        try (FileOutputStream fos = new FileOutputStream(f)){
+            properties.storeToXML(fos, "Edit it if you are a geek!");
         }catch (IOException e){
             return e.getMessage();
         }
@@ -32,7 +32,9 @@ public class DataBase {
     }
     public FullModel load(File f) throws IOException{
         Properties properties = new Properties();
-        properties.loadFromXML(new FileInputStream(f));
+        FileInputStream fis = new FileInputStream(f);
+        properties.loadFromXML(fis);
+        fis.close();
         FullModel m = new FullModel();
         int n = Integer.parseInt(properties.getProperty("graphs_count", "0"));
         List<String> graphs = new ArrayList<>();

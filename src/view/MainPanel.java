@@ -1,6 +1,5 @@
 package view;
 
-import controller.Calculator;
 import model.Language;
 import controller.ModelUpdater;
 import controller.VersionController;
@@ -10,8 +9,13 @@ import view.elements.*;
 import view.grapher.CoordinateSystem;
 import view.grapher.GraphicsView;
 
+import java.io.File;
+import java.util.List;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.*;
 import java.awt.event.*;
 
 import static view.elements.ElementsList.OFFSET;
@@ -54,7 +58,6 @@ public class MainPanel extends Screen {
         functions.addTo(this);
 
         updater.setStringElements(functions, calculator);
-
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -68,6 +71,7 @@ public class MainPanel extends Screen {
                 mousePosition.setLocation(e.getX(), e.getY());
             }
         });
+
         addMouseWheelListener(e -> {
             int line = 0;
             if(resizeType == 1 || resizeType == 2)
@@ -119,6 +123,29 @@ public class MainPanel extends Screen {
         btn_settings.addActionListener(e -> updater.getSupportFrameManager().openMainSettings());
         add(btn_settings);
         setGraphicsHeight();
+        setDropTarget(new DropTarget(this, new DropTargetAdapter() {
+            @Override
+            public void drop(DropTargetDropEvent dtde) {
+                dtde.acceptDrop(DnDConstants.ACTION_COPY);
+                Transferable tr = dtde.getTransferable();
+                for(DataFlavor df: tr.getTransferDataFlavors()){
+                    try {
+                        List<?> list = (List<?>)tr.getTransferData(df);
+                        if(list.size() > 0) {
+                            File f;
+                            if(list.get(0) instanceof File)
+                                f = (File) list.get(0);
+                            else
+                                f = new File(list.get(0).toString());
+                            if(f.exists() && f.isFile())
+                                updater.dosave(false, f);
+                        }
+                    }catch (Exception e){
+                        updater.setState(e.toString());
+                    }
+                }
+            }
+        }));
     }
     public void setGraphicsHeight(){
         height = graphics.getHeight();
