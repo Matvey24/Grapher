@@ -39,6 +39,7 @@ public class CoordinateSystem {
         if (deltaY <= 0.5001 && deltaY >= 0.4999) {
             deltaY = 0.5;
         }
+        MAX_LINES = HEIGHT / MIN_DELTA + GRAPH_WIDTH / MIN_DELTA + 6;
         resizeNet();
     }
     public void setMIN_DELTA(int min_delta){

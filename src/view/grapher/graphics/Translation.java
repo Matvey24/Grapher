@@ -34,7 +34,7 @@ public class Translation extends Graphic {
     @Override
     public synchronized void resize(double offsetX, double offsetY, double scaleX, double scaleY) {
         if(dataX.length/multiplyer < cs.MAX_LINES)
-            resetMAP_SIZE(cs.MAX_LINES * multiplyer);
+            resetMAP_SIZE();
         if (needResize || offsetX != this.offsetX || this.scaleX != scaleX
                 || offsetY != this.offsetY || this.scaleY != scaleY) {
             this.offsetY = offsetY;
@@ -115,9 +115,9 @@ public class Translation extends Graphic {
         }
     }
 
-    private void resetMAP_SIZE(int size) {
-        dataX = new double[size][dataX[0].length];
-        dataY = new double[size][dataY[0].length];
+    private void resetMAP_SIZE() {
+        dataX = new double[cs.MAX_LINES * multiplyer][dataX[0].length];
+        dataY = new double[cs.MAX_LINES * multiplyer][dataY[0].length];
         needResize = true;
     }
     public void updateY(Expression<Double> funcY, Variable<Double> xy, Variable<Double> yx, Variable<Double> yy){

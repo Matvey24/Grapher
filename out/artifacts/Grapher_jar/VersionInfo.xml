@@ -2,9 +2,8 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
     <entry key="file_path">https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/Grapher.jar</entry>
-    <entry key="version">17</entry>
+    <entry key="version">18</entry>
     <entry key="changes">
-        drag and drop files to open projects
-        added file filter (.gr) for projects
+        fixed bug with lines in translation
     </entry>
 </properties>
