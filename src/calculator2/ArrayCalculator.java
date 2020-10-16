@@ -111,7 +111,10 @@ public class ArrayCalculator<T> {
             aConst.setExpression(director.getTree());
         }
         try {
-            director.parse(calc.get(0));
+            int n = director.parse(calc.get(0));
+            if(n != 0){
+                throw new RuntimeException(Language.UPDATER_ERRORS[1]);
+            }
             director.update(director.getStack());
             expressions.add(director.getTree());
             for (int i = 1; i < calc.size(); ++i) {

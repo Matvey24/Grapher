@@ -57,6 +57,7 @@ public class ImplicitSettings extends Settings {
         btn_save.addActionListener((e) -> {
             if (this.fileChooser == null) {
                 this.fileChooser = new FileChooser();
+                this.fileChooser.setSelectedFileFilter(FileChooser.ALL_FILES);
                 this.fileChooser.setSelectedFile(new File("img.jpg"));
                 this.fileChooser.setActionListener((a) -> {
                     if (a.getActionCommand().equals(JFileChooser.CANCEL_SELECTION))

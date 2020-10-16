@@ -21,9 +21,9 @@ import java.awt.event.*;
 import static view.elements.ElementsList.OFFSET;
 
 public class MainPanel extends Screen {
-    public static int WIDTH = 1280;
-    public static int HEIGHT = 720;
-    public static int GRAPH_WIDTH = WIDTH - ElementsList.WIDTH;
+    public static int WIDTH;
+    public static int HEIGHT;
+    public static int GRAPH_WIDTH;
     private final GraphicsView graphicsView;
     private final ModelUpdater updater;
     private final Point mousePosition;
@@ -36,6 +36,9 @@ public class MainPanel extends Screen {
     private final JButton btn_resize;
     private final JButton btn_timer;
     private final JButton btn_settings;
+    static{
+        rebounds(1280, 720);
+    }
     public MainPanel(){
         setLayout(null);
         btn_help = new JButton(Language.HELP);
@@ -146,6 +149,11 @@ public class MainPanel extends Screen {
                 }
             }
         }));
+    }
+    public static void rebounds(int width, int height){
+        WIDTH = width;
+        HEIGHT = height;
+        GRAPH_WIDTH = WIDTH - ElementsList.WIDTH;
     }
     public void setGraphicsHeight(){
         height = graphics.getHeight();

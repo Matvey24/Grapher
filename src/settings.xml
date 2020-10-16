@@ -4,4 +4,6 @@
     <entry key="default">English</entry>
     <entry key="l1">English</entry>
     <entry key="l2">Русский</entry>
+    <entry key="width">1280</entry>
+    <entry key="height">720</entry>
 </properties>

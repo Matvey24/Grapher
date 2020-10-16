@@ -2,8 +2,10 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
     <entry key="file_path">https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/Grapher.jar</entry>
-    <entry key="version">18</entry>
+    <entry key="version">19</entry>
     <entry key="changes">
-        fixed bug with lines in translation
+        added functions with unlimited arguments
+        (min, max, arr)
+        fixed some typos
     </entry>
 </properties>

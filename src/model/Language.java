@@ -1,6 +1,7 @@
 package model;
 
 import model.help.Property;
+import view.MainPanel;
 
 import java.io.IOException;
 import java.util.*;
@@ -66,14 +67,23 @@ public class Language {
             Properties properties = property.getProperties("settings.xml");
             Iterator<String> set = properties.stringPropertyNames().iterator();
             String def = DEFAULT_LANGUAGE;
+            int main_width = MainPanel.WIDTH, main_height = MainPanel.HEIGHT;
             while(set.hasNext()){
                 String lan = set.next();
-                if(lan.equals("default")){
-                    def = properties.getProperty(lan);
-                    continue;
+                switch (lan){
+                    case "default":
+                        def = properties.getProperty(lan);
+                        continue;
+                    case "width":
+                        main_width = Integer.parseInt(properties.getProperty(lan));
+                        continue;
+                    case "height":
+                        main_height = Integer.parseInt(properties.getProperty(lan));
+                        continue;
                 }
                 language_Names.add(properties.getProperty(lan));
             }
+            MainPanel.rebounds(main_width, main_height);
             System.out.println(loadLanguage(def));
         }catch (IOException e){
             e.printStackTrace();

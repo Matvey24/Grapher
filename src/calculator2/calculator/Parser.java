@@ -15,10 +15,13 @@ class Parser<T> {
     private final Helper<T> helper;
     private Stack<Element> stack;
     private final List<String> varNames;
+    private final Stack<Integer> ints;
+
     Parser(Helper<T> helper) {
         this.helper = helper;
         sb = new StringBuilder();
         varNames = new ArrayList<>();
+        ints = new Stack<>();
     }
 
     int parse(String str) {
@@ -111,25 +114,25 @@ class Parser<T> {
                     if (e.symbol.length() != 0) {
                         throw new RuntimeException(Language.PARSER_ERRORS[0] + " '" + e.symbol + "'");
                     }
-                }else if(helper.isVar(e.symbol)){
+                } else if (helper.isVar(e.symbol)) {
                     e.type = VAR;
-                }else if(helper.isConstant(e.symbol)){
+                } else if (helper.isConstant(e.symbol)) {
                     e.type = CONSTANT;
                 }
             }
         }
     }
 
-    private void findUnarySigns(List<Element> list){
+    private void findUnarySigns(List<Element> list) {
         Element last = list.get(0);
-        if(last.type == Element.ElementType.SIGN && helper.signs.getSign(last.symbol).canBeUnary){
+        if (last.type == Element.ElementType.SIGN && helper.signs.getSign(last.symbol).canBeUnary) {
             last.type = FUNCTION;
         }
-        for(int i = 1; i < list.size(); ++i){
+        for (int i = 1; i < list.size(); ++i) {
             Element e = list.get(i);
-            if(e.type == Element.ElementType.SIGN && helper.signs.getSign(e.symbol).canBeUnary &&
+            if (e.type == Element.ElementType.SIGN && helper.signs.getSign(e.symbol).canBeUnary &&
                     (helper.brackets.isBracket(last.symbol) && helper.brackets.brOpens(last.symbol)
-                            || last.type == Element.ElementType.DIVIDER || last.type == Element.ElementType.SIGN)){
+                            || last.type == Element.ElementType.DIVIDER || last.type == Element.ElementType.SIGN)) {
                 e.type = FUNCTION;
             }
             last = e;
@@ -144,9 +147,9 @@ class Parser<T> {
         for (int i = list.size() - 2; i >= 0; --i) {
             Element element = list.get(i);
             boolean needSign = false;
-            switch (element.type){
+            switch (element.type) {
                 case BRACKET:
-                    if(helper.brackets.brOpens(element.symbol))
+                    if (helper.brackets.brOpens(element.symbol))
                         break;
                 case CONSTANT:
                 case VAR:
@@ -160,6 +163,7 @@ class Parser<T> {
             last = element;
         }
     }
+
     private Stack<Element> toStack(List<Element> list) {
         Stack<Element> stack = new Stack<>();
         while (!list.isEmpty()) {
@@ -167,31 +171,62 @@ class Parser<T> {
         }
         return stack;
     }
-    public void simpleCheck(Stack<Element> stack){
-        int needArgs = 0;
-        int valsCount = 0;
-        for (Element e : stack) {
+
+    public void simpleCheck(Stack<Element> stack) {
+        int returns = 0;
+        if(ints.empty())
+            ints.clear();
+        for (int i = 0; i < stack.size(); ++i) {
+            Element e = stack.get(i);
             switch (e.type) {
                 case SIGN:
-                    needArgs += 2;
-                    ++valsCount;
+                    returns -= 1;
                     break;
                 case FUNCTION:
-                    needArgs += helper.funcs.getFunc(e.symbol).args;
+                    int args = helper.funcs.getFunc(e.symbol).args;
+                    returns -= args;
+                    if((args > 1 || args == -1) && (i == 0 || stack.get(i - 1).type != BRACKET || !helper.brackets.brOpens(stack.get(i - 1).symbol))){
+                        throw new RuntimeException(Language.PARSER_ERRORS[5] + " " + e.symbol);
+                    }
                 case VAR:
                 case NUMBER:
                 case CONSTANT:
-                    ++valsCount;
+                    returns++;
                     break;
+                case BRACKET:
+                    if (!helper.brackets.brOpens(e.symbol)) {
+                        ints.push(returns);
+                        returns = 0;
+                    } else {
+                        if (i < stack.size() - 1) {
+                            Element e1 = stack.get(i + 1);
+                            if (e1.type == FUNCTION) {
+                                int needArgs = helper.funcs.getFunc(e1.symbol).args;
+                                if(needArgs != -1) {
+                                    if(returns < needArgs)
+                                        throw new RuntimeException(Language.PARSER_ERRORS[1] + " " + Language.PARSER_ERRORS[4] + " " + e1.symbol);
+                                    else if (returns > needArgs)
+                                        throw new RuntimeException(Language.PARSER_ERRORS[2] + " " + Language.PARSER_ERRORS[4] + " " + e1.symbol);
+                                }
+                                e.symbol += returns;
+                                returns = ints.pop() + needArgs;
+                                break;
+                            }
+                        }
+                        if (returns < 1)
+                            throw new RuntimeException(Language.PARSER_ERRORS[1] + " " + Language.PARSER_ERRORS[3]);
+                        else if (returns > 1)
+                            throw new RuntimeException(Language.PARSER_ERRORS[2] + " " + Language.PARSER_ERRORS[3]);
+                        returns = ints.pop() + 1;
+                    }
             }
         }
-        int returns = valsCount - needArgs;
-        if(returns < 1)
+        if (returns < 1)
             throw new RuntimeException(Language.PARSER_ERRORS[1]);
-        else if(returns > 1)
+        else if (returns > 1)
             throw new RuntimeException(Language.PARSER_ERRORS[2]);
     }
-    private int calculateVars(List<Element> list){
+    private int calculateVars(List<Element> list) {
         varNames.clear();
         for (Element element : list) {
             if (element.type != VAR)
@@ -203,9 +238,11 @@ class Parser<T> {
         }
         return varNames.size();
     }
-    private boolean openBracket(Element e){
+
+    private boolean openBracket(Element e) {
         return e.type == BRACKET && helper.brackets.brOpens(e.symbol);
     }
+
     public Stack<Element> getStack() {
         return stack;
     }

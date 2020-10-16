@@ -1,5 +1,6 @@
 package calculator2.values;
 
+import calculator2.calculator.executors.Expression;
 import calculator2.values.util.AbstractType;
 import calculator2.values.util.actions.Sign;
 import calculator2.values.util.actions.functions.BinarFunc;
@@ -31,7 +32,7 @@ public class Number extends AbstractType<Double> {
         addSign('%', (a, b)-> a.calculate() % b.calculate(), 3);
         addSign('^', pow, 4);
 
-        Sign<Double> mulp = addSign('!', mul, 5);
+        Sign<Double> mulp = addSign('!', mul, 11);
 
         functions();
         constants();
@@ -77,11 +78,41 @@ public class Number extends AbstractType<Double> {
         addFunction("ceil", Math::ceil, 10);
         addFunction("round", a->(double)Math.round(a), 10);
 
-        addFunction("min", (a, b) -> Math.min(a.calculate(),b.calculate()), 10);
-        addFunction("max", (a, b) -> Math.max(a.calculate(),b.calculate()), 10);
-
         addFunction("if", (a)->((a[0].calculate() == 0)?a[2].calculate():a[1].calculate()),3,  10);
         addFunction("ifs", a->(a == 0)?0d:1d, 10);
+
+        addFunction("min", (a)->{
+            if(a.length == 0)
+                return .0;
+            double min = a[0].calculate();
+            for(int i = 1; i < a.length; ++i){
+                double b = a[i].calculate();
+                if(b < min)
+                    min = b;
+            }
+            return min;
+        }, -1, 10);
+        addFunction("max", (a)->{
+            double max = 0;
+            for (Expression<Double> ex : a) {
+                double b = ex.calculate();
+                if (b > max)
+                    max = b;
+            }
+            return max;
+        }, -1, 10);
+        addFunction("arr",(a)->{
+            if(a.length < 2)
+                return Double.NaN;
+            int idx = (int)Math.round(a[0].calculate());
+            idx += 1;
+            if(idx < 1){
+                idx = 1;
+            }else if(idx >= a.length){
+                idx = a.length - 1;
+            }
+            return a[idx].calculate();
+        }, -1,10);
     }
     private void constants(){
         addConst("pi", PI);

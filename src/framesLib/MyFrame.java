@@ -24,6 +24,7 @@ public class MyFrame extends JFrame {
                     System.exit(0);
             }
         });
+        setLocationRelativeTo(null);
     }
 
     public void changeScreen(Screen screen){
@@ -48,17 +49,20 @@ public class MyFrame extends JFrame {
     private void setScreen(Screen screen){
         getContentPane().removeAll();
         resize(screen);
-        setLocationRelativeTo(null);
         getContentPane().add(screen);
         screen.grabFocus();
         screen.show(this);
     }
     void resize(Screen screen){
         screen.onSetSize();
+        Rectangle r = getBounds();
+        Point p = r.getLocation();
+        p.translate(r.width / 2, r.height/2);
         Dimension d = screen.getSize();
         setSize(d.width, d.height + 1);
         this.update(getGraphics());
         setSize(d);
+        setLocation(r.x + (r.width- d.width) / 2, r.y  + (r.height - d.height) / 2);
     }
     private void onHideScreen(){
         if(!backStack.empty()){

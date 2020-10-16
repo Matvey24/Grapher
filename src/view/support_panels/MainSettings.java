@@ -67,6 +67,7 @@ public class MainSettings extends Screen {
             }
         });
         fileChooser = new FileChooser();
+        fileChooser.setSelectedFileFilter(FileChooser.GRAPHER_PROJECT);
         fileChooser.setActionListener((e)->{
             if(e.getActionCommand().equals(JFileChooser.CANCEL_SELECTION))
                 fileChooser.back();
