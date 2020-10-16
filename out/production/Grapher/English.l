@@ -23,7 +23,7 @@ Calculating..
 loaded
 Saved to</entry>
 <entry key = "updater_errors">We need 2 funcs in parametric and translation.
-Too many vars in
+Too many vars
 graphic
 We need t or x and y vars in</entry>
 <entry key = "calculator_errors">in
@@ -33,8 +33,11 @@ grammar of
 vars of
 calculator</entry>
 <entry key = "parser_errors">Undefined symbol
-Too many functions
-Too many arguments</entry>
+Too little arguments
+Too many arguments
+in brackets
+in
+Bad location of</entry>
 <entry key = "buttons">Begin
 Update
 Settings
@@ -170,7 +173,7 @@ Signs:
 % - remainder of division
 &lt;, >, = return 1 if the expression
 is true else return 0
-part 17
+part 18
 Functions:
 sqrt, cbrt - quadratic and cubic roots
 pow - power
@@ -185,7 +188,8 @@ abs - absolute value
 floor - max integer less then given
 ceil - min integer bigger then given
 round - rounding according to mathematical rules
-min, max - min / max number from two given
+min, max - min / max number from few given
+arr(idx, a...) - returns element from given array 'a'
 if(x, y, z) - returns z if x = 0 else y
 ifs(x) - returns 0 if x = 0 else 1
 part 17
