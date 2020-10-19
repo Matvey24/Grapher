@@ -1,6 +1,6 @@
 package calculator2.calculator.executors;
 
-import calculator2.values.util.actions.functions.UnarFunc;
+import calculator2.calculator.util.actions.functions.UnarFunc;
 
 public class UnaryActor<T> implements Expression<T> {
     private Expression<T> a;

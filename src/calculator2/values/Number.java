@@ -1,10 +1,10 @@
 package calculator2.values;
 
 import calculator2.calculator.executors.Expression;
-import calculator2.values.util.AbstractType;
-import calculator2.values.util.actions.Sign;
-import calculator2.values.util.actions.functions.BinarFunc;
-import calculator2.values.util.actions.functions.UnarFunc;
+import calculator2.calculator.util.AbstractType;
+import calculator2.calculator.util.actions.Sign;
+import calculator2.calculator.util.actions.functions.BinarFunc;
+import calculator2.calculator.util.actions.functions.UnarFunc;
 
 import static java.lang.Math.PI;
 

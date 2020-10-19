@@ -1,6 +1,6 @@
 package calculator2.calculator.helpers;
 
-import calculator2.values.util.actions.Func;
+import calculator2.calculator.util.actions.Func;
 
 import java.util.HashMap;
 import java.util.List;

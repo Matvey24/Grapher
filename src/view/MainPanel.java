@@ -36,25 +36,27 @@ public class MainPanel extends Screen {
     private final JButton btn_resize;
     private final JButton btn_timer;
     private final JButton btn_settings;
-    static{
+
+    static {
         rebounds(1280, 720);
     }
-    public MainPanel(){
+
+    public MainPanel() {
         setLayout(null);
+        updater = new ModelUpdater(this::paintGraphic, this);
         btn_help = new JButton(Language.HELP);
         btn_help.setFocusPainted(false);
         add(btn_help);
         mousePosition = new Point();
-        updater = new ModelUpdater(this::repaint, this);
 
-        btn_help.addActionListener((e)-> updater.getSupportFrameManager().openHelperFrame());
+        btn_help.addActionListener((e) -> updater.getSupportFrameManager().openHelperFrame());
 
         graphics = new ElementsList(0, 0, updater::addVRemove, updater::startSettings);
         graphics.setName(Language.GRAPHICS);
         graphics.addTo(this);
         graphicsView = new GraphicsView(graphics, updater);
-
-        calculator = new CalculatorView(updater::recalculate, this::resize);
+        add(graphicsView);
+        calculator = new CalculatorView(updater::recalculate, this::calculatorResize);
         calculator.addTo(this);
 
         functions = new FunctionsView(updater::recalculate);
@@ -77,7 +79,7 @@ public class MainPanel extends Screen {
 
         addMouseWheelListener(e -> {
             int line = 0;
-            if(resizeType == 1 || resizeType == 2)
+            if (resizeType == 1 || resizeType == 2)
                 line = resizeType;
             updater.rescale(e.getPreciseWheelRotation(), e.getX() - ElementsList.WIDTH, e.getY(), line);
         });
@@ -86,23 +88,15 @@ public class MainPanel extends Screen {
         btn_resize = new JButton(Language.RESIZERS[resizeType]);
         btn_resize.setFocusPainted(false);
         btn_resize.addActionListener(e -> {
-            switch (resizeType){
-                case 0:
-                    WIDTH = getWidth();
-                    HEIGHT = getHeight();
-                    GRAPH_WIDTH = WIDTH - ElementsList.WIDTH;
-                    updater.recalculate();
-                    break;
-                case 3:
-                    updater.rescaleBack();
-                    break;
+            if (resizeType == 0) {
+                updater.rescaleBack();
             }
         });
         btn_resize.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(e.getButton() == MouseEvent.BUTTON3) {
-                    resizeType = (resizeType + 1) % 4;
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    resizeType = (resizeType + 1) % 3;
                     btn_resize.setText(Language.RESIZERS[resizeType]);
                 }
             }
@@ -111,12 +105,12 @@ public class MainPanel extends Screen {
 
         btn_timer = new JButton(Language.TIMER);
         btn_timer.setFocusPainted(false);
-        btn_timer.addActionListener(e ->updater.openTimer());
+        btn_timer.addActionListener(e -> updater.openTimer());
         btn_timer.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(e.getButton() == MouseEvent.BUTTON3){
-                   updater.getSupportFrameManager().getTimer().onClick();
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    updater.getSupportFrameManager().getTimer().onClick();
                 }
             }
         });
@@ -131,38 +125,49 @@ public class MainPanel extends Screen {
             public void drop(DropTargetDropEvent dtde) {
                 dtde.acceptDrop(DnDConstants.ACTION_COPY);
                 Transferable tr = dtde.getTransferable();
-                for(DataFlavor df: tr.getTransferDataFlavors()){
+                for (DataFlavor df : tr.getTransferDataFlavors()) {
                     try {
-                        List<?> list = (List<?>)tr.getTransferData(df);
-                        if(list.size() > 0) {
+                        List<?> list = (List<?>) tr.getTransferData(df);
+                        if (list.size() > 0) {
                             File f;
-                            if(list.get(0) instanceof File)
+                            if (list.get(0) instanceof File)
                                 f = (File) list.get(0);
                             else
                                 f = new File(list.get(0).toString());
-                            if(f.exists() && f.isFile())
+                            if (f.exists() && f.isFile())
                                 updater.dosave(false, f);
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         updater.setState(e.toString());
                     }
                 }
             }
         }));
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                WIDTH = getWidth();
+                HEIGHT = getHeight();
+                GRAPH_WIDTH = WIDTH - ElementsList.WIDTH;
+                updater.runResize();
+                graphicsView.setBounds(ElementsList.WIDTH, 0, GRAPH_WIDTH, HEIGHT);
+            }
+        });
     }
-    public static void rebounds(int width, int height){
+
+    public static void rebounds(int width, int height) {
         WIDTH = width;
         HEIGHT = height;
-        GRAPH_WIDTH = WIDTH - ElementsList.WIDTH;
     }
-    public void setGraphicsHeight(){
+
+    public void setGraphicsHeight() {
         height = graphics.getHeight();
         height += OFFSET;
         functions.setBounds(0, height);
-        height += 2*OFFSET + FunctionsView.FUNC_HEIGHT;
-        calculator.setBounds(0,height);
+        height += 2 * OFFSET + FunctionsView.FUNC_HEIGHT;
+        calculator.setBounds(0, height);
         height += CalculatorView.CALC_HEIGHT;
-        btn_help.setBounds(OFFSET,height,
+        btn_help.setBounds(OFFSET, height,
                 TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
         btn_settings.setBounds(3 * OFFSET / 2 + TextElement.WIDTH / 2,
                 height,
@@ -176,7 +181,8 @@ public class MainPanel extends Screen {
                 TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
         height += TextElement.HEIGHT;
     }
-    public void updateLanguage(){
+
+    public void updateLanguage() {
         btn_help.setText(Language.HELP);
         graphics.setName(Language.GRAPHICS);
         btn_resize.setText(Language.RESIZERS[resizeType]);
@@ -187,37 +193,48 @@ public class MainPanel extends Screen {
         VersionController.updateLanguage();
         setTitle(VersionController.VERSION_NAME + " by Math_way");
     }
-    public void resize(){
+
+    public void calculatorResize() {
         WIDTH = TextElement.WIDTH + 30;
         GRAPH_WIDTH = WIDTH - TextElement.WIDTH;
         HEIGHT = height + 60;
         super.resize();
     }
+
     @Override
     public void onSetSize() {
         setSize(WIDTH, HEIGHT);
     }
+
     @Override
     public void onShow() {
         setTitle(VersionController.VERSION_NAME + " by Math_way");
     }
-    public CoordinateSystem getCoordinateSystem(){
+
+    public CoordinateSystem getCoordinateSystem() {
         return graphicsView.getCoordinateSystem();
     }
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        g.translate(ElementsList.WIDTH, 0);
-        graphicsView.paint(g);
+
+    private void paintGraphic() {
+        graphicsView.repaint();
     }
-    public void makeModel(FullModel m){
+
+    public void makeModel(FullModel m) {
         m.resize_idx = String.valueOf(resizeType);
     }
-    public void fromModel(FullModel m){
+
+    public void fromModel(FullModel m) {
+        if(m.resize_idx.isEmpty())
+            return;
         resizeType = Integer.parseInt(m.resize_idx);
+        if(resizeType < 0)
+            resizeType = 0;
+        if(resizeType > 2)
+            resizeType = 2;
         btn_resize.setText(Language.RESIZERS[resizeType]);
     }
-    public void setTimerName(String name){
+
+    public void setTimerName(String name) {
         btn_timer.setText(name);
     }
 }

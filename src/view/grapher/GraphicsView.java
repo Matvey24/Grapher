@@ -5,10 +5,11 @@ import controller.ModelUpdater;
 import view.elements.ElementsList;
 import view.grapher.graphics.Graphic;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class GraphicsView {
+public class GraphicsView extends JPanel {
     private final ArrayList<Graphic> graphics;
     private final CoordinateSystem coordinateSystem;
 
@@ -37,7 +38,9 @@ public class GraphicsView {
     public CoordinateSystem getCoordinateSystem(){
         return coordinateSystem;
     }
+    @Override
     public void paint(Graphics g) {
+        super.paint(g);
         coordinateSystem.draw(g);
         try {
             for (Graphic s : graphics)

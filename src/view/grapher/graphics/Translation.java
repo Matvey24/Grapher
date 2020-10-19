@@ -36,11 +36,13 @@ public class Translation extends Graphic {
         if(dataX.length/multiplyer < cs.MAX_LINES)
             resetMAP_SIZE();
         if (needResize || offsetX != this.offsetX || this.scaleX != scaleX
-                || offsetY != this.offsetY || this.scaleY != scaleY) {
+                || offsetY != this.offsetY || this.scaleY != scaleY || this.graph_height != HEIGHT || this.graph_width != GRAPH_WIDTH) {
             this.offsetY = offsetY;
             this.scaleY = scaleY;
             this.offsetX = offsetX;
             this.scaleX = scaleX;
+            this.graph_width = GRAPH_WIDTH;
+            this.graph_height = HEIGHT;
             needResize = false;
             double deltaX = cs.getDeltaX() / multiplyer;
             double deltaY = cs.getDeltaY() / multiplyer;

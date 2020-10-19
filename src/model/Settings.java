@@ -13,7 +13,7 @@ import static view.elements.ElementsList.OFFSET;
 
 public abstract class Settings extends Screen {
     private Parameter mapSize;
-    protected JToggleButton feels_time;
+    protected final JToggleButton feels_time;
     protected TextElement el;
     protected static final int HEIGHT = 3 * OFFSET
             + ComboBoxParameter.HEIGHT + TextElement.HEIGHT;

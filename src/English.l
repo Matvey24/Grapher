@@ -23,7 +23,6 @@ Calculating..
 loaded
 Saved to</entry>
 <entry key = "updater_errors">We need 2 funcs in parametric and translation.
-Too many vars
 graphic
 We need t or x and y vars in</entry>
 <entry key = "calculator_errors">in
@@ -31,7 +30,8 @@ graphic
 function
 grammar of
 vars of
-calculator</entry>
+calculator
+Too many vars</entry>
 <entry key = "parser_errors">Undefined symbol
 Too little arguments
 Too many arguments
@@ -51,8 +51,7 @@ Calculator help
 Extra info</entry>
 <entry key = "resizers">Resize
 Abscissa
-Ordinate
-Rescale back</entry>
+Ordinate</entry>
 <entry key = "text_elements">Graphics
 Functions
 Calculator</entry>
@@ -71,16 +70,14 @@ than click 'Timer' and click 'Begin' in opened frame.
 You can change some settings in this frame.
 You can also do right click on button 'Timer'
 to stop or start it.
-part 9
+part 7
 Resize:
-Open the app fullscreen and click.
-this button is to resize graphics view.
+'Left' click will change
+ordinate's scale to abscissa's scale.
 'Right' click on the button will change the action:
-Abscissa/Ordinate - mouse wheel
-rotation/touchPad gestures
-will change only abscissa's/ordinate's size.
-Return back - left click will change
-ordinate's size to abscissa's size.
+Abscissa/Ordinate - mouse wheel rotation
+/ touchPad gestures
+will change only abscissa's/ordinate's scale.
 part 3
 Extra:
 'Right' click on '-' button in expression in graphics.

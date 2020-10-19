@@ -1,9 +1,9 @@
-package calculator2.values.util.actions;
+package calculator2.calculator.util.actions;
 
 import calculator2.calculator.Element;
 import calculator2.calculator.executors.Expression;
 import calculator2.calculator.executors.Variable;
-import calculator2.values.util.actions.functions.MultiFunc;
+import calculator2.calculator.util.actions.functions.MultiFunc;
 
 import java.util.Objects;
 import java.util.Stack;
@@ -21,9 +21,8 @@ public class AbstractConst<T> implements Runnable{
         this.stack = null;
     }
 
-    public AbstractConst<T> setVar(Variable<T> var) {
+    public void setVar(Variable<T> var) {
         this.var = var;
-        return this;
     }
 
     public void run(){

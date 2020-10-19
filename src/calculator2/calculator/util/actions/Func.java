@@ -1,8 +1,8 @@
-package calculator2.values.util.actions;
+package calculator2.calculator.util.actions;
 
-import calculator2.values.util.actions.functions.BinarFunc;
-import calculator2.values.util.actions.functions.MultiFunc;
-import calculator2.values.util.actions.functions.UnarFunc;
+import calculator2.calculator.util.actions.functions.BinarFunc;
+import calculator2.calculator.util.actions.functions.MultiFunc;
+import calculator2.calculator.util.actions.functions.UnarFunc;
 
 public class Func<T> {
     public final UnarFunc<T> unarFunc;

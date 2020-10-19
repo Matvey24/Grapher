@@ -1,5 +1,6 @@
 package view.support_panels;
 
+import controller.MyTimer;
 import model.Language;
 import controller.ModelUpdater;
 import framesLib.Screen;
@@ -19,7 +20,7 @@ public class TimerSettings extends Screen {
 
     private Parameter duration;
     private Parameter dimension;
-    private Timer timer;
+    private MyTimer timer;
     private double FPS = 60;
     private double delay = 1 / FPS;
     private double dur = 30;
@@ -47,7 +48,9 @@ public class TimerSettings extends Screen {
                 FPS = Double.parseDouble(vars[1]);
             }
             delay = 1 / FPS;
-            timer.setDelay((int) (1000 * delay));
+            int d = (int) (1000 * delay);
+            d = Math.min(d, 10000);
+            timer.setDelay(d);
         });
         duration.addTo(this);
         duration.setBounds(OFFSET, OFFSET, TextElement.WIDTH);
@@ -67,7 +70,7 @@ public class TimerSettings extends Screen {
         dimension.addTo(this);
         dimension.setBounds(OFFSET, 2*OFFSET+ ComboBoxParameter.HEIGHT,
                 TextElement.WIDTH);
-        timer = new Timer((int) (delay * 1000), e -> {
+        timer = new MyTimer((int) (delay * 1000), () -> {
             long t = System.currentTimeMillis();
             double delta = (t - timeBefore) / 1000d;
             timeBefore = t;
@@ -146,13 +149,15 @@ public class TimerSettings extends Screen {
     }
 
     public void fromModel(FullModel m) {
-        String[] info = m.timer_info.split("\n");
-        duration.setDefault(info[0]);
-        duration.activate();
-        dimension.setDefault(info[1]);
-        dimension.activate();
-        timeDir.setSelected(Boolean.parseBoolean(info[2]));
-        boomerang = timeDir.isSelected();
+        if(!m.timer_info.isEmpty()) {
+            String[] info = m.timer_info.split("\n");
+            duration.setDefault(info[0]);
+            duration.activate();
+            dimension.setDefault(info[1]);
+            dimension.activate();
+            timeDir.setSelected(Boolean.parseBoolean(info[2]));
+            boomerang = timeDir.isSelected();
+        }
     }
 
     @Override

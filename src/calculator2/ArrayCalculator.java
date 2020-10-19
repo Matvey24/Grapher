@@ -1,12 +1,13 @@
 package calculator2;
 
+import calculator2.calculator.CalcLanguage;
 import calculator2.calculator.Director;
 import calculator2.calculator.Element;
 import calculator2.calculator.executors.Expression;
 import calculator2.calculator.executors.Variable;
-import calculator2.values.util.AbstractType;
-import calculator2.values.util.actions.AbstractConst;
-import calculator2.values.util.actions.AbstractFunc;
+import calculator2.calculator.util.AbstractType;
+import calculator2.calculator.util.actions.AbstractConst;
+import calculator2.calculator.util.actions.AbstractFunc;
 import model.Language;
 
 import java.util.*;
@@ -69,7 +70,7 @@ public class ArrayCalculator<T> {
                 analise(s.substring(0, n), s.substring(n + 1), true);
             }
         } catch (RuntimeException e) {
-            throw new RuntimeException(e.getMessage() + " " + Language.CALCULATOR_ERRORS[0] + " " + (err + 1) + " " + Language.CALCULATOR_ERRORS[1]);
+            throw new RuntimeException(e.getMessage() + " " + CalcLanguage.CALCULATOR_ERRORS[0] + " " + (err + 1) + " " + CalcLanguage.CALCULATOR_ERRORS[1]);
         }
         err = 0;
         try {
@@ -84,19 +85,24 @@ public class ArrayCalculator<T> {
                 analise(start, s.substring(n + 1), false);
             }
         } catch (RuntimeException e) {
-            throw new RuntimeException(e.getMessage() + " " + Language.CALCULATOR_ERRORS[0] + " " + (err + 1) + " " + Language.CALCULATOR_ERRORS[2]);
+            throw new RuntimeException(e.getMessage() + " " + CalcLanguage.CALCULATOR_ERRORS[0]
+                    + " " + (err + 1) + " " + CalcLanguage.CALCULATOR_ERRORS[2]);
         }
         director.renewType(type);
         for (int i = 0; i < this.funcs.size(); ++i) {
             try {
                 director.update(funcTexts.get(i));
             } catch (RuntimeException e) {
-                throw new RuntimeException(e.getMessage() + " " + Language.CALCULATOR_ERRORS[0] + " " + Language.CALCULATOR_ERRORS[3] + " " + (i + 1) + " " + Language.CALCULATOR_ERRORS[2]);
+                throw new RuntimeException(e.getMessage() + " " + CalcLanguage.CALCULATOR_ERRORS[0]
+                        + " " + CalcLanguage.CALCULATOR_ERRORS[3] + " " + (i + 1)
+                        + " " + CalcLanguage.CALCULATOR_ERRORS[2]);
             }
             try {
                 this.funcs.get(i).setFunc(director.getTree(), director.getVars());
             } catch (RuntimeException e) {
-                throw new RuntimeException(e.getMessage() + " " + Language.CALCULATOR_ERRORS[0] + " " + Language.CALCULATOR_ERRORS[4] + " " + (i + 1) + " " + Language.CALCULATOR_ERRORS[2]);
+                throw new RuntimeException(e.getMessage() + " " + CalcLanguage.CALCULATOR_ERRORS[0]
+                        + " " + CalcLanguage.CALCULATOR_ERRORS[4] + " "
+                        + (i + 1) + " " + CalcLanguage.CALCULATOR_ERRORS[2]);
             }
             if (i < graphs.size()) {
                 this.graphics.add(director.getTree());
@@ -113,7 +119,7 @@ public class ArrayCalculator<T> {
         try {
             int n = director.parse(calc.get(0));
             if(n != 0){
-                throw new RuntimeException(Language.UPDATER_ERRORS[1]);
+                throw new RuntimeException(CalcLanguage.CALCULATOR_ERRORS[6]);
             }
             director.update(director.getStack());
             expressions.add(director.getTree());
@@ -127,7 +133,8 @@ public class ArrayCalculator<T> {
                 expressionVars.get(i - 1).addAll(director.getVars());
             }
         } catch (RuntimeException e) {
-            throw new RuntimeException(e.getMessage() + " " + Language.CALCULATOR_ERRORS[0] + " " + Language.CALCULATOR_ERRORS[5]);
+            throw new RuntimeException(e.getMessage() + " " + CalcLanguage.CALCULATOR_ERRORS[0]
+                    + " " + CalcLanguage.CALCULATOR_ERRORS[5]);
         }
     }
 

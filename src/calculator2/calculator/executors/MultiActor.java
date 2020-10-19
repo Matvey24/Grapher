@@ -1,6 +1,6 @@
 package calculator2.calculator.executors;
 
-import calculator2.values.util.actions.functions.MultiFunc;
+import calculator2.calculator.util.actions.functions.MultiFunc;
 
 import java.util.Arrays;
 

@@ -3,7 +3,7 @@ package calculator2.calculator;
 import calculator2.calculator.executors.Expression;
 import calculator2.calculator.executors.Variable;
 import calculator2.calculator.helpers.Helper;
-import calculator2.values.util.AbstractType;
+import calculator2.calculator.util.AbstractType;
 
 import java.util.ArrayList;
 import java.util.Stack;

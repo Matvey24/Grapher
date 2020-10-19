@@ -89,6 +89,14 @@ public class Parametric extends Graphic {
     }
 
     @Override
+    public void free() {
+        super.free();
+        xMap = null;
+        xFunc = null;
+        xVar = null;
+    }
+
+    @Override
     public void setMAP_SIZE(int map_size) {
         super.setMAP_SIZE(map_size);
         xMap = new double[map_size];

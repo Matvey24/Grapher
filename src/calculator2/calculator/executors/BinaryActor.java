@@ -1,6 +1,6 @@
 package calculator2.calculator.executors;
 
-import calculator2.values.util.actions.functions.BinarFunc;
+import calculator2.calculator.util.actions.functions.BinarFunc;
 
 public class BinaryActor<T> implements Expression<T> {
     private Expression<T> a;

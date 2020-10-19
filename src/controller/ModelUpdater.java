@@ -133,7 +133,7 @@ public class ModelUpdater {
     }
 
     private void remove(ActionEvent e) {
-        graphics.remove(e.getID());
+        graphics.remove(e.getID()).free();
         calculator.recalculate();
     }
 
@@ -360,11 +360,13 @@ public class ModelUpdater {
                     supportFrameManager.close();
                     calculator.fromModel(m);
                     list.updateGUI();
-                    String[] view_params = m.view_params.split("\n");
-                    offsetX = Double.parseDouble(view_params[0]);
-                    offsetY = Double.parseDouble(view_params[1]);
-                    scaleX = Double.parseDouble(view_params[2]);
-                    scaleY = Double.parseDouble(view_params[3]);
+                    if(!m.view_params.isEmpty()) {
+                        String[] view_params = m.view_params.split("\n");
+                        offsetX = Double.parseDouble(view_params[0]);
+                        offsetY = Double.parseDouble(view_params[1]);
+                        scaleX = Double.parseDouble(view_params[2]);
+                        scaleY = Double.parseDouble(view_params[3]);
+                    }
                     mainPanel.fromModel(m);
                     supportFrameManager.getTimer().fromModel(m);
                     if (m.language != null && Language.language_Names.contains(m.language) && Language.language_Names.indexOf(m.language) != Language.LANGUAGE_INDEX) {

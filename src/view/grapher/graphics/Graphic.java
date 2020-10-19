@@ -19,6 +19,8 @@ public abstract class Graphic {
     double offsetY;
     double scaleY;
     double scaleX;
+    double graph_width;
+    double graph_height;
     boolean needResize;
     public boolean feelsTime;
     Graphic() {
@@ -50,7 +52,11 @@ public abstract class Graphic {
         if(feelsTime)
             needResize = true;
     }
-
+    public void free(){
+        map = null;
+        func = null;
+        var = null;
+    }
     public void setMAP_SIZE(int map_size) {
         MAP_SIZE = map_size;
         needResize = true;

@@ -16,7 +16,7 @@ public class Implicit extends Graphic {
     private static final Color VOID = new Color(0, 0, 0, 0);
     private float[][] data;
     private BufferedImage data1;
-    private final MainPanel panel;
+    private MainPanel panel;
     private int yMAP_SIZE;
     private Variable<Double> yVar;
     private Color c;
@@ -49,11 +49,13 @@ public class Implicit extends Graphic {
     @Override
     public void resize(double offsetX, double offsetY, double scaleX, double scaleY) {
         if (needResize || offsetX != this.offsetX || this.scaleX != scaleX
-                || offsetY != this.offsetY || this.scaleY != scaleY) {
+                || offsetY != this.offsetY || this.scaleY != scaleY || this.graph_height != HEIGHT || this.graph_width != GRAPH_WIDTH) {
             this.offsetY = offsetY;
             this.scaleY = scaleY;
             this.offsetX = offsetX;
             this.scaleX = scaleX;
+            this.graph_width = GRAPH_WIDTH;
+            this.graph_height = HEIGHT;
             needResize = false;
             double deltaX = GRAPH_WIDTH / scaleX / MAP_SIZE;
             double deltaY = HEIGHT / scaleY / yMAP_SIZE;
@@ -161,6 +163,16 @@ public class Implicit extends Graphic {
         needResize = true;
     }
 
+    @Override
+    public void free() {
+        super.free();
+        data1.flush();
+        data1 = null;
+        panel = null;
+        data = null;
+        yVar = null;
+    }
+
     public double getSensitivity() {
         return sensitivity;
     }
@@ -172,6 +184,8 @@ public class Implicit extends Graphic {
         float dw = (float) GRAPH_WIDTH / MAP_SIZE;
         yMAP_SIZE = (int) (HEIGHT / dw);
         data = new float[MAP_SIZE][yMAP_SIZE];
+        if(data1 != null)
+            data1.flush();
         data1 = new BufferedImage(MAP_SIZE, yMAP_SIZE, BufferedImage.TYPE_INT_ARGB);
     }
 }

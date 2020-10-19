@@ -1,7 +1,7 @@
 package calculator2.calculator.helpers;
 
-import calculator2.values.util.AbstractType;
-import calculator2.values.util.actions.Sign;
+import calculator2.calculator.util.AbstractType;
+import calculator2.calculator.util.actions.Sign;
 
 public class Helper<T> {
     public final Brackets brackets;

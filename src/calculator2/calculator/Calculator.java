@@ -2,8 +2,8 @@ package calculator2.calculator;
 
 import calculator2.calculator.executors.*;
 import calculator2.calculator.helpers.Helper;
-import calculator2.values.util.actions.Func;
-import calculator2.values.util.actions.Sign;
+import calculator2.calculator.util.actions.Func;
+import calculator2.calculator.util.actions.Sign;
 
 import java.util.ArrayList;
 import java.util.Stack;

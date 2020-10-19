@@ -1,5 +1,6 @@
 package model;
 
+import calculator2.calculator.CalcLanguage;
 import model.help.Property;
 import view.MainPanel;
 
@@ -35,8 +36,6 @@ public class Language {
     public static String SAVED;
     //errors
     public static String[] UPDATER_ERRORS;
-    public static String[] CALCULATOR_ERRORS;
-    public static String[] PARSER_ERRORS;
     //gui
     //help
     public static String HELP;
@@ -113,8 +112,8 @@ public class Language {
             LOADED = arr[3];
             SAVED = arr[4];
             UPDATER_ERRORS = properties.getProperty("updater_errors").split("\n");
-            CALCULATOR_ERRORS = properties.getProperty("calculator_errors").split("\n");
-            PARSER_ERRORS = properties.getProperty("parser_errors").split("\n");
+            CalcLanguage.CALCULATOR_ERRORS = properties.getProperty("calculator_errors").split("\n");
+            CalcLanguage.PARSER_ERRORS = properties.getProperty("parser_errors").split("\n");
             arr = properties.getProperty("buttons").split("\n");
             BEGIN = arr[0];
             UPDATE = arr[1];

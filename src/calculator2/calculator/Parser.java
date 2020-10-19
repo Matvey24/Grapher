@@ -1,7 +1,7 @@
 package calculator2.calculator;
 
 import calculator2.calculator.helpers.Helper;
-import calculator2.values.util.actions.Sign;
+import calculator2.calculator.util.actions.Sign;
 import model.Language;
 
 import java.util.ArrayList;
@@ -10,21 +10,21 @@ import java.util.Stack;
 
 import static calculator2.calculator.Element.ElementType.*;
 
-class Parser<T> {
+public class Parser<T> {
     private final StringBuilder sb;
     private final Helper<T> helper;
     private Stack<Element> stack;
     private final List<String> varNames;
     private final Stack<Integer> ints;
 
-    Parser(Helper<T> helper) {
+    public Parser(Helper<T> helper) {
         this.helper = helper;
         sb = new StringBuilder();
         varNames = new ArrayList<>();
         ints = new Stack<>();
     }
 
-    int parse(String str) {
+    public int parse(String str) {
         str = str.replaceAll("[ \\n\\t]", "");
         List<Element> list = toList(str);
         normaliseBrackets(list);
@@ -112,7 +112,7 @@ class Parser<T> {
                         }
                     }
                     if (e.symbol.length() != 0) {
-                        throw new RuntimeException(Language.PARSER_ERRORS[0] + " '" + e.symbol + "'");
+                        throw new RuntimeException(CalcLanguage.PARSER_ERRORS[0] + " '" + e.symbol + "'");
                     }
                 } else if (helper.isVar(e.symbol)) {
                     e.type = VAR;
@@ -186,7 +186,7 @@ class Parser<T> {
                     int args = helper.funcs.getFunc(e.symbol).args;
                     returns -= args;
                     if((args > 1 || args == -1) && (i == 0 || stack.get(i - 1).type != BRACKET || !helper.brackets.brOpens(stack.get(i - 1).symbol))){
-                        throw new RuntimeException(Language.PARSER_ERRORS[5] + " " + e.symbol);
+                        throw new RuntimeException(CalcLanguage.PARSER_ERRORS[5] + " " + e.symbol);
                     }
                 case VAR:
                 case NUMBER:
@@ -204,9 +204,9 @@ class Parser<T> {
                                 int needArgs = helper.funcs.getFunc(e1.symbol).args;
                                 if(needArgs != -1) {
                                     if(returns < needArgs)
-                                        throw new RuntimeException(Language.PARSER_ERRORS[1] + " " + Language.PARSER_ERRORS[4] + " " + e1.symbol);
+                                        throw new RuntimeException(CalcLanguage.PARSER_ERRORS[1] + " " + CalcLanguage.PARSER_ERRORS[4] + " " + e1.symbol);
                                     else if (returns > needArgs)
-                                        throw new RuntimeException(Language.PARSER_ERRORS[2] + " " + Language.PARSER_ERRORS[4] + " " + e1.symbol);
+                                        throw new RuntimeException(CalcLanguage.PARSER_ERRORS[2] + " " + CalcLanguage.PARSER_ERRORS[4] + " " + e1.symbol);
                                 }
                                 e.symbol += returns;
                                 returns = ints.pop() + needArgs;
@@ -214,17 +214,17 @@ class Parser<T> {
                             }
                         }
                         if (returns < 1)
-                            throw new RuntimeException(Language.PARSER_ERRORS[1] + " " + Language.PARSER_ERRORS[3]);
+                            throw new RuntimeException(CalcLanguage.PARSER_ERRORS[1] + " " + CalcLanguage.PARSER_ERRORS[3]);
                         else if (returns > 1)
-                            throw new RuntimeException(Language.PARSER_ERRORS[2] + " " + Language.PARSER_ERRORS[3]);
+                            throw new RuntimeException(CalcLanguage.PARSER_ERRORS[2] + " " + CalcLanguage.PARSER_ERRORS[3]);
                         returns = ints.pop() + 1;
                     }
             }
         }
         if (returns < 1)
-            throw new RuntimeException(Language.PARSER_ERRORS[1]);
+            throw new RuntimeException(CalcLanguage.PARSER_ERRORS[1]);
         else if (returns > 1)
-            throw new RuntimeException(Language.PARSER_ERRORS[2]);
+            throw new RuntimeException(CalcLanguage.PARSER_ERRORS[2]);
     }
     private int calculateVars(List<Element> list) {
         varNames.clear();

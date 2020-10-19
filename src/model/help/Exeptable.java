@@ -1,5 +1,5 @@
 package model.help;
 
 public interface Exeptable {
-    void execute(String text) throws Exception;
+    void execute(String text) throws RuntimeException;
 }

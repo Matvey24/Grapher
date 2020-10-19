@@ -1,11 +1,11 @@
-package calculator2.values.util;
+package calculator2.calculator.util;
 
 import calculator2.calculator.executors.Variable;
-import calculator2.values.util.actions.Func;
-import calculator2.values.util.actions.Sign;
-import calculator2.values.util.actions.functions.BinarFunc;
-import calculator2.values.util.actions.functions.MultiFunc;
-import calculator2.values.util.actions.functions.UnarFunc;
+import calculator2.calculator.util.actions.Func;
+import calculator2.calculator.util.actions.Sign;
+import calculator2.calculator.util.actions.functions.BinarFunc;
+import calculator2.calculator.util.actions.functions.MultiFunc;
+import calculator2.calculator.util.actions.functions.UnarFunc;
 
 import java.util.ArrayList;
 import java.util.List;

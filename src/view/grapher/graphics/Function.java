@@ -21,10 +21,12 @@ public class Function extends Graphic {
         if (abscissa) {
             this.offsetY = offsetY;
             this.scaleY = scaleY;
-            if (needResize || offsetX != this.offsetX || this.scaleX != scaleX) {
+            this.graph_height = HEIGHT;
+            if (needResize || offsetX != this.offsetX || this.scaleX != scaleX || this.graph_width != GRAPH_WIDTH) {
                 needResize = false;
                 this.offsetX = offsetX;
                 this.scaleX = scaleX;
+                this.graph_width = GRAPH_WIDTH;
                 for (int i = 0; i < MAP_SIZE; ++i) {
                     var.setValue(offsetX + (double) i * GRAPH_WIDTH / (MAP_SIZE - 1) / scaleX);
                     map[i] = func.calculate();
@@ -33,10 +35,12 @@ public class Function extends Graphic {
         } else {
             this.offsetX = offsetX;
             this.scaleX = scaleX;
-            if (needResize || offsetY != this.offsetY || this.scaleY != scaleY) {
+            this.graph_width = GRAPH_WIDTH;
+            if (needResize || offsetY != this.offsetY || this.scaleY != scaleY || this.graph_height != HEIGHT) {
                 needResize = false;
                 this.offsetY = offsetY;
                 this.scaleY = scaleY;
+                this.graph_height = HEIGHT;
                 for (int i = 0; i < MAP_SIZE; ++i) {
                     var.setValue(offsetY - (double) i * HEIGHT / (MAP_SIZE - 1) / scaleY);
                     map[i] = func.calculate();
