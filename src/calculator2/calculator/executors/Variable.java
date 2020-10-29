@@ -1,7 +1,5 @@
 package calculator2.calculator.executors;
 
-import java.util.Objects;
-
 public class Variable<T> implements Expression<T>{
     private String name;
     private T value;

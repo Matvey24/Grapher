@@ -42,7 +42,7 @@ public class TranslationSettings extends Settings {
     }
     @Override
     public void onSetSize() {
-        setSize(WIDTH,HEIGHT + ComboBoxParameter.HEIGHT + OFFSET + 80);
+        setSize(WIDTH,HEIGHT + ComboBoxParameter.HEIGHT + OFFSET);
     }
     @Override
     public void onShow() {

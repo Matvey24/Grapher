@@ -3,16 +3,17 @@ package framesLib;
 import javax.swing.*;
 
 public abstract class Screen extends JPanel {
-    private MyFrame myFrame;
-    public final void show(MyFrame myFrame){
-        this.myFrame = myFrame;
+    private Screenable screenable;
+    public final void show(Screenable screenable){
+        this.screenable = screenable;
         onShow();
+        repaint();
     }
     protected final void changeScreen(Screen screen){
-        myFrame.changeScreen(screen);
+        screenable.changeScreen(screen);
     }
     public final void back(){
-        myFrame.back();
+        screenable.back();
     }
     public abstract void onSetSize();
     public void onShow(){
@@ -22,10 +23,11 @@ public abstract class Screen extends JPanel {
     public void onHide(){}
     @SuppressWarnings("EmptyMethod")
     public void onDestroy(){}
+
     protected final void setTitle(String title){
-        myFrame.setTitle(title);
+        screenable.setTitle(title);
     }
     protected void resize(){
-        myFrame.resize(this);
+        screenable.resize(this);
     }
 }

@@ -17,8 +17,9 @@ public abstract class Settings extends Screen {
     protected TextElement el;
     protected static final int HEIGHT = 3 * OFFSET
             + ComboBoxParameter.HEIGHT + TextElement.HEIGHT;
-    protected static final int WIDTH = ComboBoxParameter.WIDTH + 2 * OFFSET + 40;
-    public Settings(ModelUpdater updater){
+    protected static final int WIDTH = ComboBoxParameter.WIDTH + 2 * OFFSET;
+
+    public Settings(ModelUpdater updater) {
         setLayout(null);
         mapSize = new Parameter(Language.DISCRETIZATION, (s) -> {
             if (getGraphic() != null) {
@@ -36,20 +37,23 @@ public abstract class Settings extends Screen {
         feels_time = new JToggleButton(Language.FEELS_TIME);
         feels_time.setFocusPainted(false);
         add(feels_time);
-        feels_time.setBounds(OFFSET, 2*OFFSET + ComboBoxParameter.HEIGHT,
+        feels_time.setBounds(OFFSET, 2 * OFFSET + ComboBoxParameter.HEIGHT,
                 ComboBoxParameter.WIDTH, TextElement.HEIGHT);
-        feels_time.addActionListener((e)->{
-            if(getGraphic() != null)
+        feels_time.addActionListener((e) -> {
+            if (getGraphic() != null)
                 getGraphic().feelsTime = feels_time.isSelected();
         });
     }
+
     public abstract Graphic getGraphic();
-    public void setInfo(Graphic g, TextElement el){
+
+    public void setInfo(Graphic g, TextElement el) {
         this.el = el;
         mapSize.setDefault(String.valueOf(g.MAP_SIZE));
         feels_time.setSelected(g.feelsTime);
     }
-    public void updateLanguage(){
+
+    public void updateLanguage() {
         mapSize.setName(Language.DISCRETIZATION);
         feels_time.setText(Language.FEELS_TIME);
     }

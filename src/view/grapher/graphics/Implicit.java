@@ -4,8 +4,8 @@ package view.grapher.graphics;
 import calculator2.calculator.executors.BinaryActor;
 import calculator2.calculator.executors.Variable;
 import model.GraphType;
-import view.MainPanel;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -16,7 +16,7 @@ public class Implicit extends Graphic {
     private static final Color VOID = new Color(0, 0, 0, 0);
     private float[][] data;
     private BufferedImage data1;
-    private MainPanel panel;
+    private JPanel panel;
     private int yMAP_SIZE;
     private Variable<Double> yVar;
     private Color c;
@@ -31,14 +31,7 @@ public class Implicit extends Graphic {
     public static final int RAY_SPECTRUM = 0;
     public static final int INFRARED_IMAGER = 1;
 
-    public Implicit(MainPanel panel) {
-        this.panel = panel;
-        setMAP_SIZE(500);
-        super.type = GraphType.IMPLICIT;
-        viewType = INFRARED_IMAGER;
-    }
-
-    public Implicit(MainPanel panel, int map_size, boolean feelsTime) {
+    public Implicit(JPanel panel, int map_size, boolean feelsTime) {
         this.panel = panel;
         setMAP_SIZE(map_size);
         this.feelsTime = feelsTime;

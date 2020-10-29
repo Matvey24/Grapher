@@ -1,9 +1,9 @@
 package view.support_panels;
 
-import controller.ModelUpdater;
 import framesLib.Screen;
 import model.Language;
 import model.help.TextViewer;
+import view.elements.ElementsList;
 import view.elements.TextElement;
 
 import javax.swing.*;
@@ -13,7 +13,7 @@ import static view.elements.ElementsList.OFFSET;
 public class HelperFrame extends Screen {
     private final JButton[] btn_arr;
     private int height;
-    public HelperFrame(ModelUpdater updater){
+    public HelperFrame(){
         setLayout(null);
         btn_arr = new JButton[Language.HELP_NAMES.length];
         height = OFFSET;
@@ -24,18 +24,25 @@ public class HelperFrame extends Screen {
             height += OFFSET + TextElement.HEIGHT;
             add(btn);
             final int j = i;
-            btn.addActionListener(e->updater.getSupportFrameManager().openTextFrame(TextViewer.openText(TextViewer.help_names[j])));
+            btn.addActionListener(e->changeScreen(TextViewer.openText(TextViewer.help_names[j])));
             btn_arr[i] = btn;
         }
-        height += OFFSET + 40;
+        height += OFFSET;
     }
     public void updateLanguage(){
         for(int i = 0; i < btn_arr.length; ++i)
             btn_arr[i].setText(Language.HELP_NAMES[i]);
         TextViewer.updateLanguage();
     }
+
+    @Override
+    public void onShow() {
+        super.onShow();
+        setTitle(Language.HELP);
+    }
+
     @Override
     public void onSetSize() {
-        setSize(TextElement.WIDTH + 40, height);
+        setSize(ElementsList.WIDTH, height);
     }
 }

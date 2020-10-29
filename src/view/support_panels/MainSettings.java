@@ -112,7 +112,7 @@ public class MainSettings extends Screen {
 
     @Override
     public void onSetSize() {
-        setSize(TextElement.WIDTH + 2 * OFFSET + 30, 4 * OFFSET + 3* ComboBoxParameter.HEIGHT + TextElement.HEIGHT + 80);
+        setSize(TextElement.WIDTH + 2 * OFFSET, 4 * OFFSET + 3* ComboBoxParameter.HEIGHT + TextElement.HEIGHT + 40);
     }
 
     public void updateLanguage() {

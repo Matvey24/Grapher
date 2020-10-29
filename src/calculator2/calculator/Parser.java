@@ -2,7 +2,6 @@ package calculator2.calculator;
 
 import calculator2.calculator.helpers.Helper;
 import calculator2.calculator.util.actions.Sign;
-import model.Language;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,8 +130,9 @@ public class Parser<T> {
         for (int i = 1; i < list.size(); ++i) {
             Element e = list.get(i);
             if (e.type == Element.ElementType.SIGN && helper.signs.getSign(e.symbol).canBeUnary &&
-                    (helper.brackets.isBracket(last.symbol) && helper.brackets.brOpens(last.symbol)
-                            || last.type == Element.ElementType.DIVIDER || last.type == Element.ElementType.SIGN)) {
+                    (last.type == BRACKET && helper.brackets.brOpens(last.symbol)
+                            || last.type == Element.ElementType.DIVIDER
+                            || last.type == Element.ElementType.SIGN)) {
                 e.type = FUNCTION;
             }
             last = e;
@@ -174,7 +174,7 @@ public class Parser<T> {
 
     public void simpleCheck(Stack<Element> stack) {
         int returns = 0;
-        if(ints.empty())
+        if (ints.empty())
             ints.clear();
         for (int i = 0; i < stack.size(); ++i) {
             Element e = stack.get(i);
@@ -185,7 +185,7 @@ public class Parser<T> {
                 case FUNCTION:
                     int args = helper.funcs.getFunc(e.symbol).args;
                     returns -= args;
-                    if((args > 1 || args == -1) && (i == 0 || stack.get(i - 1).type != BRACKET || !helper.brackets.brOpens(stack.get(i - 1).symbol))){
+                    if ((args > 1 || args == -1) && (i == 0 || stack.get(i - 1).type != BRACKET || !helper.brackets.brOpens(stack.get(i - 1).symbol))) {
                         throw new RuntimeException(CalcLanguage.PARSER_ERRORS[5] + " " + e.symbol);
                     }
                 case VAR:
@@ -202,8 +202,8 @@ public class Parser<T> {
                             Element e1 = stack.get(i + 1);
                             if (e1.type == FUNCTION) {
                                 int needArgs = helper.funcs.getFunc(e1.symbol).args;
-                                if(needArgs != -1) {
-                                    if(returns < needArgs)
+                                if (needArgs != -1) {
+                                    if (returns < needArgs)
                                         throw new RuntimeException(CalcLanguage.PARSER_ERRORS[1] + " " + CalcLanguage.PARSER_ERRORS[4] + " " + e1.symbol);
                                     else if (returns > needArgs)
                                         throw new RuntimeException(CalcLanguage.PARSER_ERRORS[2] + " " + CalcLanguage.PARSER_ERRORS[4] + " " + e1.symbol);
@@ -226,6 +226,7 @@ public class Parser<T> {
         else if (returns > 1)
             throw new RuntimeException(CalcLanguage.PARSER_ERRORS[2]);
     }
+
     private int calculateVars(List<Element> list) {
         varNames.clear();
         for (Element element : list) {

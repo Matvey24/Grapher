@@ -1,4 +1,4 @@
-import framesLib.MyFrame;
+import framesLib.screenables.MyFrame;
 import model.Language;
 import model.help.Property;
 import view.MainPanel;

@@ -16,13 +16,6 @@ public class Parametric extends Graphic {
     private Expression<Double> xFunc;
     private Variable<Double> xVar;
 
-    public Parametric() {
-        xMap = new double[MAP_SIZE];
-        startT = 0;
-        endT = 6.2832;
-        type = GraphType.PARAMETRIC;
-    }
-
     public Parametric(int map_size, boolean feelsTime) {
         setMAP_SIZE(map_size);
         this.feelsTime = feelsTime;

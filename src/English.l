@@ -66,8 +66,8 @@ Then press ENTER.
 part 6
 Timer:
 Write a graphic using time var 'tm',
-than click 'Timer' and click 'Begin' in opened frame.
-You can change some settings in this frame.
+than click 'Timer' and click 'Begin' in the shown panel.
+You can change some settings in this panel.
 You can also do right click on button 'Timer'
 to stop or start it.
 part 7
@@ -81,7 +81,7 @@ will change only abscissa's/ordinate's scale.
 part 3
 Extra:
 'Right' click on '-' button in expression in graphics.
-Extra info window will be opened.
+Extra info panel will be shown.
 part 4
 Parametric:
 Using var t
@@ -170,7 +170,7 @@ Signs:
 % - remainder of division
 &lt;, >, = return 1 if the expression
 is true else return 0
-part 18
+part 19
 Functions:
 sqrt, cbrt - quadratic and cubic roots
 pow - power
@@ -178,6 +178,7 @@ exp - exponent (it works faster than 'e^x')
 sign - signum of number (1, 0, -1)
 lg, ln, ld, log - logarithms
 sigm - sigmoid - sigm(x) = 1 / (1 + e^-x)
+hypot - hypotenuse - sqrt(x^2 + y^2)
 sin, cos, tg, ctg, arcsin, arccos, arctg, arcctg, arctgTwo
 - trigonometric functions,
 put 'd' after them to convert radians to degrees.

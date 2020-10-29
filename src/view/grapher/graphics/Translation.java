@@ -20,11 +20,7 @@ public class Translation extends Graphic {
     private Variable<Double> yx;
     private Variable<Double> yy;
     private int multiplyer = 2;
-    public Translation(CoordinateSystem cs){
-        this.cs = cs;
-        setMAP_SIZE(200);
-        super.type = GraphType.TRANSLATION;
-    }
+
     public Translation(CoordinateSystem cs, int map_size, boolean feelsTime){
         this.cs = cs;
         MAP_SIZE = map_size;

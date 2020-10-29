@@ -31,6 +31,6 @@ public class FunctionSettings extends Settings {
 
     @Override
     public void onSetSize() {
-        setSize(WIDTH, HEIGHT+80);
+        setSize(WIDTH, HEIGHT);
     }
 }

@@ -31,7 +31,7 @@ public class ModelUpdater {
     private final DataBase dataBase;
     List<Graphic> graphics;
     public ElementsList list;
-
+    private Graphic lOG;
     private double offsetX = -3;
     private double offsetY = 5.5;
     private double scaleX = 100;
@@ -133,7 +133,11 @@ public class ModelUpdater {
     }
 
     private void remove(ActionEvent e) {
-        graphics.remove(e.getID()).free();
+        int lo = start_make(e.getID());
+        graphics.remove(e.getID());
+        if (lo == e.getID()) {
+            supportFrameManager.close();
+        }
         calculator.recalculate();
     }
 
@@ -152,44 +156,66 @@ public class ModelUpdater {
         } else if (g instanceof Translation) {
             supportFrameManager.openTranslationSettings((Translation) g, list.getElements().get(id));
         }
+        lOG = g;
     }
 
     public void makeFunction(int idx, TextElement e) {
-        Function function = new Function();
+        Graphic g = graphics.get(idx);
+        Function function = new Function(g.MAP_SIZE, g.feelsTime);
+        int lo = start_make(idx);
         function.setColor(e.getColor());
         graphics.set(idx, function);
         int id = colors.indexOf(e.getColor());
         e.setName(func_names.get(id) + "(x)");
         function.name = func_names.get(id);
-        supportFrameManager.close();
+        checkClosed(idx, lo);
     }
 
     public void makeParametric(int idx, TextElement e) {
-        Parametric parametric = new Parametric();
+        Graphic g = graphics.get(idx);
+        Parametric parametric = new Parametric(g.MAP_SIZE, g.feelsTime);
+        int lo = start_make(idx);
         parametric.setColor(e.getColor());
         graphics.set(idx, parametric);
         e.setName("xy(t)");
         parametric.name = func_names.get(colors.indexOf(e.getColor()));
-        supportFrameManager.close();
+        checkClosed(idx, lo);
     }
 
     public void makeImplicit(int idx, TextElement e) {
-        Implicit implicit = new Implicit(mainPanel);
+        Graphic g = graphics.get(idx);
+        Implicit implicit = new Implicit(mainPanel, g.MAP_SIZE, g.feelsTime);
+        int lo = start_make(idx);
         implicit.setColor(e.getColor());
         graphics.set(idx, implicit);
         int id = colors.indexOf(e.getColor());
         e.setName(func_names.get(id) + "(xy)");
         implicit.name = func_names.get(id);
-        supportFrameManager.close();
+        checkClosed(idx, lo);
     }
 
     public void makeTranslation(int idx, TextElement e) {
-        Translation translation = new Translation(getCoordinateSystem());
+        Graphic g = graphics.get(idx);
+        Translation translation = new Translation(getCoordinateSystem(), g.MAP_SIZE, g.feelsTime);
+        translation.setMAP_SIZE(translation.MAP_SIZE);
+        int lo = start_make(idx);
         translation.setColor(e.getColor());
         graphics.set(idx, translation);
         e.setName("Tran");
         translation.name = func_names.get(colors.indexOf(e.getColor()));
-        supportFrameManager.close();
+        checkClosed(idx, lo);
+    }
+
+    private int start_make(int idx) {
+        int id = graphics.indexOf(lOG);
+        graphics.get(idx).free();
+        return id;
+    }
+
+    private void checkClosed(int idx, int lo) {
+        if (supportFrameManager.isOpenedGraphic() && idx == lo) {
+            startSettings(idx);
+        }
     }
 
     private int findFreeId() {
@@ -242,7 +268,7 @@ public class ModelUpdater {
         if (dangerState)
             return;
         double yc = offsetY * scaleY;
-        scaleY = 1*scaleX;
+        scaleY = 1 * scaleX;
         offsetY = yc / scaleY;
 
         calculator.runResize();
@@ -360,7 +386,7 @@ public class ModelUpdater {
                     supportFrameManager.close();
                     calculator.fromModel(m);
                     list.updateGUI();
-                    if(!m.view_params.isEmpty()) {
+                    if (!m.view_params.isEmpty()) {
                         String[] view_params = m.view_params.split("\n");
                         offsetX = Double.parseDouble(view_params[0]);
                         offsetY = Double.parseDouble(view_params[1]);

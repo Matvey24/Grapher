@@ -2,7 +2,6 @@ package view.support_panels;
 
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileDescriptor;
 
 import framesLib.Screen;
 
@@ -10,13 +9,17 @@ import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import static view.elements.ElementsList.OFFSET;
+
 public class FileChooser extends Screen {
     public static final int ALL_FILES = 0;
     public static final int GRAPHER_PROJECT = 1;
     private final JFileChooser fileChooser;
     private ActionListener listener;
     public FileChooser(){
+        setLayout(null);
         fileChooser = new JFileChooser();
+        fileChooser.setBounds(OFFSET, OFFSET, 500, 350);
         FileFilter ff = new FileNameExtensionFilter("Grapher project (.gr)", "gr");
         fileChooser.addChoosableFileFilter(ff);
         fileChooser.setMultiSelectionEnabled(false);
@@ -40,6 +43,6 @@ public class FileChooser extends Screen {
     }
     @Override
     public void onSetSize() {
-        setSize(600,400);
+        setSize(500 + 2 * OFFSET,350 + 2 * OFFSET);
     }
 }

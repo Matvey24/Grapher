@@ -116,7 +116,7 @@ public class ElementsList extends ViewElement {
                         width - (OFFSET >> 1), TextElement.HEIGHT >> 1);
                 btn_move_down.setBounds(x + OFFSET, height + y + (TextElement.HEIGHT >> 1),
                         width - (OFFSET >> 1), TextElement.HEIGHT >> 1);
-                btn_make_element.setBounds(x + width + 2*OFFSET, height + y,
+                btn_make_element.setBounds(x + width + (OFFSET << 1), height + y,
                         width, TextElement.HEIGHT);
             }else {
                 if(scrollActive){

@@ -37,7 +37,7 @@ public class UpdaterFrame extends Screen {
 
         btn_update = new JButton("Update!");
         btn_update.setFocusPainted(false);
-        btn_update.setBounds(135, 135, 120, 40);
+        btn_update.setBounds(134, 135, 120, 40);
         add(btn_update);
 
         btn_cancel.addActionListener(e -> back());
@@ -71,6 +71,6 @@ public class UpdaterFrame extends Screen {
 
     @Override
     public void onSetSize() {
-        setSize(280, 230);
+        setSize(260, 180);
     }
 }

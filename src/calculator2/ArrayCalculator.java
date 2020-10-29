@@ -8,7 +8,7 @@ import calculator2.calculator.executors.Variable;
 import calculator2.calculator.util.AbstractType;
 import calculator2.calculator.util.actions.AbstractConst;
 import calculator2.calculator.util.actions.AbstractFunc;
-import model.Language;
+import javafx.beans.binding.StringBinding;
 
 import java.util.*;
 

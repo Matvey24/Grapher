@@ -20,6 +20,5 @@ public class Brackets {
     private boolean brOpens(char bracket){
         return names.get(bracket);
     }
-    public boolean isBracket(String bracket){return isBracket(bracket.charAt(0));}
     public boolean isBracket(char bracket){return names.containsKey(bracket);}
 }

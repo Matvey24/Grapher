@@ -1,5 +1,6 @@
 package view;
 
+import framesLib.screenables.InternalPanel;
 import model.Language;
 import controller.ModelUpdater;
 import controller.VersionController;
@@ -36,7 +37,7 @@ public class MainPanel extends Screen {
     private final JButton btn_resize;
     private final JButton btn_timer;
     private final JButton btn_settings;
-
+    private final InternalPanel panel;
     static {
         rebounds(1280, 720);
     }
@@ -119,6 +120,9 @@ public class MainPanel extends Screen {
         btn_settings.setFocusPainted(false);
         btn_settings.addActionListener(e -> updater.getSupportFrameManager().openMainSettings());
         add(btn_settings);
+        panel = new InternalPanel();
+        updater.getSupportFrameManager().setPanel(panel);
+        add(panel);
         setGraphicsHeight();
         setDropTarget(new DropTarget(this, new DropTargetAdapter() {
             @Override
@@ -149,10 +153,13 @@ public class MainPanel extends Screen {
                 WIDTH = getWidth();
                 HEIGHT = getHeight();
                 GRAPH_WIDTH = WIDTH - ElementsList.WIDTH;
+                panel.setBounds(0, height, ElementsList.WIDTH, HEIGHT - height);
+                updater.getSupportFrameManager().onPanelResize();
                 updater.runResize();
                 graphicsView.setBounds(ElementsList.WIDTH, 0, GRAPH_WIDTH, HEIGHT);
             }
         });
+
     }
 
     public static void rebounds(int width, int height) {
@@ -180,6 +187,9 @@ public class MainPanel extends Screen {
                 height,
                 TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
         height += TextElement.HEIGHT;
+        height += OFFSET;
+        panel.setBounds(0, height, ElementsList.WIDTH, HEIGHT - height);
+        updater.getSupportFrameManager().onPanelResize();
     }
 
     public void updateLanguage() {
@@ -233,7 +243,6 @@ public class MainPanel extends Screen {
             resizeType = 2;
         btn_resize.setText(Language.RESIZERS[resizeType]);
     }
-
     public void setTimerName(String name) {
         btn_timer.setText(name);
     }

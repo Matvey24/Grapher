@@ -99,7 +99,7 @@ public class ImplicitSettings extends Settings {
     @Override
     public void onSetSize() {
         setSize(WIDTH,
-                HEIGHT + 2 * OFFSET + 2 * ComboBoxParameter.HEIGHT + TextElement.HEIGHT + 80);
+                HEIGHT + 3 * OFFSET + 2 * ComboBoxParameter.HEIGHT + TextElement.HEIGHT);
     }
     @Override
     public void onShow() {

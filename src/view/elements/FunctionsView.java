@@ -26,7 +26,6 @@ public class FunctionsView extends ViewElement {
         btn_update.setFocusPainted(false);
         btn_update.addActionListener(e -> onUpdate.run());
         updateLanguage();
-        area.repaint();
     }
     @Override
     public void addTo(Container c){

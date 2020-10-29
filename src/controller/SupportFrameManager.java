@@ -1,8 +1,8 @@
 package controller;
 
-import framesLib.MyFrame;
-import framesLib.TextPanel;
+import framesLib.screenables.InternalPanel;
 
+import framesLib.screenables.PanelFrameOperator;
 import view.elements.TextElement;
 import view.grapher.graphics.Function;
 import view.grapher.graphics.Implicit;
@@ -11,7 +11,7 @@ import view.grapher.graphics.Translation;
 import view.support_panels.*;
 
 public class SupportFrameManager {
-    private MyFrame frame;
+    private PanelFrameOperator pfo;
     private final FunctionSettings functionSettings;
     private final ParametricSettings parametricSettings;
     private final ImplicitSettings implicitSettings;
@@ -19,80 +19,57 @@ public class SupportFrameManager {
     private final TimerSettings timerSettings;
     private final HelperFrame helperFrame;
     private final MainSettings mainSettings;
+    private boolean openedGraphic;
     SupportFrameManager(ModelUpdater updater){
         functionSettings = new FunctionSettings(updater);
         parametricSettings = new ParametricSettings(updater);
         timerSettings = new TimerSettings(updater);
         implicitSettings = new ImplicitSettings(updater);
         translationSettings = new TranslationSettings(updater);
-        helperFrame = new HelperFrame(updater);
+        helperFrame = new HelperFrame();
         mainSettings = new MainSettings(updater);
     }
+    public void setPanel(InternalPanel panel){
+        this.pfo = new PanelFrameOperator(panel);
+    }
+
     void openFunctionSettings(Function f, TextElement e){
-        checkFrame();
         functionSettings.setInfo(f, e);
-        frame.changeScreen(functionSettings);
-        setOnTop();
+        pfo.changeScreenClearing(functionSettings, true);
+        openedGraphic = true;
     }
     void openParameterSettings(Parametric p, TextElement e){
-        checkFrame();
         parametricSettings.setInfo(p, e);
-        frame.changeScreen(parametricSettings);
-        setOnTop();
+        pfo.changeScreenClearing(parametricSettings, true);
+        openedGraphic = true;
     }
     void openImplicitSettings(Implicit imp, TextElement e){
-        checkFrame();
         implicitSettings.setInfo(imp, e);
-        frame.changeScreen(implicitSettings);
-        setOnTop();
+        pfo.changeScreenClearing(implicitSettings, true);
+        openedGraphic = true;
     }
     void openTranslationSettings(Translation tr, TextElement e){
-        checkFrame();
         translationSettings.setInfo(tr, e);
-        frame.changeScreen(translationSettings);
-        setOnTop();
+        pfo.changeScreenClearing(translationSettings, true);
+        openedGraphic = true;
     }
     void openTimerSettings(){
-        checkFrame();
-        frame.changeScreen(timerSettings);
-        setOnTop();
+        pfo.changeScreenClearing(timerSettings, true);
+        openedGraphic = false;
     }
     void openUpdaterFrame(VersionController.UpdateInfo info){
-        checkFrame();
-        frame.changeScreen(new UpdaterFrame(info));
-        setOnTop();
+        pfo.changeScreen(new UpdaterFrame(info));
+        openedGraphic = false;
     }
     public void openHelperFrame(){
-        checkFrame();
-        frame.changeScreen(helperFrame);
-        setOnTop();
-    }
-    public void openTextFrame(TextPanel panel){
-        if(frame == null || !frame.isVisible())
-            frame = new MyFrame(true);
-        frame.changeScreen(panel);
-        frame.setFocusable(true);
+        pfo.changeScreenClearing(helperFrame, true);
+        openedGraphic = false;
     }
     public void openMainSettings(){
-        checkFrame();
-        frame.changeScreen(mainSettings);
-        frame.setFocusable(true);
+        pfo.changeScreenClearing(mainSettings, true);
+        openedGraphic = false;
     }
-    private void setOnTop(){
-        frame.setFocusable(true);
-        frame.setFocusableWindowState(true);
-    }
-    void close(){
-        if(frame != null && frame.isVisible())
-            frame.dispose();
-    }
-    private void checkFrame(){
-        if(frame == null || !frame.isVisible())
-            frame = new MyFrame(true);
-        else {
-            frame.clearStack();
-        }
-    }
+
     Double getTime(){
         return timerSettings.getT();
     }
@@ -100,10 +77,20 @@ public class SupportFrameManager {
         return timerSettings;
     }
 
+    public boolean isOpenedGraphic() {
+        return openedGraphic;
+    }
+
     public MainSettings getMainSettings() {
         return mainSettings;
     }
-
+    public void onPanelResize(){
+        pfo.onPanelResize();
+    }
+    public void close(){
+        pfo.clearStack();
+        openedGraphic = false;
+    }
     public void updateLanguage(){
         helperFrame.updateLanguage();
         mainSettings.updateLanguage();

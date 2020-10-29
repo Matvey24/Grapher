@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.util.Properties;
 
 public class VersionController {
-    public static final int VERSION_CODE = 20;
+    public static final int VERSION_CODE = 21;
     public static String VERSION_NAME = getFullName(getName(VERSION_CODE));
     private static final String URL_VERSION =
             "https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/VersionInfo.xml";
@@ -59,6 +59,7 @@ public class VersionController {
         return true;
     }
     public static void updateLanguage(){
+        VERSION_NAME = null;
         VERSION_NAME = getFullName(getName(VERSION_CODE));
     }
 }

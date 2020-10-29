@@ -52,6 +52,7 @@ public class Number extends AbstractType<Double> {
         addFunction("lg", Math::log10, 10);
         addFunction("log",(a,b)-> Math.log(a.calculate()) / Math.log(b.calculate()), 10);
         addFunction("sigm", a -> 1 / (1 + Math.exp(-a)),10);
+        addFunction("hypot", (a,b)->Math.hypot(a.calculate(), b.calculate()), 10);
 
         addFunction("sin", Math::sin, 10);
         addFunction("cos", Math::cos, 10);
