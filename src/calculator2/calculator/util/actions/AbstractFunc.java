@@ -14,26 +14,52 @@ public class AbstractFunc<T>{
     private Variable<T> a;
     private Variable<T> b;
     private List<Variable<T>> arr;
-    private List<T> buffer;
+    private List<List<T>> buffer;
     private int args;
 
     private T execute(T a) {
+        T fa = this.a.calculate();
         this.a.setValue(a);
-        return expression.calculate();
+        T ret = expression.calculate();
+        this.a.setValue(fa);
+        return ret;
     }
     private T execute(Expression<T> a, Expression<T> b) {
         T va = a.calculate();
         T vb = b.calculate();
+        T fa = this.a.calculate();
+        T fb = this.b.calculate();
         this.a.setValue(va);
         this.b.setValue(vb);
-        return expression.calculate();
+        T ret = expression.calculate();
+        this.a.setValue(fa);
+        this.b.setValue(fb);
+        return ret;
     }
     private T execute(Expression<T>[] arr){
-        for(int i = 0; i < arr.length; ++i)
-            buffer.set(i, arr[i].calculate());
-        for(int i = 0; i < arr.length; ++i)
-            this.arr.get(i).setValue(buffer.get(i));
-        return expression.calculate();
+        List<T> b;
+        if(buffer.size() > 1){
+            b = buffer.remove(buffer.size() - 1);
+            for(int i = 0; i < b.size(); ++i)
+                b.set(i, arr[i].calculate());
+            for(int i = b.size(); i < arr.length; ++i)
+                b.add(arr[i].calculate());
+        }else{
+            b = new ArrayList<>(arr.length);
+            for (Expression<T> e : arr)
+                b.add(e.calculate());
+        }
+        for(int i = 0; i < arr.length; ++i) {
+            T t = this.arr.get(i).calculate();
+            this.arr.get(i).setValue(b.get(i));
+            b.set(i, t);
+        }
+        T ret = expression.calculate();
+        for(int i = 0; i < arr.length; ++i){
+            this.arr.get(i).setValue(b.get(i));
+        }
+        buffer.add(b);
+        return ret;
     }
     public void setFunc(Expression<T> expression, List<Variable<T>> vars){
         this.expression = expression;
@@ -48,9 +74,7 @@ public class AbstractFunc<T>{
                 break;
             default:
                 arr = new ArrayList<>(vars);
-                buffer = new ArrayList<>(vars.size());
-                for(int i = 0; i < vars.size(); ++i)
-                    buffer.add(null);
+                buffer = new ArrayList<>(2);
         }
     }
     public UnarFunc<T> getUnary(){
@@ -65,5 +89,4 @@ public class AbstractFunc<T>{
         this.args = args;
         return this::execute;
     }
-
 }

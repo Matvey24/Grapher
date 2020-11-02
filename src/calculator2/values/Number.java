@@ -4,6 +4,7 @@ import calculator2.calculator.executors.Expression;
 import calculator2.calculator.util.AbstractType;
 import calculator2.calculator.util.actions.Sign;
 import calculator2.calculator.util.actions.functions.BinarFunc;
+import calculator2.calculator.util.actions.functions.MultiFunc;
 import calculator2.calculator.util.actions.functions.UnarFunc;
 
 import static java.lang.Math.PI;
@@ -18,6 +19,38 @@ public class Number extends AbstractType<Double> {
     private static final BinarFunc<Double> mul = (a, b)->{
         double A = a.calculate();
         return (A == 0)?0:A * b.calculate();
+    };
+    private static final MultiFunc<Double> min = (a)->{
+        if(a.length == 0)
+            return .0;
+        double min = a[0].calculate();
+        for(int i = 1; i < a.length; ++i){
+            double b = a[i].calculate();
+            if(b < min)
+                min = b;
+        }
+        return min;
+    };
+    private static final MultiFunc<Double> max = (a)->{
+        double max = 0;
+        for (Expression<Double> ex : a) {
+            double b = ex.calculate();
+            if (b > max)
+                max = b;
+        }
+        return max;
+    };
+    private static final MultiFunc<Double> arr = (a)->{
+        if(a.length < 2)
+            return Double.NaN;
+        int idx = (int)Math.round(a[0].calculate());
+        idx += 1;
+        if(idx < 1){
+            idx = 1;
+        }else if(idx >= a.length){
+            idx = a.length - 1;
+        }
+        return a[idx].calculate();
     };
     private final double ln2 = Math.log(2);
     public Number(){
@@ -82,38 +115,9 @@ public class Number extends AbstractType<Double> {
         addFunction("if", (a)->((a[0].calculate() == 0)?a[2].calculate():a[1].calculate()),3,  10);
         addFunction("ifs", a->(a == 0)?0d:1d, 10);
 
-        addFunction("min", (a)->{
-            if(a.length == 0)
-                return .0;
-            double min = a[0].calculate();
-            for(int i = 1; i < a.length; ++i){
-                double b = a[i].calculate();
-                if(b < min)
-                    min = b;
-            }
-            return min;
-        }, -1, 10);
-        addFunction("max", (a)->{
-            double max = 0;
-            for (Expression<Double> ex : a) {
-                double b = ex.calculate();
-                if (b > max)
-                    max = b;
-            }
-            return max;
-        }, -1, 10);
-        addFunction("arr",(a)->{
-            if(a.length < 2)
-                return Double.NaN;
-            int idx = (int)Math.round(a[0].calculate());
-            idx += 1;
-            if(idx < 1){
-                idx = 1;
-            }else if(idx >= a.length){
-                idx = a.length - 1;
-            }
-            return a[idx].calculate();
-        }, -1,10);
+        addFunction("min", min, -1, 10);
+        addFunction("max", max, -1, 10);
+        addFunction("arr", arr, -1,10);
     }
     private void constants(){
         addConst("pi", PI);
@@ -140,9 +144,15 @@ public class Number extends AbstractType<Double> {
         addConst("pc", 3.09e16);
 
         addConst("tm", .0);
+        addConst("default", 0.);
     }
     @Override
     public Double toValue(String text) {
         return Double.parseDouble(text);
+    }
+
+    @Override
+    public boolean isType(char c) {
+        return c >= '0' && c <= '9' || c == '.';
     }
 }

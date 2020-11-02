@@ -41,8 +41,11 @@ public class TextPanel extends Screen {
 
     private void makeText(String[][] text) {
         int offset = 10;
-        for (String[] strings : text)
+        for (String[] strings : text) {
+            if(strings == null)
+                break;
             offset = makeTheme(strings, offset);
+        }
         height = offset + 30;
         internal.setBounds(0, 0, width - 20, offset);
         internal.setPreferredSize(internal.getSize());
@@ -58,6 +61,8 @@ public class TextPanel extends Screen {
         internal.add(main);
         offsetY += 20;
         for (int i = 1; i < lines.length; ++i) {
+            if(lines[i] == null)
+                break;
             JLabel label = new JLabel(lines[i]);
             label.setBounds(30, offsetY, width - 40, 20);
             offsetY += 20;

@@ -8,7 +8,6 @@ import calculator2.calculator.executors.Variable;
 import calculator2.calculator.util.AbstractType;
 import calculator2.calculator.util.actions.AbstractConst;
 import calculator2.calculator.util.actions.AbstractFunc;
-import javafx.beans.binding.StringBinding;
 
 import java.util.*;
 
@@ -25,9 +24,10 @@ public class ArrayCalculator<T> {
 
     private final List<Stack<Element>> funcTexts;
 
-    private final List<Variable<T>> params;
-    public ArrayCalculator(List<Variable<T>> params) {
-        this.params = params;
+    private final T def;
+
+    public ArrayCalculator(T def) {
+        this.def = def;
         vars = new ArrayList<>();
         funcTexts = new ArrayList<>();
         funcs = new ArrayList<>();
@@ -40,6 +40,7 @@ public class ArrayCalculator<T> {
 
     public void calculate(List<String> funcs, List<String> graphs, List<String> calc, AbstractType<T> type) {
         this.type = type;
+        director.setType(type);
         funcTexts.clear();
         this.funcs.clear();
         this.graphics.clear();
@@ -51,9 +52,8 @@ public class ArrayCalculator<T> {
             if (n < 1)
                 continue;
             String start = funcs.get(i).substring(0, n);
-            if(start.charAt(n - 1) == ':') {
-                start = start.substring(0, n - 1);
-                type.removeName(start);
+            if (type.consts.containsKey(start)) {
+                continue;
             }
             type.addFuncName(start);
         }
@@ -61,7 +61,6 @@ public class ArrayCalculator<T> {
             graphs.set(i, graphs.get(i).replaceAll("[ \t]", ""));
             type.addFuncName(graphs.get(i).substring(0, graphs.get(i).indexOf("=")));
         }
-        director.renewType(type);
         int err = 0;
         try {
             for (; err < graphs.size(); ++err) {
@@ -80,15 +79,24 @@ public class ArrayCalculator<T> {
                 if (n == -1)
                     continue;
                 String start = s.substring(0, n);
-                if(start.charAt(n - 1) == ':')
-                    start = start.substring(0, n - 1);
+                if (type.consts.containsKey(start)) {
+                    int args = director.parse(s.substring(n + 1));
+                    if (args != 0) {
+                        throw new RuntimeException(CalcLanguage.CALCULATOR_ERRORS[6] + " " + CalcLanguage.CALCULATOR_ERRORS[0] + " " + CalcLanguage.CALCULATOR_ERRORS[7]);
+                    }
+                    Variable<T> var = type.consts.get(start);
+                    AbstractConst<T> c = new AbstractConst<>(var);
+                    c.stack = director.getStack();
+                    consts.add(c);
+                    continue;
+                }
                 analise(start, s.substring(n + 1), false);
             }
         } catch (RuntimeException e) {
             throw new RuntimeException(e.getMessage() + " " + CalcLanguage.CALCULATOR_ERRORS[0]
                     + " " + (err + 1) + " " + CalcLanguage.CALCULATOR_ERRORS[2]);
         }
-        director.renewType(type);
+
         for (int i = 0; i < this.funcs.size(); ++i) {
             try {
                 director.update(funcTexts.get(i));
@@ -118,7 +126,7 @@ public class ArrayCalculator<T> {
         }
         try {
             int n = director.parse(calc.get(0));
-            if(n != 0){
+            if (n != 0) {
                 throw new RuntimeException(CalcLanguage.CALCULATOR_ERRORS[6]);
             }
             director.update(director.getStack());
@@ -140,24 +148,18 @@ public class ArrayCalculator<T> {
 
     private void analise(String start, String end, boolean graphic) {
         int args = director.parse(end);
-        if(args == 0 && !graphic){
+        if (args == 0 && !graphic) {
             Variable<T> var = new Variable<>(start, null);
             AbstractConst<T> c = new AbstractConst<>(var);
-            int n = params.indexOf(var);
-            if(n != -1) {
-                var = params.get(n);
+            int n = consts.indexOf(c);
+            if (n != -1) {
+                var = consts.get(n).getVar();
                 c.setVar(var);
-            }else {
-                n = consts.indexOf(c);
-                if (n != -1) {
-                    var = consts.get(n).getVar();
-                    c.setVar(var);
-                    c.stack = director.getStack();
-                    consts.add(c);
-                    return;
-                }
+                c.stack = director.getStack();
+                consts.add(c);
+                return;
             }
-            var.setValue(params.get(0).calculate());
+            var.setValue(def);
             c.stack = director.getStack();
             consts.add(c);
             type.addFunction(start, c.getFunc(), 0, 10);
@@ -199,8 +201,10 @@ public class ArrayCalculator<T> {
     }
 
     public void resetConstant(String name, T val) {
-        Variable<T> var = director.getHelper().consts.getConst(name);
+        Variable<T> var = type.consts.get(name);
         if (var != null)
             var.setValue(val);
+        else
+            type.addConst(name, val);
     }
 }

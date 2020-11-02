@@ -24,14 +24,16 @@ loaded
 Saved to</entry>
 <entry key = "updater_errors">We need 2 funcs in parametric and translation.
 graphic
-We need t or x and y vars in</entry>
+We need t or x and y vars in
+Too long 'goto' recursion: len</entry>
 <entry key = "calculator_errors">in
 graphic
 function
 grammar of
 vars of
 calculator
-Too many vars</entry>
+Too many vars
+constant</entry>
 <entry key = "parser_errors">Undefined symbol
 Too little arguments
 Too many arguments
@@ -66,8 +68,8 @@ Then press ENTER.
 part 6
 Timer:
 Write a graphic using time var 'tm',
-than click 'Timer' and click 'Begin' in opened frame.
-You can change some settings in this frame.
+than click 'Timer' and click 'Begin' in the shown panel.
+You can change some settings in this panel.
 You can also do right click on button 'Timer'
 to stop or start it.
 part 7
@@ -81,7 +83,7 @@ will change only abscissa's/ordinate's scale.
 part 3
 Extra:
 'Right' click on '-' button in expression in graphics.
-Extra info window will be opened.
+Extra info panel will be shown.
 part 4
 Parametric:
 Using var t
@@ -112,21 +114,10 @@ Write expressions for x and y, in relation to
 original coordinates of dot, divide them by ":",
 this is like parametric but use x and y
 instead of t.
-part 14
+part 3
 Recursion:
 You can use recursion, but be careful:
 long recursion can produce stack over flow errors.
-When you call func like that
-"func= ... func(x-1) ... x ..."
-x will be changed to x-1 after every
-calling func(->(x-1)&lt;-)
-it is bad, but it is true.
-So don't use x after the same functions
-to avoid the same situations, for example:
-fact = if(x &lt; 2, 1, fact(x-1) * x)
-everytime returns 1 when x is integer
-fact = if(x &lt; 2, 1, x * fact(x-1))
-is normal factorial when x is integer
 part 5
 Examples:
 f(x)=if(x&lt;1,1,x*f(x-1)) - factorial
@@ -155,8 +146,8 @@ part 5
 Your constants:
 On functions area write
 name + "=" + write an example.
-If you want to override internal constant,
-put ":=" instead of "=".
+You can override internal functions and constants
+Constants are calculating in order they are written.
 part 5
 How to write your own functions?
 Write the name + "=" + expression.
@@ -170,7 +161,7 @@ Signs:
 % - remainder of division
 &lt;, >, = return 1 if the expression
 is true else return 0
-part 18
+part 19
 Functions:
 sqrt, cbrt - quadratic and cubic roots
 pow - power
@@ -178,6 +169,7 @@ exp - exponent (it works faster than 'e^x')
 sign - signum of number (1, 0, -1)
 lg, ln, ld, log - logarithms
 sigm - sigmoid - sigm(x) = 1 / (1 + e^-x)
+hypot - hypotenuse - sqrt(x^2 + y^2)
 sin, cos, tg, ctg, arcsin, arccos, arctg, arcctg, arctgTwo
 - trigonometric functions,
 put 'd' after them to convert radians to degrees.
@@ -219,17 +211,12 @@ num = sqrt(5) - num is a constant
 lb = ld(x) - the same as ld(x) = logarithm of x with basis 2
 myfunc = sin(x) + cos(y) - use it like myfunc(x,y)
 help 4
-part 16
+part 11
 Warning:
 Grapher can answer the incomprehensible
 when for it questions are incorrect, for example,
-if you write f(x)=с(x,x) and с=x+y
-grapher will show error, because will think
-that g is speed of light,
-if you want to override constant, put ':' before '=',
-for previous example write с:=x+y.
-The following happens too:
-f(x)=rx, r=2
+if you write f(x)=rx, r=2
+Grapher would answer
 Too many arguments!
 r is a function, so if there something is
 following continuously, grapher think
@@ -241,16 +228,25 @@ Feels time:
 If "feels time" is turned off,
 timer won't update this graphic,
 grapher would work faster with hard animations.
-part 9
+part 18
 Parameters:
 If you create constant with a name "lookX" or "lookY",
 Grapher will move camera to this position,
 dot (lookX; lookY) will come to the middle of screen.
+Create constants "scaleX" or "scaleY"
+to change approximation, scaleX/scaleY mean,
+than there are scaleX/scaleY pixels in a unit in screen.
+You can also use this constants in your formulas
+without defining.
 If you are using recursive constants, for save value
 to next timer iteration, before definition
-constants would be 0, if you want to
-override this value, write 'default = 'value',
-and press 'update'.
+constants would be 0.
+Use parameter 'goto' to change next
+calculating constant (constants numbers start with 0)
+setting goto means next constant will be on 'goto' position,
+goto calculates on 'goto' position.
+Use parameter 'gotoLen' to change max count of using 'goto'
+per one update or timer cycle.
 part 32
 Saves:
 All saves are in xml format in java properties.
@@ -262,9 +258,9 @@ timer_info - four numbers, like in timer settings:
 duration:fps and interval on new line
 view_params - four numbers, each on its own line:
 offset x, offset y, scale x, scale y
-offset x и y - coordinates of left bottom
+offset x, y - coordinates of left bottom
 corner of image
-scale x и y - number of pixels of display,
+scale x, y - number of pixels of display,
 which graphic unit contains
 graphs_count - count of graphics -
 any natural number or 0

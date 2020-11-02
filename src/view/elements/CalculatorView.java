@@ -3,6 +3,7 @@ package view.elements;
 import calculator2.calculator.executors.Expression;
 import model.Language;
 import model.ViewElement;
+import view.grapher.CoordinateSystem;
 
 import javax.swing.*;
 import java.awt.*;

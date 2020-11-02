@@ -15,18 +15,20 @@ public class Director<T> {
 
     private Expression<T> tree;
     private ArrayList<Variable<T>> vars;
-    public Director(){
+
+    public Director() {
         helper = new Helper<>();
         calculator = new Calculator<>(helper);
         parser = new Parser<>(helper);
     }
-    public void renewType(AbstractType<T> type){
-        helper.renewType(type);
+    public void setType(AbstractType<T> type){
+        helper.setType(type);
     }
-    public int parse(String str){
+    public int parse(String str) {
         return parser.parse(str);
     }
-    public void update(Stack<Element> stack){
+
+    public void update(Stack<Element> stack) {
         parser.simpleCheck(stack);
         calculator.clear();
         while (!stack.empty()) {
@@ -37,10 +39,11 @@ public class Director<T> {
         vars = calculator.getVars();
     }
 
-    public Stack<Element> getStack(){
+    public Stack<Element> getStack() {
         return parser.getStack();
     }
-    public ArrayList<Variable<T>> getVars(){
+
+    public ArrayList<Variable<T>> getVars() {
         return vars;
     }
 

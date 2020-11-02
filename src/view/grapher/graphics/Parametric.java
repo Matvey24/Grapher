@@ -61,7 +61,7 @@ public class Parametric extends Graphic {
                 continue;
             int x1 = (int) ((-offsetX + xMap[i]) * scaleX);
             int x2 = (int) ((-offsetX + xMap[i + 1]) * scaleX);
-            if (x1 < 0 || x2 < 0 || x1 > GRAPH_WIDTH && x2 > GRAPH_WIDTH)
+            if (x1 < 0 && x2 < 0 || x1 > GRAPH_WIDTH && x2 > GRAPH_WIDTH)
                 continue;
             g.drawLine(x1, y1, x2, y2);
         }

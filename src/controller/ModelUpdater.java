@@ -138,7 +138,9 @@ public class ModelUpdater {
         if (lo == e.getID()) {
             supportFrameManager.close();
         }
-        calculator.recalculate();
+        if(e.getSource().equals(0)) {
+            calculator.recalculate();
+        }
     }
 
     public void run(Runnable r) {
@@ -330,12 +332,24 @@ public class ModelUpdater {
         if (Double.isFinite(x))
             offsetX = x - GRAPH_WIDTH / scaleX / 2d;
     }
-
     public void lookAtY(double y) {
         if (Double.isFinite(y))
             offsetY = y + HEIGHT / scaleY / 2d;
     }
-
+    public void setScaleX(double x){
+        if (Double.isFinite(x) && x > 0) {
+            double sX = offsetX + GRAPH_WIDTH / scaleX / 2d;
+            scaleX = x;
+            offsetX = sX - GRAPH_WIDTH / scaleX / 2d;
+        }
+    }
+    public void setScaleY(double y){
+        if (Double.isFinite(y) && y > 0) {
+            double sY = offsetY - HEIGHT / scaleY / 2d;
+            scaleY = y;
+            offsetY = sY + HEIGHT / scaleY / 2d;
+        }
+    }
     public void setGraphics(ArrayList<Graphic> graphics) {
         this.graphics = graphics;
     }
@@ -379,6 +393,7 @@ public class ModelUpdater {
         } else {
             calculator.run(() -> {
                 try {
+                    supportFrameManager.getTimer().stop();
                     FullModel m = dataBase.load(f);
                     if (m.graphics.size() != 0) {
                         list.clear();
@@ -394,7 +409,9 @@ public class ModelUpdater {
                         scaleY = Double.parseDouble(view_params[3]);
                     }
                     mainPanel.fromModel(m);
+                    supportFrameManager.getTimer().setDont_resize(true);
                     supportFrameManager.getTimer().fromModel(m);
+                    supportFrameManager.getTimer().setDont_resize(false);
                     if (m.language != null && Language.language_Names.contains(m.language) && Language.language_Names.indexOf(m.language) != Language.LANGUAGE_INDEX) {
                         supportFrameManager.getMainSettings().setLanguage(Language.language_Names.indexOf(m.language));
                     }

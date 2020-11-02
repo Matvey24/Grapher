@@ -2,11 +2,10 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
     <entry key="file_path">https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/Grapher.jar</entry>
-    <entry key="version">21</entry>
+    <entry key="version">22</entry>
     <entry key="changes">
-added panel under calculator view for different settings,
-auto resize help view,
-changing type of graphics happens without changing discretization and feels_time
-and without closing info panel
+removed need writing := before overriding constants
+added 'goto' constant
+removed last bug with recursion
     </entry>
 </properties>

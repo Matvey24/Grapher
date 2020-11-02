@@ -18,6 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static model.Language.UPDATER_ERRORS;
+import static view.MainPanel.GRAPH_WIDTH;
+import static view.MainPanel.HEIGHT;
 
 public class Calculator {
     private final ModelUpdater updater;
@@ -28,11 +30,18 @@ public class Calculator {
     private CalculatorView calculatorView;
     private final Tasks tasks;
 
+    private List<Variable<Double>> params;
+    private int const_idx;
+    private int goto_count;
+    private int goto_len;
+    private static final int gotoDefLen = 100000;
+
     public Calculator(ModelUpdater updater, Runnable repaint) {
         this.updater = updater;
         this.repaint = repaint;
         tasks = new Tasks();
-        calculator = new ArrayCalculator<>(makeParams());
+        makeParams();
+        calculator = new ArrayCalculator<>( .0);
     }
 
     public void recalculate() {
@@ -60,12 +69,11 @@ public class Calculator {
                         graphs.add(updater.graphics.get(i).name + "=" + e.getText());
                     }
                 }
-                Number n = new Number();
                 calculator.calculate(
                         Arrays.asList(functionsView.getText().split("\n")),
                         graphs,
                         calc,
-                        n
+                        makeNumber()
                 );
                 calculatorView.setAnswer(calculator.getExpressions().get(0));
                 int funcs = 0;
@@ -171,8 +179,7 @@ public class Calculator {
                 }
                 updater.dangerState = false;
                 resetConstant("tm", updater.getSupportFrameManager().getTime());
-                for (int i = 0; i < calculator.getConsts().size(); ++i)
-                    calculator.getConsts().get(i).run();
+                updateConstants();
                 calculatorView.update();
                 resize.run();
                 repaint.run();
@@ -203,6 +210,13 @@ public class Calculator {
         return num != vars.size();
     }
 
+    public void updateConstants() {
+        goto_count = 0;
+        for (const_idx = 0; const_idx < calculator.getConsts().size(); ++const_idx) {
+            calculator.getConsts().get(const_idx).run();
+        }
+    }
+
     public void runResize() {
         tasks.clearTasks();
         if (!updater.dangerState)
@@ -221,8 +235,7 @@ public class Calculator {
         tasks.runTask(() -> {
             if (!updater.dangerState) {
                 try {
-                    for (int i = 0; i < calculator.getConsts().size(); ++i)
-                        calculator.getConsts().get(i).run();
+                    updateConstants();
                     for (Graphic g : updater.graphics)
                         g.timeChanged();
                     calculatorView.update();
@@ -253,28 +266,94 @@ public class Calculator {
     void run(Runnable r) {
         tasks.runTask(r);
     }
-
-    private ArrayList<Variable<Double>> makeParams() {
-        ArrayList<Variable<Double>> params = new ArrayList<>();
-        Variable<Double> def = new Variable<>("default", 0d);
-        params.add(def);
+    private void makeParams(){
+        params = new ArrayList<>();
         Variable<Double> lookX = new Variable<Double>("lookX", null) {
             @Override
             public void setValue(Double value) {
-                super.setValue(value);
                 updater.lookAtX(value);
+            }
+
+            @Override
+            public Double calculate() {
+                return updater.getOffsetX() + GRAPH_WIDTH / updater.getScaleX() / 2d;
             }
         };
         params.add(lookX);
         Variable<Double> lookY = new Variable<Double>("lookY", null) {
             @Override
             public void setValue(Double value) {
-                super.setValue(value);
                 updater.lookAtY(value);
+            }
+
+            @Override
+            public Double calculate() {
+                return updater.getOffsetY() - HEIGHT / updater.getScaleY() / 2d;
             }
         };
         params.add(lookY);
-        return params;
+        Variable<Double> scaleX = new Variable<Double>("scaleX", null) {
+            @Override
+            public void setValue(Double value) {
+                updater.setScaleX(value);
+            }
+
+            @Override
+            public Double calculate() {
+                return updater.getScaleX();
+            }
+        };
+        params.add(scaleX);
+        Variable<Double> scaleY = new Variable<Double>("scaleY", null) {
+            @Override
+            public void setValue(Double value) {
+                updater.setScaleY(value);
+            }
+
+            @Override
+            public Double calculate() {
+                return updater.getScaleY();
+            }
+        };
+        params.add(scaleY);
+        Variable<Double> _goto = new Variable<Double>("goto", null) {
+            @Override
+            public void setValue(Double value) {
+                Calculator.this.const_idx = value.intValue() - 1;
+                goto_count++;
+                if (goto_count >= goto_len) {
+                    throw new RuntimeException(UPDATER_ERRORS[3] + " " + goto_count);
+                }
+            }
+
+            @Override
+            public Double calculate() {
+                return (double) Calculator.this.const_idx;
+            }
+        };
+        params.add(_goto);
+        Variable<Double> goto_len = new Variable<Double>("gotoLen", null) {
+            @Override
+            public void setValue(Double value) {
+                int val = value.intValue();
+                if (val > 0)
+                    Calculator.this.goto_len = val;
+            }
+
+            @Override
+            public Double calculate() {
+                return (double) Calculator.this.goto_len;
+            }
+        };
+        params.add(goto_len);
+    }
+    private Number makeNumber() {
+        Number n = new Number();
+        for (Variable<Double> param : params) {
+            n.consts.put(param.getName(), param);
+        }
+        this.goto_len = gotoDefLen;
+        return n;
     }
 
     void makeModel(FullModel m) {

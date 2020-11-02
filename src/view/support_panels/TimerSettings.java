@@ -31,6 +31,7 @@ public class TimerSettings extends Screen {
     private double value = startT;
     private boolean boomerang;
     private boolean fTimeDirection = true;
+    private boolean dont_resize;
     private final JToggleButton start;
     private final JToggleButton timeDir;
     private final ModelUpdater updater;
@@ -62,7 +63,7 @@ public class TimerSettings extends Screen {
             startT = Double.parseDouble(vars[0]);
             endT = Double.parseDouble(vars[1]);
             value = startT;
-            if (!timer.isRunning()) {
+            if (!timer.isRunning() && !dont_resize) {
                 updater.setTime(startT);
                 updater.timerResize();
             }
@@ -121,6 +122,15 @@ public class TimerSettings extends Screen {
             timer.stop();
             updater.setTimerName(Language.TIMER + "(Off)");
         }
+    }
+    public void stop(){
+        if(!start.isSelected()) {
+            timer.stop();
+            updater.setTimerName(Language.TIMER + "(Off)");
+        }
+    }
+    public void setDont_resize(boolean dont_resize) {
+        this.dont_resize = dont_resize;
     }
 
     @Override

@@ -134,7 +134,7 @@ public class ElementsList extends ViewElement {
             TextElement e = elements.remove(i);
             if(e.attached)
                 e.removeFrom(c);
-            sizeChanged.actionPerformed(new ActionEvent("", i, "remove"));
+            sizeChanged.actionPerformed(new ActionEvent(1, i, "remove"));
         }
         setBounds(pos.x, pos.y);
     }

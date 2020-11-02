@@ -36,7 +36,7 @@ class Calculator<T> {
                 nextSign(e);
                 break;
             case CONSTANT:
-                values.push(helper.consts.getConst(e.symbol));
+                values.push(helper.getConst(e.symbol));
                 break;
             case NUMBER:
                 value = new Value<>();
@@ -66,14 +66,14 @@ class Calculator<T> {
     }
 
     private void nextSign(Element e) {
-        Sign<T> sign = helper.signs.getSign(e.symbol);
+        Sign<T> sign = helper.getSign(e.symbol);
         int prio = 0;
         if (!other.empty()) {
             Element e1 = other.peek();
             if (e1.type == Element.ElementType.SIGN) {
-                prio = helper.signs.getSign(e1.symbol).priority;
+                prio = helper.getSign(e1.symbol).priority;
             } else if (e1.type == Element.ElementType.FUNCTION) {
-                prio = helper.funcs.getFunc(e1.symbol).priority;
+                prio = helper.getFunc(e1.symbol).priority;
             }
         }
         if (prio >= sign.priority) {
@@ -89,10 +89,10 @@ class Calculator<T> {
                 if (e.type == Element.ElementType.BRACKET) {
                     if (i - 1 >= 0) {
                         if (other.elementAt(i - 1).type == Element.ElementType.SIGN) {
-                            Sign<T> s = helper.signs.getSign(other.elementAt(i - 1).symbol);
+                            Sign<T> s = helper.getSign(other.elementAt(i - 1).symbol);
                             count(s.priority + 1);
                         } else if (other.elementAt(i - 1).type == Element.ElementType.FUNCTION) {
-                            Func<T> f = helper.funcs.getFunc(other.elementAt(i - 1).symbol);
+                            Func<T> f = helper.getFunc(other.elementAt(i - 1).symbol);
                             count(f.priority + 1);
                         } else if (other.elementAt(i - 1).type == Element.ElementType.BRACKET) {
                             count(0);
@@ -111,7 +111,7 @@ class Calculator<T> {
             return;
         Element e = other.pop();
         if (e.type == Element.ElementType.SIGN) {
-            Sign<T> sign = helper.signs.getSign(e.symbol);
+            Sign<T> sign = helper.getSign(e.symbol);
             if (sign.priority >= priority) {
                 Expression<T> e2 = values.pop();
                 Expression<T> e1 = values.pop();
@@ -135,7 +135,7 @@ class Calculator<T> {
                 }
             }
         } else if (e.type == Element.ElementType.FUNCTION) {
-            Func<T> f = helper.funcs.getFunc(e.symbol);
+            Func<T> f = helper.getFunc(e.symbol);
             if (f.priority >= priority) {
                 if (f.args == 1) {
                     Expression<T> e1 = values.pop();

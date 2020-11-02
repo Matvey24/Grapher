@@ -96,6 +96,9 @@ public class MainSettings extends Screen {
         btn_load.setBounds(3 * OFFSET / 2 + ComboBoxParameter.WIDTH / 2, OFFSET,
                 ComboBoxParameter.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
     }
+    public FileChooser getFileChooser(){
+        return fileChooser;
+    }
     @Override
     public void onShow(){
         setTitle(Language.MAIN_SETTINGS);

@@ -5,7 +5,6 @@ import calculator2.calculator.executors.Expression;
 import calculator2.calculator.executors.Variable;
 import calculator2.calculator.util.actions.functions.MultiFunc;
 
-import java.util.Objects;
 import java.util.Stack;
 
 public class AbstractConst<T> implements Runnable{
@@ -45,10 +44,5 @@ public class AbstractConst<T> implements Runnable{
         if (o == null || getClass() != o.getClass()) return false;
         AbstractConst<?> that = (AbstractConst<?>) o;
         return var.equals(that.var);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(var);
     }
 }

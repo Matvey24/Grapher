@@ -138,8 +138,11 @@ public class MainPanel extends Screen {
                                 f = (File) list.get(0);
                             else
                                 f = new File(list.get(0).toString());
-                            if (f.exists() && f.isFile())
+                            if (f.exists() && f.isFile()) {
+                                updater.getSupportFrameManager().getMainSettings().getFileChooser().setSelectedFile(f);
                                 updater.dosave(false, f);
+                                return;
+                            }
                         }
                     } catch (Exception e) {
                         updater.setState(e.toString());
@@ -205,9 +208,9 @@ public class MainPanel extends Screen {
     }
 
     public void calculatorResize() {
-        WIDTH = TextElement.WIDTH + 30;
-        GRAPH_WIDTH = WIDTH - TextElement.WIDTH;
-        HEIGHT = height + 60;
+        WIDTH = ElementsList.WIDTH;
+        GRAPH_WIDTH = 0;
+        HEIGHT = height;
         super.resize();
     }
 

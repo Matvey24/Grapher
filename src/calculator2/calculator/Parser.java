@@ -41,7 +41,7 @@ public class Parser<T> {
             type = Element.ElementType.NUMBER;
         } else if (helper.brackets.isBracket(c)) {
             type = Element.ElementType.BRACKET;
-        } else if (helper.signs.getSign(c) != null) {
+        } else if (helper.getSign(c) != null) {
             type = Element.ElementType.SIGN;
         } else if (helper.isDivider(c)) {
             type = Element.ElementType.DIVIDER;
@@ -105,7 +105,7 @@ public class Parser<T> {
                         if (helper.hasName(s)) {
                             Element nE = new Element(s,
                                     (helper.isVar(s)) ? VAR :
-                                            (helper.isConstant(s)) ? CONSTANT : FUNCTION);
+                                            (helper.isConst(s)) ? CONSTANT : FUNCTION);
                             list.add(i, nE);
                             e.symbol = e.symbol.substring(0, j);
                         }
@@ -115,7 +115,7 @@ public class Parser<T> {
                     }
                 } else if (helper.isVar(e.symbol)) {
                     e.type = VAR;
-                } else if (helper.isConstant(e.symbol)) {
+                } else if (helper.isConst(e.symbol)) {
                     e.type = CONSTANT;
                 }
             }
@@ -124,12 +124,12 @@ public class Parser<T> {
 
     private void findUnarySigns(List<Element> list) {
         Element last = list.get(0);
-        if (last.type == Element.ElementType.SIGN && helper.signs.getSign(last.symbol).canBeUnary) {
+        if (last.type == Element.ElementType.SIGN && helper.getSign(last.symbol).canBeUnary) {
             last.type = FUNCTION;
         }
         for (int i = 1; i < list.size(); ++i) {
             Element e = list.get(i);
-            if (e.type == Element.ElementType.SIGN && helper.signs.getSign(e.symbol).canBeUnary &&
+            if (e.type == Element.ElementType.SIGN && helper.getSign(e.symbol).canBeUnary &&
                     (last.type == BRACKET && helper.brackets.brOpens(last.symbol)
                             || last.type == Element.ElementType.DIVIDER
                             || last.type == Element.ElementType.SIGN)) {
@@ -183,7 +183,7 @@ public class Parser<T> {
                     returns -= 1;
                     break;
                 case FUNCTION:
-                    int args = helper.funcs.getFunc(e.symbol).args;
+                    int args = helper.getFunc(e.symbol).args;
                     returns -= args;
                     if ((args > 1 || args == -1) && (i == 0 || stack.get(i - 1).type != BRACKET || !helper.brackets.brOpens(stack.get(i - 1).symbol))) {
                         throw new RuntimeException(CalcLanguage.PARSER_ERRORS[5] + " " + e.symbol);
@@ -201,7 +201,7 @@ public class Parser<T> {
                         if (i < stack.size() - 1) {
                             Element e1 = stack.get(i + 1);
                             if (e1.type == FUNCTION) {
-                                int needArgs = helper.funcs.getFunc(e1.symbol).args;
+                                int needArgs = helper.getFunc(e1.symbol).args;
                                 if (needArgs != -1) {
                                     if (returns < needArgs)
                                         throw new RuntimeException(CalcLanguage.PARSER_ERRORS[1] + " " + CalcLanguage.PARSER_ERRORS[4] + " " + e1.symbol);

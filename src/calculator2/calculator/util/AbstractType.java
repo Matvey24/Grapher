@@ -8,66 +8,67 @@ import calculator2.calculator.util.actions.functions.MultiFunc;
 import calculator2.calculator.util.actions.functions.UnarFunc;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public abstract class AbstractType<T> {
-    public final List<Sign<T>> signs;
-    public final List<Func<T>> funcs;
-    public final List<Variable<T>> consts;
+    public final HashMap<Character, Sign<T>> signs;
+    public final HashMap<String, Variable<T>> consts;
+    public final HashMap<String, Func<T>> funcs;
     public final List<String> funcNames;
     private Sign<T> missingSign;
+
     protected AbstractType() {
-        signs = new ArrayList<>();
-        funcs = new ArrayList<>();
-        consts = new ArrayList<>();
+        signs = new HashMap<>();
+        funcs = new HashMap<>();
+        consts = new HashMap<>();
         funcNames = new ArrayList<>();
     }
 
     protected Sign<T> addSign(char name, BinarFunc<T> sign, int priority) {
         Sign<T> s = new Sign<>(name, sign, priority);
-        signs.add(s);
+        signs.put(name, s);
         return s;
     }
-    protected void unarySign(Sign<T> sign, UnarFunc<T> func){
+
+    protected void unarySign(Sign<T> sign, UnarFunc<T> func) {
         sign.canBeUnary = true;
         addFunction("" + sign.name, func, 5);
     }
 
-    protected void setMissingSign(Sign<T> sign){
+    protected void setMissingSign(Sign<T> sign) {
         this.missingSign = sign;
     }
 
     public void addConst(String name, T state) {
-        consts.add(new Variable<>(name, state));
+        Variable<T> cons = consts.get(name);
+        if (cons == null) {
+            Variable<T> var = new Variable<>(name, state);
+            consts.put(name, var);
+        }
     }
+
     public void addFunction(String name, UnarFunc<T> unarFunc, int priority) {
-        funcs.add(new Func<>(name, unarFunc, priority));
+        funcs.put(name, new Func<>(name, unarFunc, priority));
     }
+
     public void addFunction(String name, BinarFunc<T> binarFunc, int priority) {
-        funcs.add(new Func<>(name, binarFunc, priority));
+        funcs.put(name, new Func<>(name, binarFunc, priority));
     }
-    public void addFunction(String name, MultiFunc<T> multiFunc, int args, int priority){
-        funcs.add(new Func<>(name, multiFunc, args, priority));
+
+    public void addFunction(String name, MultiFunc<T> multiFunc, int args, int priority) {
+        funcs.put(name, new Func<>(name, multiFunc, args, priority));
     }
+
     public abstract T toValue(String text);
+
+    public abstract boolean isType(char c);
 
     public Sign<T> getMissingSign() {
         return missingSign;
     }
 
-    public void addFuncName(String name){
+    public void addFuncName(String name) {
         funcNames.add(name);
-    }
-    public void removeName(String name){
-        for(int i = funcs.size() - 1; i >= 0; --i){
-            if(funcs.get(i).name.equals(name)){
-                funcs.remove(i);
-            }
-        }
-        for(int i = consts.size() - 1; i >= 0; --i){
-            if(consts.get(i).getName().equals(name)){
-                consts.remove(i);
-            }
-        }
     }
 }
