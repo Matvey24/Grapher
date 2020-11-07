@@ -36,7 +36,7 @@ public class VersionController {
             Properties properties = new Properties();
             properties.loadFromXML(input);
             URL_APP = properties.getProperty("file_path", "");
-            URL_LOG = properties.getProperty("file_log", "");
+            URL_LOG = properties.getProperty("log_path", "");
             int newVersion = Integer.parseInt(properties.getProperty("version"));
             if(newVersion > VERSION_CODE){
                 u.full_name = getFullName(getName(newVersion));

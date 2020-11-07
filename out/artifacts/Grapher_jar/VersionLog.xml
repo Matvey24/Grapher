@@ -11,5 +11,6 @@ added lambda expressions
 optimized calculating Implicit
 added version log file
 added usable arrays
+fixed bug with log file
     </entry>
 </properties>
