@@ -1,13 +1,13 @@
 package calculator2.calculator.util.actions;
 
 import calculator2.calculator.Element;
-import calculator2.calculator.executors.Expression;
+import calculator2.calculator.executors.actors.Expression;
 import calculator2.calculator.executors.Variable;
 import calculator2.calculator.util.actions.functions.MultiFunc;
 
 import java.util.Stack;
 
-public class AbstractConst<T> implements Runnable{
+public class AbstractConst<T> implements Runnable, MultiFunc<T>{
     private Expression<T> expression;
     private Variable<T> var;
     public Stack<Element> stack;
@@ -31,11 +31,8 @@ public class AbstractConst<T> implements Runnable{
     public Variable<T> getVar(){
         return var;
     }
-    private T execute(Expression<T>[] a){
+    public T execute(Expression<T>[] a){
         return var.calculate();
-    }
-    public MultiFunc<T> getFunc(){
-        return this::execute;
     }
 
     @Override

@@ -1,11 +1,12 @@
 package calculator2.calculator;
 
-import calculator2.calculator.executors.Expression;
-import calculator2.calculator.executors.Variable;
+import calculator2.calculator.executors.actors.Expression;
+import calculator2.calculator.executors.FuncVariable;
 import calculator2.calculator.helpers.Helper;
 import calculator2.calculator.util.AbstractType;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 public class Director<T> {
@@ -14,7 +15,7 @@ public class Director<T> {
     private final Helper<T> helper;
 
     private Expression<T> tree;
-    private ArrayList<Variable<T>> vars;
+    private List<FuncVariable<T>> vars;
 
     public Director() {
         helper = new Helper<>();
@@ -43,15 +44,11 @@ public class Director<T> {
         return parser.getStack();
     }
 
-    public ArrayList<Variable<T>> getVars() {
+    public List<FuncVariable<T>> getVars() {
         return vars;
     }
 
     public Expression<T> getTree() {
         return tree;
-    }
-
-    public Helper<T> getHelper() {
-        return helper;
     }
 }

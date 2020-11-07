@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key = "22">Grapher3.2
+removed need writing := before overriding constants
+added 'goto' constant
+removed last bug with recursion
+    </entry>
+    <entry key="23">Grapher3.3
+added lambda expressions
+optimized calculating Implicit
+added version log file
+added usable arrays
+    </entry>
+</properties>

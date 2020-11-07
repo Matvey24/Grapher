@@ -1,4 +1,4 @@
-package calculator2.calculator.executors;
+package calculator2.calculator.executors.actors;
 
 import calculator2.calculator.util.actions.functions.BinarFunc;
 
@@ -26,6 +26,14 @@ public class BinaryActor<T> implements Expression<T> {
     @Override
     public String toString() {
         return getName() + "(" + a.toString() + "," + b.toString() + ")";
+    }
+
+    @Override
+    public void free() {
+        a.free();
+        b.free();
+        func = null;
+        name = null;
     }
 
     @Override

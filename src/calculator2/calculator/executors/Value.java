@@ -1,5 +1,7 @@
 package calculator2.calculator.executors;
 
+import calculator2.calculator.executors.actors.Expression;
+
 public class Value<T> implements Expression<T> {
     private T value;
     public void setValue(T value){
@@ -13,6 +15,9 @@ public class Value<T> implements Expression<T> {
     public String getName() {
         return value.toString();
     }
+
+    @Override
+    public void free() {}
 
     @Override
     public String toString() {

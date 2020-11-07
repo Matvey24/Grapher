@@ -1,6 +1,8 @@
 package calculator2.calculator.executors;
 
-public class Variable<T> implements Expression<T>{
+import calculator2.calculator.executors.actors.Expression;
+
+public class Variable<T> implements Expression<T> {
     private String name;
     private T value;
     public Variable(){}
@@ -22,6 +24,11 @@ public class Variable<T> implements Expression<T>{
     @Override
     public T calculate() {
         return value;
+    }
+
+    @Override
+    public void free() {
+        name = null;
     }
 
     @Override

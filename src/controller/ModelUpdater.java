@@ -37,7 +37,7 @@ public class ModelUpdater {
     private double scaleX = 100;
     private double scaleY = 100;
     boolean dangerState = false;
-
+    public boolean mousePressed;
     public ModelUpdater(Runnable repaint, MainPanel mainPanel) {
         this.mainPanel = mainPanel;
         supportFrameManager = new SupportFrameManager(this);
@@ -91,7 +91,7 @@ public class ModelUpdater {
                 gr = new Parametric(map_size, feels_time);
                 break;
             case "Implicit":
-                gr = new Implicit(mainPanel, map_size, feels_time);
+                gr = new Implicit(mainPanel, this::isMousePressed, map_size, feels_time);
                 break;
             case "Translation":
                 gr = new Translation(getCoordinateSystem(), map_size, feels_time);
@@ -186,7 +186,7 @@ public class ModelUpdater {
 
     public void makeImplicit(int idx, TextElement e) {
         Graphic g = graphics.get(idx);
-        Implicit implicit = new Implicit(mainPanel, g.MAP_SIZE, g.feelsTime);
+        Implicit implicit = new Implicit(mainPanel, this::isMousePressed, g.MAP_SIZE, g.feelsTime);
         int lo = start_make(idx);
         implicit.setColor(e.getColor());
         graphics.set(idx, implicit);
@@ -373,6 +373,10 @@ public class ModelUpdater {
     public void error(String message) {
         dangerState = true;
         setState(message);
+    }
+
+    public boolean isMousePressed() {
+        return mousePressed;
     }
 
     public void updateLanguage() {

@@ -15,12 +15,14 @@ public class Parser<T> {
     private Stack<Element> stack;
     private final List<String> varNames;
     private final Stack<Integer> ints;
+    private final Stack<String> bracketCheck;
 
     public Parser(Helper<T> helper) {
         this.helper = helper;
         sb = new StringBuilder();
-        varNames = new ArrayList<>();
+        varNames = new Stack<>();
         ints = new Stack<>();
+        bracketCheck = new Stack<>();
     }
 
     public int parse(String str) {
@@ -76,21 +78,23 @@ public class Parser<T> {
     }
 
     private void normaliseBrackets(List<Element> list) {
-        int brackets = 0;
-        for (Element e : list) {
-            if (e.type == Element.ElementType.BRACKET) {
+        for (int i = 0; i < list.size(); ++i) {
+            Element e = list.get(i);
+            if (e.type == BRACKET) {
                 if (helper.brackets.brOpens(e.symbol)) {
-                    ++brackets;
+                    bracketCheck.push(helper.brackets.getOpposit(e.symbol));
                 } else {
-                    --brackets;
+                    if (bracketCheck.empty()) {
+                        list.add(0, new Element(helper.brackets.getOpposit(e.symbol), BRACKET));
+                        ++i;
+                    } else if (!bracketCheck.pop().equals(e.symbol)) {
+                        throw new RuntimeException(CalcLanguage.PARSER_ERRORS[5] + " " + CalcLanguage.PARSER_ERRORS[3]);
+                    }
                 }
             }
         }
-        for (; brackets > 0; --brackets) {
-            list.add(new Element(")", Element.ElementType.BRACKET));
-        }
-        for (; brackets < 0; ++brackets) {
-            list.add(0, new Element("(", Element.ElementType.BRACKET));
+        while (!bracketCheck.empty()) {
+            list.add(new Element(bracketCheck.pop(), BRACKET));
         }
     }
 
@@ -104,8 +108,10 @@ public class Parser<T> {
                         String s = e.symbol.substring(j);
                         if (helper.hasName(s)) {
                             Element nE = new Element(s,
-                                    (helper.isVar(s)) ? VAR :
-                                            (helper.isConst(s)) ? CONSTANT : FUNCTION);
+                                    helper.isVar(s) ? VAR :
+                                            helper.isConst(s) ? CONSTANT :
+                                                    helper.isLambda(s) ? LAMBDA :
+                                                            FUNCTION);
                             list.add(i, nE);
                             e.symbol = e.symbol.substring(0, j);
                         }
@@ -117,6 +123,8 @@ public class Parser<T> {
                     e.type = VAR;
                 } else if (helper.isConst(e.symbol)) {
                     e.type = CONSTANT;
+                } else if (helper.isLambda(e.symbol)) {
+                    e.type = LAMBDA;
                 }
             }
         }
@@ -124,15 +132,15 @@ public class Parser<T> {
 
     private void findUnarySigns(List<Element> list) {
         Element last = list.get(0);
-        if (last.type == Element.ElementType.SIGN && helper.getSign(last.symbol).canBeUnary) {
+        if (last.type == SIGN && helper.getSign(last.symbol).canBeUnary) {
             last.type = FUNCTION;
         }
         for (int i = 1; i < list.size(); ++i) {
             Element e = list.get(i);
-            if (e.type == Element.ElementType.SIGN && helper.getSign(e.symbol).canBeUnary &&
+            if (e.type == SIGN && helper.getSign(e.symbol).canBeUnary &&
                     (last.type == BRACKET && helper.brackets.brOpens(last.symbol)
-                            || last.type == Element.ElementType.DIVIDER
-                            || last.type == Element.ElementType.SIGN)) {
+                            || last.type == DIVIDER
+                            || last.type == SIGN)) {
                 e.type = FUNCTION;
             }
             last = e;
@@ -172,9 +180,9 @@ public class Parser<T> {
         return stack;
     }
 
-    public void simpleCheck(Stack<Element> stack) {
+    public void simpleCheck(List<Element> stack) {
         int returns = 0;
-        if (ints.empty())
+        if (!ints.empty())
             ints.clear();
         for (int i = 0; i < stack.size(); ++i) {
             Element e = stack.get(i);
@@ -182,10 +190,20 @@ public class Parser<T> {
                 case SIGN:
                     returns -= 1;
                     break;
+                case LAMBDA:
+                    if (i > 0 && stack.get(i - 1).type == BRACKET && helper.brackets.brOpens(stack.get(i - 1).symbol)) {
+                        returns = 1;
+                    } else {
+                        returns += 1;
+                    }
+                    break;
                 case FUNCTION:
                     int args = helper.getFunc(e.symbol).args;
                     returns -= args;
-                    if ((args > 1 || args == -1) && (i == 0 || stack.get(i - 1).type != BRACKET || !helper.brackets.brOpens(stack.get(i - 1).symbol))) {
+                    if ((args > 1 || args == -1)
+                            && (i == 0
+                            || stack.get(i - 1).type != BRACKET
+                            || !helper.brackets.brOpens(stack.get(i - 1).symbol))) {
                         throw new RuntimeException(CalcLanguage.PARSER_ERRORS[5] + " " + e.symbol);
                     }
                 case VAR:
@@ -198,25 +216,31 @@ public class Parser<T> {
                         ints.push(returns);
                         returns = 0;
                     } else {
+                        e.symbol += returns;
                         if (i < stack.size() - 1) {
                             Element e1 = stack.get(i + 1);
-                            if (e1.type == FUNCTION) {
-                                int needArgs = helper.getFunc(e1.symbol).args;
+                            if (e1.type == FUNCTION || e1.type == LAMBDA) {
+                                int needArgs;
+                                if (e1.type == FUNCTION) {
+                                    needArgs = helper.
+                                            getFunc(e1.symbol).args;
+                                } else {
+                                    needArgs = -1;
+                                }
                                 if (needArgs != -1) {
                                     if (returns < needArgs)
                                         throw new RuntimeException(CalcLanguage.PARSER_ERRORS[1] + " " + CalcLanguage.PARSER_ERRORS[4] + " " + e1.symbol);
                                     else if (returns > needArgs)
                                         throw new RuntimeException(CalcLanguage.PARSER_ERRORS[2] + " " + CalcLanguage.PARSER_ERRORS[4] + " " + e1.symbol);
                                 }
-                                e.symbol += returns;
                                 returns = ints.pop() + needArgs;
                                 break;
                             }
                         }
                         if (returns < 1)
-                            throw new RuntimeException(CalcLanguage.PARSER_ERRORS[1] + " " + CalcLanguage.PARSER_ERRORS[3]);
+                            throw new RuntimeException(CalcLanguage.PARSER_ERRORS[1] + " " + CalcLanguage.PARSER_ERRORS[4] + " " + CalcLanguage.PARSER_ERRORS[3]);
                         else if (returns > 1)
-                            throw new RuntimeException(CalcLanguage.PARSER_ERRORS[2] + " " + CalcLanguage.PARSER_ERRORS[3]);
+                            throw new RuntimeException(CalcLanguage.PARSER_ERRORS[2] + " " + CalcLanguage.PARSER_ERRORS[4] + " " + CalcLanguage.PARSER_ERRORS[3]);
                         returns = ints.pop() + 1;
                     }
             }
@@ -228,13 +252,20 @@ public class Parser<T> {
     }
 
     private int calculateVars(List<Element> list) {
+        int level = 0;
         varNames.clear();
         for (Element element : list) {
-            if (element.type != VAR)
-                continue;
-            String name = element.symbol;
-            if (!varNames.contains(name)) {
-                varNames.add(name);
+            if (element.type == BRACKET && helper.brackets.brLambda(element.symbol)) {
+                if (helper.brackets.brOpens(element.symbol)) {
+                    ++level;
+                } else {
+                    --level;
+                }
+            } else if ((element.type == VAR || element.type == LAMBDA) && level == 0) {
+                String name = element.symbol;
+                if (!varNames.contains(name)) {
+                    varNames.add(name);
+                }
             }
         }
         return varNames.size();

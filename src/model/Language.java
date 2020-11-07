@@ -36,10 +36,12 @@ public class Language {
     public static String SAVED;
     //errors
     public static String[] UPDATER_ERRORS;
+    public static String LOADING_LOG;
     //gui
     //help
     public static String HELP;
     public static String[] HELP_NAMES;
+    public static String VERSION_LOG;
     //text elements
     public static String GRAPHICS;
     public static String FUNCTIONS;
@@ -125,6 +127,8 @@ public class Language {
             arr = properties.getProperty("helpers").split("\n");
             HELP = arr[0];
             HELP_NAMES = new String[]{arr[1], arr[2], arr[3]};
+            VERSION_LOG = arr[4];
+            LOADING_LOG = properties.getProperty("version_controller");
             RESIZERS = properties.getProperty("resizers").split("\n");
             arr = properties.getProperty("text_elements").split("\n");
             GRAPHICS = arr[0];

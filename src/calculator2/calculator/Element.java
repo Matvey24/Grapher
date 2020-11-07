@@ -14,6 +14,6 @@ public class Element {
         return symbol + ' ' + type;
     }
     public enum ElementType{
-        NUMBER, FUNCTION, VAR, SIGN, DIVIDER, BRACKET, CONSTANT
+        NUMBER, FUNCTION, VAR, SIGN, DIVIDER, BRACKET, CONSTANT, LAMBDA
     }
 }

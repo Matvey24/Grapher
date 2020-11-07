@@ -147,6 +147,7 @@ public class ElementsList extends ViewElement {
                 e.removeFrom(c);
             setBounds(pos.x, pos.y);
             sizeChanged.actionPerformed(new ActionEvent(0, id, "remove"));
+            c.repaint();
         });
         e.addSettingsListener(new MouseAdapter() {
             @Override

@@ -5,16 +5,18 @@ import model.Language;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.Iterator;
 import java.util.Properties;
+import java.util.Set;
 
 public class VersionController {
-    public static final int VERSION_CODE = 22;
+    public static final int VERSION_CODE = 23;
     public static String VERSION_NAME = getFullName(getName(VERSION_CODE));
     private static final String URL_VERSION =
             "https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/VersionInfo.xml";
     private static String URL_APP;
+    private static String URL_LOG;
     public static class UpdateInfo{
-        public String changes;
         public String full_name;
         public boolean version_is_new;
     }
@@ -33,19 +35,43 @@ public class VersionController {
             InputStream input = url.openStream();
             Properties properties = new Properties();
             properties.loadFromXML(input);
-            URL_APP = properties.getProperty("file_path");
+            URL_APP = properties.getProperty("file_path", "");
+            URL_LOG = properties.getProperty("file_log", "");
             int newVersion = Integer.parseInt(properties.getProperty("version"));
             if(newVersion > VERSION_CODE){
                 u.full_name = getFullName(getName(newVersion));
                 if(!new File(u.full_name).exists()){
                     u.version_is_new = true;
-                    u.changes = properties.getProperty("changes");
                 }
             }
         }catch (Exception e){
             return u;
         }
         return u;
+    }
+    public static String[][] loadLog(){
+        if(URL_LOG == null){
+            checkUpdates();
+        }
+        if(URL_LOG == null){
+            return null;
+        }
+        try{
+            URL url = new URL(URL_LOG);
+            InputStream input = url.openStream();
+            Properties properties = new Properties();
+            properties.loadFromXML(input);
+            Set<String> names = properties.stringPropertyNames();
+            String[][] log = new String[names.size()][];
+            Iterator<String> s = names.iterator();
+            for(int i = 0; s.hasNext(); ++i){
+                String text = s.next();
+                log[i] = properties.getProperty(text).split("\\n");
+            }
+            return log;
+        }catch (Exception e){
+            return null;
+        }
     }
     public static boolean update(UpdateInfo info){
         File newFile = new File(info.full_name);

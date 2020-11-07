@@ -3,7 +3,8 @@ package calculator2;
 import calculator2.calculator.CalcLanguage;
 import calculator2.calculator.Director;
 import calculator2.calculator.Element;
-import calculator2.calculator.executors.Expression;
+import calculator2.calculator.executors.actors.Expression;
+import calculator2.calculator.executors.FuncVariable;
 import calculator2.calculator.executors.Variable;
 import calculator2.calculator.util.AbstractType;
 import calculator2.calculator.util.actions.AbstractConst;
@@ -17,17 +18,14 @@ public class ArrayCalculator<T> {
     private final List<AbstractFunc<T>> funcs;
     private final List<AbstractConst<T>> consts;
     private final List<Expression<T>> graphics;
-    private final List<List<Variable<T>>> vars;
+    private final List<List<FuncVariable<T>>> vars;
 
     private final List<Expression<T>> expressions;
-    private final List<List<Variable<T>>> expressionVars;
+    private final List<List<FuncVariable<T>>> expressionVars;
 
     private final List<Stack<Element>> funcTexts;
 
-    private final T def;
-
-    public ArrayCalculator(T def) {
-        this.def = def;
+    public ArrayCalculator() {
         vars = new ArrayList<>();
         funcTexts = new ArrayList<>();
         funcs = new ArrayList<>();
@@ -41,11 +39,7 @@ public class ArrayCalculator<T> {
     public void calculate(List<String> funcs, List<String> graphs, List<String> calc, AbstractType<T> type) {
         this.type = type;
         director.setType(type);
-        funcTexts.clear();
-        this.funcs.clear();
-        this.graphics.clear();
-        consts.clear();
-        expressions.clear();
+        clear();
         for (int i = 0; i < funcs.size(); ++i) {
             funcs.set(i, funcs.get(i).replaceAll("[ \t]", ""));
             int n = funcs.get(i).indexOf("=");
@@ -159,19 +153,19 @@ public class ArrayCalculator<T> {
                 consts.add(c);
                 return;
             }
-            var.setValue(def);
+            var.setValue(type.def);
             c.stack = director.getStack();
             consts.add(c);
-            type.addFunction(start, c.getFunc(), 0, 10);
+            type.addFunction(start, c, 0, 10);
             return;
         }
         AbstractFunc<T> func = new AbstractFunc<>();
         switch (args) {
+            case 1:
+                type.addFunctionUnary(start, func.getUnary(), 10);
+                break;
             case 2:
                 type.addFunction(start, func.getBinary(), 10);
-                break;
-            case 1:
-                type.addFunction(start, func.getUnary(), 10);
                 break;
             default:
                 type.addFunction(start, func.getMulti(args), args, 10);
@@ -179,12 +173,25 @@ public class ArrayCalculator<T> {
         funcs.add(func);
         funcTexts.add(director.getStack());
     }
-
+    private void clear(){
+        funcTexts.clear();
+        this.funcs.clear();
+        for (Expression<T> graphic : graphics) {
+            graphic.free();
+        }
+        this.graphics.clear();
+        consts.clear();
+        for(Expression<T> c: expressions){
+            c.free();
+        }
+        expressions.clear();
+        System.gc();
+    }
     public List<Expression<T>> getGraphics() {
         return graphics;
     }
 
-    public List<List<Variable<T>>> getVars() {
+    public List<List<FuncVariable<T>>> getVars() {
         return vars;
     }
 
@@ -192,7 +199,7 @@ public class ArrayCalculator<T> {
         return expressions;
     }
 
-    public List<List<Variable<T>>> getExpressionVars() {
+    public List<List<FuncVariable<T>>> getExpressionVars() {
         return expressionVars;
     }
 

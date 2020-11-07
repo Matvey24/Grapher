@@ -2,7 +2,6 @@ package calculator2.calculator.helpers;
 
 import calculator2.calculator.executors.Variable;
 import calculator2.calculator.util.AbstractType;
-import calculator2.calculator.util.actions.AbstractConst;
 import calculator2.calculator.util.actions.Func;
 import calculator2.calculator.util.actions.Sign;
 
@@ -17,7 +16,7 @@ public class Helper<T> {
         this.type = type;
     }
     public boolean hasName(String name) {
-        return isConst(name) || getFunc(name) != null || isVar(name) || type.funcNames.contains(name);
+        return isConst(name) || getFunc(name) != null || isVar(name) || isLambda(name) || type.funcNames.contains(name);
     }
 
     public boolean isConst(String name) {
@@ -55,7 +54,13 @@ public class Helper<T> {
     public boolean isVar(String s) {
         return s.equals("x") || s.equals("y") || s.equals("z") || s.equals("t") || (s.length() == 2 && s.charAt(0) == 'x');
     }
-
+    public T def(){
+        return type.def;
+    }
+    public boolean isLambda(String s){
+        return s.length() == 2 && s.charAt(0) == 'f';
+    }
+    public int lambdaPrio(){return type.lambda_priority;}
     public Sign<T> getMissingSign() {
         return type.getMissingSign();
     }

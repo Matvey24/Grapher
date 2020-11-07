@@ -41,6 +41,7 @@ public class TextPanel extends Screen {
 
     private void makeText(String[][] text) {
         int offset = 10;
+        if(text != null)
         for (String[] strings : text) {
             if(strings == null)
                 break;

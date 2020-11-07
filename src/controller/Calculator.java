@@ -1,7 +1,8 @@
 package controller;
 
 import calculator2.ArrayCalculator;
-import calculator2.calculator.executors.Expression;
+import calculator2.calculator.executors.actors.Expression;
+import calculator2.calculator.executors.FuncVariable;
 import calculator2.calculator.executors.Variable;
 import calculator2.values.Number;
 import model.GraphType;
@@ -41,7 +42,7 @@ public class Calculator {
         this.repaint = repaint;
         tasks = new Tasks();
         makeParams();
-        calculator = new ArrayCalculator<>( .0);
+        calculator = new ArrayCalculator<>();
     }
 
     public void recalculate() {
@@ -81,8 +82,8 @@ public class Calculator {
                 for (int i = 0; i < updater.graphics.size(); ++i) {
                     Graphic g = updater.graphics.get(i);
                     if (g.type == GraphType.DOUBLE_FUNC) {
-                        List<Variable<Double>> varsA = calculator.getExpressionVars().get(parameters);
-                        List<Variable<Double>> varsB = calculator.getExpressionVars().get(parameters + 1);
+                        List<FuncVariable<Double>> varsA = calculator.getExpressionVars().get(parameters);
+                        List<FuncVariable<Double>> varsB = calculator.getExpressionVars().get(parameters + 1);
                         int ax = checkFor("x", varsA);
                         int ay = checkFor("y", varsA);
                         int bx = checkFor("x", varsB);
@@ -92,11 +93,11 @@ public class Calculator {
                             if (varsA.size() > 2 || varsB.size() > 2 || notContainsOnly(varsA, "x", "y")
                                     || notContainsOnly(varsB, "x", "y"))
                                 throw new RuntimeException(UPDATER_ERRORS[2] + " " + i + " " + UPDATER_ERRORS[1]);
-                            Variable<Double> varAX, varAY, varBX, varBY;
-                            varAX = (ax != -1) ? varsA.get(ax) : new Variable<>();
-                            varAY = (ay != -1) ? varsA.get(ay) : new Variable<>();
-                            varBX = (bx != -1) ? varsB.get(bx) : new Variable<>();
-                            varBY = (by != -1) ? varsB.get(by) : new Variable<>();
+                            FuncVariable<Double> varAX, varAY, varBX, varBY;
+                            varAX = (ax != -1) ? varsA.get(ax) : new FuncVariable<>();
+                            varAY = (ay != -1) ? varsA.get(ay) : new FuncVariable<>();
+                            varBX = (bx != -1) ? varsB.get(bx) : new FuncVariable<>();
+                            varBY = (by != -1) ? varsB.get(by) : new FuncVariable<>();
                             if (!(g instanceof Translation)) {
                                 updater.makeTranslation(i, updater.list.getElements().get(i));
                                 g = updater.graphics.get(i);
@@ -107,11 +108,11 @@ public class Calculator {
                             ((Translation) g).updateY(funcY, varAY, varBX, varBY);
                         } else {
                             if (varsA.size() == 0)
-                                varsA.add(new Variable<>());
+                                varsA.add(new FuncVariable<>());
                             if (varsB.size() == 0)
-                                varsB.add(new Variable<>());
-                            Variable<Double> varX = varsA.get(0);
-                            Variable<Double> varY = varsB.get(0);
+                                varsB.add(new FuncVariable<>());
+                            FuncVariable<Double> varX = varsA.get(0);
+                            FuncVariable<Double> varY = varsB.get(0);
                             Expression<Double> funcX = calculator.getExpressions().get(parameters + 1);
                             Expression<Double> funcY = calculator.getExpressions().get(parameters + 2);
                             if (!(g instanceof Parametric)) {
@@ -123,7 +124,7 @@ public class Calculator {
                         }
                         parameters += 2;
                     } else if (g.type == GraphType.SINGLE_FUNC) {
-                        List<Variable<Double>> vars = calculator.getVars().get(funcs);
+                        List<FuncVariable<Double>> vars = calculator.getVars().get(funcs);
                         if (vars.size() >= 2) {
                             if (!(g instanceof Implicit)) {
                                 updater.makeImplicit(i, updater.list.getElements().get(i));
@@ -131,23 +132,23 @@ public class Calculator {
                             }
                             Expression<Double> func = calculator.getGraphics().get(funcs);
                             if (vars.size() > 2)
-                                throw new RuntimeException(UPDATER_ERRORS[2] + " " + Language.TYPE_TITLES[1]);
-                            Variable<Double> varX = null;
-                            Variable<Double> varY = null;
+                                throw new RuntimeException(UPDATER_ERRORS[2] + " " + Language.TYPE_TITLES[2]);
+                            FuncVariable<Double> varX = null;
+                            FuncVariable<Double> varY = null;
                             {
                                 if (vars.get(0).getName().equals("x")) {
                                     varX = vars.get(0);
                                 } else if (vars.get(0).getName().equals("y")) {
                                     varY = vars.get(0);
                                 } else {
-                                    throw new RuntimeException(UPDATER_ERRORS[2]);
+                                    throw new RuntimeException(UPDATER_ERRORS[2]+ " " + Language.TYPE_TITLES[2]);
                                 }
                                 if (vars.get(1).getName().equals("x")) {
                                     varX = vars.get(1);
                                 } else if (vars.get(1).getName().equals("y")) {
                                     varY = vars.get(1);
                                 } else {
-                                    throw new RuntimeException(UPDATER_ERRORS[2]);
+                                    throw new RuntimeException(UPDATER_ERRORS[2]+ " " + Language.TYPE_TITLES[2]);
                                 }
                             }
                             g.update(func, varX);
@@ -159,12 +160,12 @@ public class Calculator {
                             }
                             Function f = (Function) g;
                             if (vars.size() == 0) {
-                                Variable<Double> var = new Variable<>();
+                                FuncVariable<Double> var = new FuncVariable<>();
                                 var.setName((f.abscissa) ? "x" : "y");
                                 vars.add(var);
                             }
                             TextElement el = updater.list.getElements().get(i);
-                            Variable<Double> var = vars.get(0);
+                            FuncVariable<Double> var = vars.get(0);
                             if (var.getName().equals("y") && f.abscissa) {
                                 f.abscissa = false;
                                 el.setName(f.name + "(y)");
@@ -195,14 +196,14 @@ public class Calculator {
         });
     }
 
-    private int checkFor(String name, List<Variable<Double>> vars) {
+    private int checkFor(String name, List<FuncVariable<Double>> vars) {
         for (int i = 0; i < vars.size(); ++i)
             if (name.equals(vars.get(i).getName()))
                 return i;
         return -1;
     }
 
-    private boolean notContainsOnly(List<Variable<Double>> vars, String... names) {
+    private boolean notContainsOnly(List<FuncVariable<Double>> vars, String... names) {
         int num = 0;
         for (String name : names)
             if (checkFor(name, vars) != -1)
@@ -225,7 +226,7 @@ public class Calculator {
                     resize.run();
                     repaint.run();
                 } catch (Throwable t) {
-                    updater.error(t.getClass().getName());
+                    updater.error(t.toString());
                 }
             });
     }

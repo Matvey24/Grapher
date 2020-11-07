@@ -1,7 +1,7 @@
 package view.grapher.graphics;
 
-import calculator2.calculator.executors.Expression;
-import calculator2.calculator.executors.Variable;
+import calculator2.calculator.executors.actors.Expression;
+import calculator2.calculator.executors.FuncVariable;
 import model.GraphType;
 
 import java.awt.*;
@@ -14,7 +14,7 @@ public class Parametric extends Graphic {
     private double endT;
     private double[] xMap;
     private Expression<Double> xFunc;
-    private Variable<Double> xVar;
+    private FuncVariable<Double> xVar;
 
     public Parametric(int map_size, boolean feelsTime) {
         setMAP_SIZE(map_size);
@@ -24,7 +24,7 @@ public class Parametric extends Graphic {
         type = GraphType.PARAMETRIC;
     }
 
-    public void updateX(Expression<Double> xFunc, Variable<Double> xVar) {
+    public void updateX(Expression<Double> xFunc, FuncVariable<Double> xVar) {
         this.xFunc = xFunc;
         this.xVar = xVar;
     }

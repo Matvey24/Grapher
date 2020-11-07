@@ -2,6 +2,8 @@ package view.support_panels;
 
 import controller.VersionController;
 import framesLib.Screen;
+import framesLib.TextPanel;
+import model.Language;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -9,9 +11,9 @@ import java.io.IOException;
 
 public class UpdaterFrame extends Screen {
     public final JLabel label;
-    public final JTextArea changes;
     public final JButton btn_cancel;
     public final JButton btn_update;
+    public final JButton btn_changes;
     private ActionListener listener;
 
     public UpdaterFrame(VersionController.UpdateInfo info) {
@@ -21,23 +23,19 @@ public class UpdaterFrame extends Screen {
         label.setHorizontalAlignment(SwingConstants.CENTER);
         add(label);
 
-        changes = new JTextArea();
-        JScrollPane pane = new JScrollPane(changes);
-        pane.setBounds(5, 50, 250, 80);
-        pane.getVerticalScrollBar().setUnitIncrement(16);
-        changes.setEditable(false);
-        changes.setLineWrap(true);
-        changes.setText(info.changes);
-        add(pane);
+        btn_changes = new JButton("Changes");
+        btn_changes.setFocusPainted(false);
+        btn_changes.setBounds(5,50,250, 40);
+        add(btn_changes);
 
         btn_cancel = new JButton("Cancel");
         btn_cancel.setFocusPainted(false);
-        btn_cancel.setBounds(5, 135, 120, 40);
+        btn_cancel.setBounds(5, 95, 120, 40);
         add(btn_cancel);
 
         btn_update = new JButton("Update!");
         btn_update.setFocusPainted(false);
-        btn_update.setBounds(134, 135, 120, 40);
+        btn_update.setBounds(134, 95, 120, 40);
         add(btn_update);
 
         btn_cancel.addActionListener(e -> back());
@@ -66,11 +64,18 @@ public class UpdaterFrame extends Screen {
                 });
             }).start();
         };
+        btn_changes.addActionListener(e-> new Thread(()->{
+            String[][] log = VersionController.loadLog();
+            if(log == null){
+                label.setText(Language.LOADING_LOG);
+            }else
+                changeScreen(new TextPanel(log, Language.VERSION_LOG, Language.BACK));
+        }).start());
         btn_update.addActionListener(listener);
     }
 
     @Override
     public void onSetSize() {
-        setSize(260, 180);
+        setSize(260, 140);
     }
 }

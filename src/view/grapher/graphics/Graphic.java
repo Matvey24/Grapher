@@ -1,7 +1,7 @@
 package view.grapher.graphics;
 
-import calculator2.calculator.executors.Expression;
-import calculator2.calculator.executors.Variable;
+import calculator2.calculator.executors.actors.Expression;
+import calculator2.calculator.executors.FuncVariable;
 import model.GraphType;
 
 import java.awt.*;
@@ -13,7 +13,7 @@ public abstract class Graphic {
     final int MAX_DELTA = 1000;
     double[] map;
     protected Expression<Double> func;
-    Variable<Double> var;
+    FuncVariable<Double> var;
     Color color;
     double offsetX;
     double offsetY;
@@ -34,7 +34,7 @@ public abstract class Graphic {
         this.feelsTime = feelsTime;
         color = Color.BLACK;
     }
-    public void update(Expression<Double> func, Variable<Double> var) {
+    public void update(Expression<Double> func, FuncVariable<Double> var) {
         this.var = var;
         this.func = func;
         needResize = true;

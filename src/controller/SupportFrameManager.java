@@ -26,7 +26,7 @@ public class SupportFrameManager {
         timerSettings = new TimerSettings(updater);
         implicitSettings = new ImplicitSettings(updater);
         translationSettings = new TranslationSettings(updater);
-        helperFrame = new HelperFrame();
+        helperFrame = new HelperFrame(updater);
         mainSettings = new MainSettings(updater);
     }
     public void setPanel(InternalPanel panel){

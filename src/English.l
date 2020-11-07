@@ -37,9 +37,10 @@ constant</entry>
 <entry key = "parser_errors">Undefined symbol
 Too little arguments
 Too many arguments
-in brackets
+brackets
 in
 Bad location of</entry>
+<entry key="version_controller">Can't load log!</entry>
 <entry key = "buttons">Begin
 Update
 Settings
@@ -50,7 +51,8 @@ Load project</entry>
 <entry key = "helpers">Help
 Using Help
 Calculator help
-Extra info</entry>
+Extra info
+Version log</entry>
 <entry key = "resizers">Resize
 Abscissa
 Ordinate</entry>
@@ -60,7 +62,7 @@ Calculator</entry>
 <entry key = "main_settings">Language
 Lines &lt;->(pixels)
 Graphics max count</entry>
-<entry key = "help">help 10
+<entry key = "help">help 11
 part 3
 Make a graphic
 Click "+" and write function in the text field.
@@ -118,12 +120,24 @@ part 3
 Recursion:
 You can use recursion, but be careful:
 long recursion can produce stack over flow errors.
-part 5
+part 8
+Lambdas:
+Instead of parameter in function write an
+an expression for any variable in '{..}', like '{x^2}',
+don't use external vars here, but you can use all functions
+and constants.
+Then in function use 'f' + 'some letter', like function,
+for example 'fa(x)', you can send this function in other,
+like 'func(fa, 4)' - without brackets.
+part 8
 Examples:
 f(x)=if(x&lt;1,1,x*f(x-1)) - factorial
 2sin(t):cos(t) - draws ellipse
 cos(t)*sin(tm*t):sin(t)*sin(tm*t) - polar r(a)=sin(tm*a)
 cos(x) + cos(y) - pretty picture
+in functions:
+deriv = (fa(x+d)-fa(x))/d
+d = 0.000001 - derivate of function, use like deriv({t^2}, x)
 part 7
 Settings:
 Changing language in settings.
@@ -161,7 +175,7 @@ Signs:
 % - remainder of division
 &lt;, >, = return 1 if the expression
 is true else return 0
-part 19
+part 25
 Functions:
 sqrt, cbrt - quadratic and cubic roots
 pow - power
@@ -181,6 +195,12 @@ min, max - min / max number from few given
 arr(idx, a...) - returns element from given array 'a'
 if(x, y, z) - returns z if x = 0 else y
 ifs(x) - returns 0 if x = 0 else 1
+arrays: the map of arrays of values
+set(x, y, val) - sets value in array 'x' on 'y' position,
+returns this value
+get(x, y) - returns value in array 'x' on 'y' position
+for(start, end, func) - executes 'func' - lambda, gives
+func the index from start to end, returns 0.
 part 17
 Constants: (SI)
 pi - pi value = 3.14

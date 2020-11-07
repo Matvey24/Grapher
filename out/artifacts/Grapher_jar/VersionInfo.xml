@@ -2,10 +2,12 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
     <entry key="file_path">https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/Grapher.jar</entry>
-    <entry key="version">22</entry>
+    <entry key="log_path">https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/VersionLog.xml</entry>
+    <entry key="version">23</entry>
     <entry key="changes">
-removed need writing := before overriding constants
-added 'goto' constant
-removed last bug with recursion
+added lambda expressions
+optimized calculating Implicit
+added version log file
+added usable arrays
     </entry>
 </properties>

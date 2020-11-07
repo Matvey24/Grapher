@@ -1,14 +1,16 @@
 package view.elements;
 
-import calculator2.calculator.executors.Expression;
+import calculator2.calculator.executors.FuncVariable;
+import calculator2.calculator.executors.LambdaInitializer;
+import calculator2.calculator.executors.actors.Expression;
 import model.Language;
 import model.ViewElement;
-import view.grapher.CoordinateSystem;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.math.BigDecimal;
 
 import static view.elements.ElementsList.OFFSET;
 import static view.elements.TextElement.HEIGHT;
@@ -18,7 +20,10 @@ public class CalculatorView extends ViewElement {
     private final JTextField answer;
     private final JLabel name;
     private final JTextField field;
-    private Expression<?> func;
+    private Expression<Double> func;
+    private StringBuilder sb;
+    @SuppressWarnings("unchecked")
+    private FuncVariable<Double>[] var = new FuncVariable[1];
     public CalculatorView(Runnable calculate, Runnable resize){
         name = new JLabel();
         name.setFont(name_font);
@@ -36,6 +41,8 @@ public class CalculatorView extends ViewElement {
                 }
             }
         });
+        sb = new StringBuilder();
+        var[0] = new FuncVariable<>();
         updateLanguage();
     }
     @Override
@@ -49,12 +56,26 @@ public class CalculatorView extends ViewElement {
         answer.setBounds(x + WIDTH / 2 - 3*OFFSET, y, 2*OFFSET + WIDTH / 2, HEIGHT);
         field.setBounds(x + OFFSET, y + HEIGHT + OFFSET, WIDTH - 2 * OFFSET, HEIGHT);
     }
-    public void setAnswer(Expression<?> func){
+    public void setAnswer(Expression<Double> func){
         this.func = func;
     }
     public void update(){
-        if(func != null)
-            answer.setText(String.valueOf(func.calculate()));
+        if(func != null) {
+            if(func instanceof LambdaInitializer){
+                sb.setLength(0);
+                var[0].setValue(0.);
+                int size = ((LambdaInitializer<Double>) func).execute(var).intValue();
+                sb.append(size);
+                for(int i = 1; i < size + 1; ++i){
+                    sb.append(',');
+                    var[0].setValue(i + .0);
+                    double d = ((LambdaInitializer<Double>) func).execute(var);
+                    sb.append(d);
+                }
+                answer.setText(sb.toString());
+            }else
+                answer.setText(String.valueOf(func.calculate()));
+        }
     }
     public String getText() {
         return field.getText();

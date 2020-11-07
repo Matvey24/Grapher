@@ -1,7 +1,7 @@
 package view.grapher.graphics;
 
-import calculator2.calculator.executors.Expression;
-import calculator2.calculator.executors.Variable;
+import calculator2.calculator.executors.actors.Expression;
+import calculator2.calculator.executors.FuncVariable;
 import model.GraphType;
 import view.grapher.CoordinateSystem;
 
@@ -16,9 +16,9 @@ public class Translation extends Graphic {
     private int endY;
     private final CoordinateSystem cs;
     private Expression<Double> yFunc;
-    private Variable<Double> xy;
-    private Variable<Double> yx;
-    private Variable<Double> yy;
+    private FuncVariable<Double> xy;
+    private FuncVariable<Double> yx;
+    private FuncVariable<Double> yy;
     private int multiplyer = 2;
 
     public Translation(CoordinateSystem cs, int map_size, boolean feelsTime){
@@ -118,7 +118,7 @@ public class Translation extends Graphic {
         dataY = new double[cs.MAX_LINES * multiplyer][dataY[0].length];
         needResize = true;
     }
-    public void updateY(Expression<Double> funcY, Variable<Double> xy, Variable<Double> yx, Variable<Double> yy){
+    public void updateY(Expression<Double> funcY, FuncVariable<Double> xy, FuncVariable<Double> yx, FuncVariable<Double> yy){
         this.yFunc = funcY;
         this.xy = xy;
         this.yx = yx;

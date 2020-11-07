@@ -1,4 +1,4 @@
-package calculator2.calculator.executors;
+package calculator2.calculator.executors.actors;
 
 import calculator2.calculator.util.actions.functions.UnarFunc;
 
@@ -11,19 +11,20 @@ public class UnaryActor<T> implements Expression<T> {
         this.a = a;
         this.name = name;
     }
-
-    public void setExpression(Expression<T> a){
-        this.a = a;
+    @Override
+    public T calculate() {
+        return func.execute(a);
     }
-
     @Override
     public String getName() {
         return name;
     }
 
     @Override
-    public T calculate() {
-        return func.execute(a.calculate());
+    public void free() {
+        a.free();
+        func = null;
+        name = null;
     }
 
     @Override

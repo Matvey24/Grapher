@@ -41,7 +41,7 @@ public class MainPanel extends Screen {
     static {
         rebounds(1280, 720);
     }
-
+    
     public MainPanel() {
         setLayout(null);
         updater = new ModelUpdater(this::paintGraphic, this);
@@ -68,6 +68,13 @@ public class MainPanel extends Screen {
             @Override
             public void mousePressed(MouseEvent e) {
                 mousePosition.setLocation(e.getX(), e.getY());
+                updater.mousePressed = true;
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                updater.mousePressed = false;
+                updater.translate(e.getX() - mousePosition.x, e.getY() - mousePosition.y);
             }
         });
         addMouseMotionListener(new MouseAdapter() {
@@ -162,7 +169,6 @@ public class MainPanel extends Screen {
                 graphicsView.setBounds(ElementsList.WIDTH, 0, GRAPH_WIDTH, HEIGHT);
             }
         });
-
     }
 
     public static void rebounds(int width, int height) {
@@ -237,15 +243,16 @@ public class MainPanel extends Screen {
     }
 
     public void fromModel(FullModel m) {
-        if(m.resize_idx.isEmpty())
+        if (m.resize_idx.isEmpty())
             return;
         resizeType = Integer.parseInt(m.resize_idx);
-        if(resizeType < 0)
+        if (resizeType < 0)
             resizeType = 0;
-        if(resizeType > 2)
+        if (resizeType > 2)
             resizeType = 2;
         btn_resize.setText(Language.RESIZERS[resizeType]);
     }
+
     public void setTimerName(String name) {
         btn_timer.setText(name);
     }
