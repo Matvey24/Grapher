@@ -3,12 +3,10 @@
 <properties>
     <entry key="file_path">https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/Grapher.jar</entry>
     <entry key="log_path">https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/VersionLog.xml</entry>
-    <entry key="version">23</entry>
+    <entry key="version">24</entry>
     <entry key="changes">
-added lambda expressions
-optimized calculating Implicit
-added version log file
-added usable arrays
-fixed bug with log file
+removed bug with function parameter lambda
+added color chooser for graphics
+changed default graphics colors
     </entry>
 </properties>

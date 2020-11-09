@@ -14,7 +14,12 @@ Lines per cell
 Save picture
 Duration:FPS
 Boomerang
-Feels time</entry>
+Feels time
+Set color</entry>
+<entry key="actions">Back
+Update
+Done
+Apply</entry>
 <entry key = "colors">Ray spectrum
 Infrared imager</entry>
 <entry key = "states">Converting
@@ -42,10 +47,8 @@ in
 Bad location of</entry>
 <entry key="version_controller">Can't load log!</entry>
 <entry key = "buttons">Begin
-Update
 Settings
 Timer
-Back
 Save project
 Load project</entry>
 <entry key = "helpers">Help
@@ -267,7 +270,7 @@ setting goto means next constant will be on 'goto' position,
 goto calculates on 'goto' position.
 Use parameter 'gotoLen' to change max count of using 'goto'
 per one update or timer cycle.
-part 32
+part 34
 Saves:
 All saves are in xml format in java properties.
 File contains few parameters:
@@ -288,6 +291,8 @@ graphic+number - field of graphic
 graphic_info+the same number - information of graphic:
 1) name of graphic - for example f for f(x),
 purport of name is to define color of graphic
+there can be also hex value of color,
+like 'f ffff0000' - 'name aarrggbb'
 2) discretization (natural number > 2)
 3) feels time (true/false)
 4) type of graphic

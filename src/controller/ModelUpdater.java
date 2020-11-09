@@ -3,10 +3,7 @@ package controller;
 import model.Language;
 import model.help.FullModel;
 import view.MainPanel;
-import view.elements.CalculatorView;
-import view.elements.ElementsList;
-import view.elements.FunctionsView;
-import view.elements.TextElement;
+import view.elements.*;
 import view.grapher.CoordinateSystem;
 import view.grapher.graphics.*;
 
@@ -22,8 +19,18 @@ import static view.MainPanel.GRAPH_WIDTH;
 import static view.MainPanel.HEIGHT;
 
 public class ModelUpdater {
-    private static final List<Color> colors = Arrays.asList(BLUE, RED, GREEN, CYAN, magenta, GRAY, ORANGE, PINK, YELLOW, LIGHT_GRAY, BLACK);
-    private static final List<String> func_names = Arrays.asList("f", "g", "i", "j", "l", "m", "n", "o", "q", "r", "bl");
+    private static final List<Color> colors = Arrays.asList(
+            BLUE,
+            RED,
+            new Color(0, 0xCC, 0),
+            magenta,
+            new Color(0x33, 0xCC, 0xFF),
+            new Color(0x99, 0x33, 0xCC),
+            new Color(0x99, 0x66, 0x33),
+            new Color(0, 0x99, 0x66),
+            BLACK
+    );
+    private static final List<String> func_names = Arrays.asList("f", "g", "i", "j", "l", "m", "n", "o", "bl");
     private static final double deltaScale = 1.2;
     private final Calculator calculator;
     private final SupportFrameManager supportFrameManager;
@@ -38,6 +45,7 @@ public class ModelUpdater {
     private double scaleY = 100;
     boolean dangerState = false;
     public boolean mousePressed;
+
     public ModelUpdater(Runnable repaint, MainPanel mainPanel) {
         this.mainPanel = mainPanel;
         supportFrameManager = new SupportFrameManager(this);
@@ -66,19 +74,28 @@ public class ModelUpdater {
     private void add(ActionEvent e) {
         TextElement element = list.getElements().get(e.getID());
         Graphic graphic = new Function();
+        int id = findFreeId();
         graphics.add(graphic);
         element.addTextChangedListener((e1) -> calculator.recalculate());
-        int id = findFreeId();
-        graphic.setColor(colors.get(id));
+        graphic.color = colors.get(id);
         element.setColor(colors.get(id));
-        element.setName(func_names.get(id) + "(x)");
+        setFuncName(graphic, func_names.get(id), element);
         graphic.name = func_names.get(id);
         calculator.recalculate();
     }
 
     void add(String func, String params) {
-        String[] arr = params.split("\n");
-        String name = arr[0];
+        String[] arr = params.split("\\n");
+        String name;
+        Color color = null;
+        {
+            String[] t = arr[0].split(" ");
+            name = t[0];
+            if(t.length > 1) {
+                int val = Integer.parseUnsignedInt(t[1], 16);
+                color = new Color(val);
+            }
+        }
         int map_size = Integer.parseInt(arr[1]);
         boolean feels_time = Boolean.parseBoolean(arr[2]);
         String type = arr[3];
@@ -100,12 +117,21 @@ public class ModelUpdater {
                 return;
         }
         int id = func_names.indexOf(name);
-        gr.setColor(colors.get(id));
+        if(id == -1){
+            id = func_names.size() - 1;
+            name = func_names.get(id);
+        }
+        if(color == null){
+            color = colors.get(id);
+            gr.color = color;
+        }else{
+            gr.changeColor(color);
+        }
         graphics.add(gr);
         gr.name = name;
         list.addElement();
         TextElement e = list.getElements().get(list.getElements().size() - 1);
-        e.setColor(colors.get(id));
+        e.setColor(color);
         e.addTextChangedListener((e1) -> calculator.recalculate());
         e.setText(func);
         switch (type) {
@@ -138,7 +164,7 @@ public class ModelUpdater {
         if (lo == e.getID()) {
             supportFrameManager.close();
         }
-        if(e.getSource().equals(0)) {
+        if (e.getSource().equals(0)) {
             calculator.recalculate();
         }
     }
@@ -165,11 +191,11 @@ public class ModelUpdater {
         Graphic g = graphics.get(idx);
         Function function = new Function(g.MAP_SIZE, g.feelsTime);
         int lo = start_make(idx);
-        function.setColor(e.getColor());
+        function.setColor(g);
         graphics.set(idx, function);
-        int id = colors.indexOf(e.getColor());
-        e.setName(func_names.get(id) + "(x)");
-        function.name = func_names.get(id);
+        int id = func_names.indexOf(g.name);
+        setFuncName(function, func_names.get(id), e);
+        function.name = g.name;
         checkClosed(idx, lo);
     }
 
@@ -177,10 +203,10 @@ public class ModelUpdater {
         Graphic g = graphics.get(idx);
         Parametric parametric = new Parametric(g.MAP_SIZE, g.feelsTime);
         int lo = start_make(idx);
-        parametric.setColor(e.getColor());
+        parametric.setColor(g);
         graphics.set(idx, parametric);
-        e.setName("xy(t)");
-        parametric.name = func_names.get(colors.indexOf(e.getColor()));
+        setFuncName(parametric, null, e);
+        parametric.name = g.name;
         checkClosed(idx, lo);
     }
 
@@ -188,11 +214,11 @@ public class ModelUpdater {
         Graphic g = graphics.get(idx);
         Implicit implicit = new Implicit(mainPanel, this::isMousePressed, g.MAP_SIZE, g.feelsTime);
         int lo = start_make(idx);
-        implicit.setColor(e.getColor());
+        implicit.setColor(g);
         graphics.set(idx, implicit);
-        int id = colors.indexOf(e.getColor());
-        e.setName(func_names.get(id) + "(xy)");
-        implicit.name = func_names.get(id);
+        int id = func_names.indexOf(g.name);
+        setFuncName(implicit, func_names.get(id), e);
+        implicit.name = g.name;
         checkClosed(idx, lo);
     }
 
@@ -201,13 +227,23 @@ public class ModelUpdater {
         Translation translation = new Translation(getCoordinateSystem(), g.MAP_SIZE, g.feelsTime);
         translation.setMAP_SIZE(translation.MAP_SIZE);
         int lo = start_make(idx);
-        translation.setColor(e.getColor());
+        translation.setColor(g);
         graphics.set(idx, translation);
-        e.setName("Tran");
-        translation.name = func_names.get(colors.indexOf(e.getColor()));
+        setFuncName(translation, null, e);
+        translation.name = g.name;
         checkClosed(idx, lo);
     }
-
+    private void setFuncName(Graphic g, String name, TextElement e){
+        if(g instanceof Function){
+            e.setName(name + "(x)");
+        }else if(g instanceof Parametric){
+            e.setName("xy(t)");
+        }else if(g instanceof Implicit){
+            e.setName(name + "(xy)");
+        }else if(g instanceof Translation){
+            e.setName("Tran");
+        }
+    }
     private int start_make(int idx) {
         int id = graphics.indexOf(lOG);
         graphics.get(idx).free();
@@ -221,19 +257,19 @@ public class ModelUpdater {
     }
 
     private int findFreeId() {
-        for (int i = 0; i < colors.size() - 1; ++i) {
-            Color c = colors.get(i);
-            boolean hasColor = false;
-            for (TextElement element : list.getElements()) {
-                if (element.getColor() == c) {
-                    hasColor = true;
+        for (int i = 0; i < func_names.size() - 1; ++i) {
+            String name = func_names.get(i);
+            boolean hasName = false;
+            for (Graphic element : graphics) {
+                if (element.name.equals(name)) {
+                    hasName = true;
                     break;
                 }
             }
-            if (!hasColor)
+            if (!hasName)
                 return i;
         }
-        return colors.size() - 1;
+        return func_names.size() - 1;
     }
 
     public void translate(int dScreenX, int dScreenY) {
@@ -275,7 +311,6 @@ public class ModelUpdater {
 
         calculator.runResize();
     }
-
     public void runResize() {
         calculator.runResize();
     }
@@ -332,24 +367,28 @@ public class ModelUpdater {
         if (Double.isFinite(x))
             offsetX = x - GRAPH_WIDTH / scaleX / 2d;
     }
+
     public void lookAtY(double y) {
         if (Double.isFinite(y))
             offsetY = y + HEIGHT / scaleY / 2d;
     }
-    public void setScaleX(double x){
+
+    public void setScaleX(double x) {
         if (Double.isFinite(x) && x > 0) {
             double sX = offsetX + GRAPH_WIDTH / scaleX / 2d;
             scaleX = x;
             offsetX = sX - GRAPH_WIDTH / scaleX / 2d;
         }
     }
-    public void setScaleY(double y){
+
+    public void setScaleY(double y) {
         if (Double.isFinite(y) && y > 0) {
             double sY = offsetY - HEIGHT / scaleY / 2d;
             scaleY = y;
             offsetY = sY + HEIGHT / scaleY / 2d;
         }
     }
+
     public void setGraphics(ArrayList<Graphic> graphics) {
         this.graphics = graphics;
     }
@@ -383,7 +422,21 @@ public class ModelUpdater {
         mainPanel.updateLanguage();
         supportFrameManager.updateLanguage();
     }
-
+    public void setColor(Graphic g, TextElement el, Color c){
+        int id = colors.indexOf(c);
+        if(id != -1) {
+            g.color = c;
+            String name = func_names.get(id);
+            setFuncName(g, name, el);
+            g.colorChanged = false;
+            g.name = name;
+        }else
+            g.changeColor(c);
+        if(g instanceof Implicit)
+            ((Implicit) g).setC();
+        el.setColor(c);
+        calculator.repaint();
+    }
     public void dosave(boolean selection, java.io.File f) {
         if (selection) {
             calculator.run(() -> {
@@ -399,9 +452,7 @@ public class ModelUpdater {
                 try {
                     supportFrameManager.getTimer().stop();
                     FullModel m = dataBase.load(f);
-                    if (m.graphics.size() != 0) {
-                        list.clear();
-                    }
+                    list.clear();
                     supportFrameManager.close();
                     calculator.fromModel(m);
                     list.updateGUI();
@@ -413,10 +464,8 @@ public class ModelUpdater {
                         scaleY = Double.parseDouble(view_params[3]);
                     }
                     mainPanel.fromModel(m);
-                    supportFrameManager.getTimer().setDont_resize(true);
                     supportFrameManager.getTimer().fromModel(m);
-                    supportFrameManager.getTimer().setDont_resize(false);
-                    if (m.language != null && Language.language_Names.contains(m.language) && Language.language_Names.indexOf(m.language) != Language.LANGUAGE_INDEX) {
+                    if (m.language != null && Language.language_Names.contains(m.language)) {
                         supportFrameManager.getMainSettings().setLanguage(Language.language_Names.indexOf(m.language));
                     }
                     mainPanel.setGraphicsHeight();

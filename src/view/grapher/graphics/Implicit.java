@@ -151,12 +151,15 @@ public class Implicit extends Graphic {
             actor.setFunc((a, b) -> a.calculate() - b.calculate());
         } else if (func.getName().equals("<") || func.getName().equals(">") || func.getName().equals("0.0")) {
             type = INEQUALITY;
-            c = new Color(color.getRed(), color.getGreen(), color.getBlue(), 130);
+            setC();
         } else {
             type = SPECTRUM;
         }
     }
-
+    public void setC(){
+        if(type == INEQUALITY)
+            c = new Color(color.getRed(), color.getGreen(), color.getBlue(), 130);
+    }
     public void setSensitivity(double sensitivity) {
         this.sensitivity = sensitivity;
         needResize = true;

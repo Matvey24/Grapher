@@ -19,6 +19,7 @@ public class SupportFrameManager {
     private final TimerSettings timerSettings;
     private final HelperFrame helperFrame;
     private final MainSettings mainSettings;
+    private final ColorChooser colorc;
     private boolean openedGraphic;
     SupportFrameManager(ModelUpdater updater){
         functionSettings = new FunctionSettings(updater);
@@ -28,6 +29,7 @@ public class SupportFrameManager {
         translationSettings = new TranslationSettings(updater);
         helperFrame = new HelperFrame(updater);
         mainSettings = new MainSettings(updater);
+        colorc = new ColorChooser();
     }
     public void setPanel(InternalPanel panel){
         this.pfo = new PanelFrameOperator(panel);
@@ -91,6 +93,11 @@ public class SupportFrameManager {
         pfo.clearStack();
         openedGraphic = false;
     }
+
+    public ColorChooser getColorc() {
+        return colorc;
+    }
+
     public void updateLanguage(){
         helperFrame.updateLanguage();
         mainSettings.updateLanguage();
@@ -99,5 +106,6 @@ public class SupportFrameManager {
         implicitSettings.updateLanguage();
         translationSettings.updateLanguage();
         timerSettings.updateLanguage();
+        colorc.updateLanguage();
     }
 }

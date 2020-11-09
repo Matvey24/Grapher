@@ -164,6 +164,7 @@ public class TimerSettings extends Screen {
 
     public void fromModel(FullModel m) {
         if (!m.timer_info.isEmpty()) {
+            setDont_resize(true);
             String[] info = m.timer_info.split("\n");
             duration.setDefault(info[0]);
             duration.activate();
@@ -171,6 +172,7 @@ public class TimerSettings extends Screen {
             dimension.activate();
             timeDir.setSelected(Boolean.parseBoolean(info[2]));
             boomerang = timeDir.isSelected();
+            setDont_resize(false);
         }
     }
 

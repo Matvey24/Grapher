@@ -217,7 +217,11 @@ public class Calculator {
             calculator.getConsts().get(const_idx).run();
         }
     }
-
+    public void repaint(){
+        tasks.clearTasks();
+        if(!updater.dangerState)
+            tasks.runTask(repaint);
+    }
     public void runResize() {
         tasks.clearTasks();
         if (!updater.dangerState)
@@ -366,6 +370,9 @@ public class Calculator {
             graphs.add(view.getText());
             Graphic graphic = updater.graphics.get(i);
             sb.append(graphic.name);
+            if(graphic.colorChanged){
+                sb.append(" ").append(Integer.toHexString(graphic.color.getRGB()));
+            }
             sb.append('\n');
             sb.append(graphic.MAP_SIZE);
             sb.append('\n');

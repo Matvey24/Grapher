@@ -192,7 +192,7 @@ public class Parser<T> {
                     break;
                 case LAMBDA:
                     if (i > 0 && stack.get(i - 1).type == BRACKET && helper.brackets.brOpens(stack.get(i - 1).symbol)) {
-                        returns = 1;
+                        returns += 2;
                     } else {
                         returns += 1;
                     }
@@ -216,7 +216,6 @@ public class Parser<T> {
                         ints.push(returns);
                         returns = 0;
                     } else {
-                        e.symbol += returns;
                         if (i < stack.size() - 1) {
                             Element e1 = stack.get(i + 1);
                             if (e1.type == FUNCTION || e1.type == LAMBDA) {
@@ -232,6 +231,8 @@ public class Parser<T> {
                                         throw new RuntimeException(CalcLanguage.PARSER_ERRORS[1] + " " + CalcLanguage.PARSER_ERRORS[4] + " " + e1.symbol);
                                     else if (returns > needArgs)
                                         throw new RuntimeException(CalcLanguage.PARSER_ERRORS[2] + " " + CalcLanguage.PARSER_ERRORS[4] + " " + e1.symbol);
+                                }else{
+                                    e.symbol += returns;
                                 }
                                 returns = ints.pop() + needArgs;
                                 break;

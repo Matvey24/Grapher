@@ -14,7 +14,7 @@ public abstract class Graphic {
     double[] map;
     protected Expression<Double> func;
     FuncVariable<Double> var;
-    Color color;
+    public Color color;
     double offsetX;
     double offsetY;
     double scaleY;
@@ -23,6 +23,7 @@ public abstract class Graphic {
     double graph_height;
     boolean needResize;
     public boolean feelsTime;
+    public boolean colorChanged;
     Graphic() {
         map = new double[MAP_SIZE];
         color = Color.BLACK;
@@ -42,9 +43,11 @@ public abstract class Graphic {
 
     public abstract void resize(double offsetX, double offsetY, double scaleX, double scaleY);
 
-    public void setColor(Color color) {
-        this.color = color;
+    public void setColor(Graphic g) {
+        this.color = g.color;
+        this.colorChanged = g.colorChanged;
     }
+    public void changeColor(Color color){this.color = color;this.colorChanged = true;}
 
     public abstract void paint(Graphics g);
 

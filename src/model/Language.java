@@ -12,7 +12,11 @@ public class Language {
     //settings
     public static String DISCRETIZATION;
     public static String FEELS_TIME;
+    public static String COLOR_CHOOSER;
     public static String[] TYPE_TITLES;
+    //actions
+    public static String MAKE;
+    public static String APPLY;
     //implicit
     public static String SENSITIVITY;
     public static String VIEW_COLOR;
@@ -106,6 +110,7 @@ public class Language {
             DURATION_FPS = arr[6];
             BOOMERANG = arr[7];
             FEELS_TIME = arr[8];
+            COLOR_CHOOSER = arr[9];
             COLORS = properties.getProperty("colors").split("\n");
             arr = properties.getProperty("states").split("\n");
             CONVERTING = arr[0];
@@ -118,12 +123,15 @@ public class Language {
             CalcLanguage.PARSER_ERRORS = properties.getProperty("parser_errors").split("\n");
             arr = properties.getProperty("buttons").split("\n");
             BEGIN = arr[0];
+            MAIN_SETTINGS = arr[1];
+            TIMER = arr[2];
+            SAVE_PRJ = arr[3];
+            LOAD_PRJ = arr[4];
+            arr = properties.getProperty("actions").split("\n");
+            BACK = arr[0];
             UPDATE = arr[1];
-            MAIN_SETTINGS = arr[2];
-            TIMER = arr[3];
-            BACK = arr[4];
-            SAVE_PRJ = arr[5];
-            LOAD_PRJ = arr[6];
+            MAKE = arr[2];
+            APPLY = arr[3];
             arr = properties.getProperty("helpers").split("\n");
             HELP = arr[0];
             HELP_NAMES = new String[]{arr[1], arr[2], arr[3]};
