@@ -40,13 +40,15 @@ public class Parser<T> {
     private Element.ElementType type(char c) {
         Element.ElementType type;
         if (helper.isType(c)) {
-            type = Element.ElementType.NUMBER;
+            type = NUMBER;
         } else if (helper.brackets.isBracket(c)) {
-            type = Element.ElementType.BRACKET;
+            type = BRACKET;
         } else if (helper.getSign(c) != null) {
-            type = Element.ElementType.SIGN;
+            type = SIGN;
         } else if (helper.isDivider(c)) {
-            type = Element.ElementType.DIVIDER;
+            type = DIVIDER;
+        } else if (helper.brackets.brParam(c)) {
+            type = LAMBDA_PARAM;
         } else {
             type = FUNCTION;
         }
@@ -99,6 +101,7 @@ public class Parser<T> {
     }
 
     private void normaliseLetters(List<Element> list) {
+        sb.setLength(0);
         for (int i = list.size() - 1; i >= 0; --i) {
             Element e = list.get(i);
             if (e.type == FUNCTION) {
@@ -117,7 +120,7 @@ public class Parser<T> {
                         }
                     }
                     if (e.symbol.length() != 0) {
-                        throw new RuntimeException(CalcLanguage.PARSER_ERRORS[0] + " '" + e.symbol + "'");
+                        throw new RuntimeException(CalcLanguage.PARSER_ERRORS[0] + " '" + e + "'");
                     }
                 } else if (helper.isVar(e.symbol)) {
                     e.type = VAR;
@@ -228,10 +231,10 @@ public class Parser<T> {
                                 }
                                 if (needArgs != -1) {
                                     if (returns < needArgs)
-                                        throw new RuntimeException(CalcLanguage.PARSER_ERRORS[1] + " " + CalcLanguage.PARSER_ERRORS[4] + " " + e1.symbol);
+                                        throw new RuntimeException(CalcLanguage.PARSER_ERRORS[1] + " " + CalcLanguage.PARSER_ERRORS[4] + " " + e1);
                                     else if (returns > needArgs)
-                                        throw new RuntimeException(CalcLanguage.PARSER_ERRORS[2] + " " + CalcLanguage.PARSER_ERRORS[4] + " " + e1.symbol);
-                                }else{
+                                        throw new RuntimeException(CalcLanguage.PARSER_ERRORS[2] + " " + CalcLanguage.PARSER_ERRORS[4] + " " + e1);
+                                } else {
                                     e.symbol += returns;
                                 }
                                 returns = ints.pop() + needArgs;
@@ -255,10 +258,16 @@ public class Parser<T> {
     private int calculateVars(List<Element> list) {
         int level = 0;
         varNames.clear();
-        for (Element element : list) {
+        sb.setLength(0);
+        for (int i = 0; i < list.size(); ++i) {
+            Element element = list.get(i);
             if (element.type == BRACKET && helper.brackets.brLambda(element.symbol)) {
                 if (helper.brackets.brOpens(element.symbol)) {
                     ++level;
+                    if(i == 0 || list.get(i - 1).type != LAMBDA_PARAM){
+                        list.add(i, new Element("", LAMBDA_PARAM));
+                        ++i;
+                    }
                 } else {
                     --level;
                 }
@@ -267,6 +276,22 @@ public class Parser<T> {
                 if (!varNames.contains(name)) {
                     varNames.add(name);
                 }
+            } else if (element.type == LAMBDA_PARAM) {
+                list.remove(i);
+                while (list.get(i).type != LAMBDA_PARAM) {
+                    Element e = list.get(i);
+                    if(e.type == VAR || e.type == LAMBDA) {
+                        sb.append(e.symbol).append(",");
+                        if(!varNames.contains(e.symbol) && level == 0){
+                            varNames.add(e.symbol);
+                        }
+                    }else if(e.type != DIVIDER){
+                        throw new RuntimeException(CalcLanguage.PARSER_ERRORS[6] + e);
+                    }
+                    list.remove(i);
+                }
+                list.get(i).symbol = sb.toString();
+                sb.setLength(0);
             }
         }
         return varNames.size();

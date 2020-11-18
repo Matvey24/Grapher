@@ -60,7 +60,7 @@ public class MainPanel extends Screen {
         calculator = new CalculatorView(updater::recalculate, this::calculatorResize);
         calculator.addTo(this);
 
-        functions = new FunctionsView(updater::recalculate);
+        functions = new FunctionsView(updater::recalculate, updater);
         functions.addTo(this);
 
         updater.setStringElements(functions, calculator);

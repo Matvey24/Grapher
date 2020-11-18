@@ -17,7 +17,10 @@ class Calculator<T> {
     private final Stack<Expression<T>> values;
     private final Stack<Element> other;
     private final Stack<List<FuncVariable<T>>> lambdas;
+    private final Stack<List<FuncVariable<T>>> lambda_params;
+    private final Stack<List<FuncVariable<T>>> lambda_params_free;
     private List<FuncVariable<T>> vars;
+
     private int nextArgs;
 
     Calculator(Helper<T> helper) {
@@ -26,6 +29,8 @@ class Calculator<T> {
         other = new Stack<>();
         vars = new ArrayList<>();
         lambdas = new Stack<>();
+        lambda_params = new Stack<>();
+        lambda_params_free = new Stack<>();
     }
 
     void next(Element e) {
@@ -57,33 +62,72 @@ class Calculator<T> {
                 count(0);
                 break;
             case LAMBDA:
+                FuncVariable<T> var;
                 other.push(e);
-                FuncVariable<T> var = findVar(e.symbol);
+                var = findVar(vars, e.symbol);
                 if (var != null)
                     return;
-                @SuppressWarnings("unchecked")
-                Expression<T>[] arr = new Expression[0];
-                var = new LambdaParameter<>(arr);
-                var.setName(e.symbol);
-                var.setValue(helper.def());
+                var = makeVar(e.symbol, e.type);
                 vars.add(var);
                 break;
             case VAR:
-                var = findVar(e.symbol);
+                var = findVar(vars, e.symbol);
                 if (var != null) {
                     values.push(var);
                     return;
                 }
-                var = new FuncVariable<>();
-                var.setName(e.symbol);
-                var.setValue(helper.def());
+                var = makeVar(e.symbol, e.type);
                 values.push(var);
                 vars.add(var);
                 break;
+            case LAMBDA_PARAM:
+                parseLambdaParam(e);
+                break;
         }
     }
-
-    private FuncVariable<T> findVar(String name) {
+    private void parseLambdaParam(Element e){
+        String[] myvars = e.symbol.split(",");
+        List<FuncVariable<T>> old_vars = vars;
+        lambdas.push(vars);
+        vars = new ArrayList<>();
+        List<FuncVariable<T>> lep = (lambda_params_free.empty()?new ArrayList<>():lambda_params_free.pop());
+        lambda_params.push(lep);
+        for (String s : myvars) {
+            if(s.length() == 0)
+                continue;
+            FuncVariable<T> var = findVar(old_vars, e.symbol);
+            if(var != null){
+                vars.add(var);
+                lep.add(var);
+                continue;
+            }
+            if (helper.isVar(s)) {
+                var = makeVar(s, VAR);
+            }else{
+                var = makeVar(s, LAMBDA);
+            }
+            old_vars.add(var);
+            vars.add(var);
+            lep.add(var);
+        }
+    }
+    private FuncVariable<T> makeVar(String name, Element.ElementType type){
+        if(type == VAR){
+            FuncVariable<T> var = new FuncVariable<>();
+            var.setName(name);
+            var.setValue(helper.def());
+            return var;
+        }else if(type == LAMBDA){
+            @SuppressWarnings("unchecked")
+            Expression<T>[] arr = new Expression[0];
+            FuncVariable<T> var = new LambdaParameter<>(arr);
+            var.setName(name);
+            var.setValue(helper.def());
+            return var;
+        }
+        return null;
+    }
+    private FuncVariable<T> findVar(List<FuncVariable<T>> vars, String name) {
         for (FuncVariable<T> var : vars) {
             if (var.getName().equals(name)) {
                 return var;
@@ -113,12 +157,7 @@ class Calculator<T> {
 
     private void nextBracket(Element el) {
         boolean opens = helper.brackets.brOpens(el.symbol);
-        if (opens) {
-            if(helper.brackets.brLambda(el.symbol)) {
-                lambdas.push(vars);
-                vars = new ArrayList<>();
-            }
-        }else{
+        if (!opens) {
             for (int i = other.size() - 2; i >= 0; --i) {
                 Element e = other.elementAt(i);
                 if (e.type == BRACKET) {
@@ -173,6 +212,12 @@ class Calculator<T> {
                 }
                 if (helper.brackets.brLambda(e.symbol)) {
                     LambdaInitializer<T> init = new LambdaInitializer<>();
+                    List<FuncVariable<T>> lep = lambda_params.pop();
+                    lambda_params_free.push(lep);
+                    for(int i = lep.size() - 1; i >= 0; --i){
+                        FuncVariable<T> var = lep.remove(i);
+                        vars.remove(var);
+                    }
                     init.setValues(values.pop(), vars);
                     values.push(init);
                     vars = lambdas.pop();
@@ -225,7 +270,7 @@ class Calculator<T> {
                 if (nextArgs == -1 || nextArgs == 0) {
                     nextArgs = -1;
                     //this is initializer
-                    LambdaParameter<T> param = (LambdaParameter<T>) findVar(e.symbol);
+                    LambdaParameter<T> param = (LambdaParameter<T>) findVar(vars, e.symbol);
 
                     LambdaInitializer<T> init = new LambdaInitializer<>();
                     init.setValues(param, null);
@@ -240,7 +285,7 @@ class Calculator<T> {
                 for (int i = args - 1; i >= 0; --i)
                     arr[i] = values.pop();
                 LambdaActor<T> actor = new LambdaActor<>();
-                LambdaParameter<T> param = (LambdaParameter<T>) findVar(e.symbol);
+                LambdaParameter<T> param = (LambdaParameter<T>) findVar(vars, e.symbol);
                 actor.setValues(param, e.symbol, arr);
                 values.push(actor);
                 count(priority);
@@ -262,6 +307,7 @@ class Calculator<T> {
         values.clear();
         other.clear();
         vars.clear();
+        lambdas.clear();
         nextArgs = -1;
     }
 }

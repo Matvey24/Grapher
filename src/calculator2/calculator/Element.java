@@ -11,9 +11,9 @@ public class Element {
 
     @Override
     public String toString() {
-        return symbol + ' ' + type;
+        return "'" + symbol + "'";
     }
     public enum ElementType{
-        NUMBER, FUNCTION, VAR, SIGN, DIVIDER, BRACKET, CONSTANT, LAMBDA
+        NUMBER, FUNCTION, VAR, SIGN, DIVIDER, BRACKET, CONSTANT, LAMBDA, LAMBDA_PARAM
     }
 }

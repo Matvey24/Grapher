@@ -14,8 +14,14 @@ added usable arrays
 fixed bug with log file
     </entry>
     <entry key="24">Grapher3.4
-removed bug with function parameter lambda
+fixed bug with function parameter lambda
 added color chooser for graphics
 changed default graphics colors
+    </entry>
+    <entry key="25">Grapher3.5
+fixed bug with nullable parameters
+added opportunity of using external vars in lambdas
+fixed bug with 'max' function
+added hot keys for functions area
     </entry>
 </properties>

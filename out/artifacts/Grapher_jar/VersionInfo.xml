@@ -3,10 +3,11 @@
 <properties>
     <entry key="file_path">https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/Grapher.jar</entry>
     <entry key="log_path">https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/VersionLog.xml</entry>
-    <entry key="version">24</entry>
+    <entry key="version">25</entry>
     <entry key="changes">
-removed bug with function parameter lambda
-added color chooser for graphics
-changed default graphics colors
+fixed bug with nullable parameters
+added opportunity of using external vars in lambdas
+fixed bug with 'max' function
+added hot keys for functions area
     </entry>
 </properties>

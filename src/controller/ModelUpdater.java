@@ -414,6 +414,10 @@ public class ModelUpdater {
         setState(message);
     }
 
+    public MainPanel getMainPanel() {
+        return mainPanel;
+    }
+
     public boolean isMousePressed() {
         return mousePressed;
     }

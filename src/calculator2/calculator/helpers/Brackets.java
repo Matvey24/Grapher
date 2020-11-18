@@ -31,6 +31,12 @@ public class Brackets {
     public boolean brLambda(String bracket){
         return bracket.charAt(0) == '}' || bracket.charAt(0) == '{';
     }
+    public boolean brParam(String bracket){
+        return brParam(bracket.charAt(0));
+    }
+    public boolean brParam(char br){
+        return br == '$';
+    }
     private boolean brOpens(char bracket) {
         return names.get(bracket);
     }

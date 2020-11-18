@@ -44,7 +44,8 @@ Too little arguments
 Too many arguments
 brackets
 in
-Bad location of</entry>
+Bad location of
+Only vars and lambdas can be in $..$: </entry>
 <entry key="version_controller">Can't load log!</entry>
 <entry key = "buttons">Begin
 Settings
@@ -127,8 +128,8 @@ part 8
 Lambdas:
 Instead of parameter in function write an
 an expression for any variable in '{..}', like '{x^2}',
-don't use external vars here, but you can use all functions
-and constants.
+if you use external vars or lambdas here,
+write them in '$..$' before brackets, like '$x${x^y}'.
 Then in function use 'f' + 'some letter', like function,
 for example 'fa(x)', you can send this function in other,
 like 'func(fa, 4)' - without brackets.
@@ -178,7 +179,7 @@ Signs:
 % - remainder of division
 &lt;, >, = return 1 if the expression
 is true else return 0
-part 25
+part 26
 Functions:
 sqrt, cbrt - quadratic and cubic roots
 pow - power
@@ -187,8 +188,9 @@ sign - signum of number (1, 0, -1)
 lg, ln, ld, log - logarithms
 sigm - sigmoid - sigm(x) = 1 / (1 + e^-x)
 hypot - hypotenuse - sqrt(x^2 + y^2)
-sin, cos, tg, ctg, arcsin, arccos, arctg, arcctg, arctgTwo
-- trigonometric functions,
+sin, cos, tg, ctg,
+arcsin, arccos, arctg, arcctg, arctgTwo,
+sh, ch, th, cth - trigonometric functions
 put 'd' after them to convert radians to degrees.
 abs - absolute value
 floor - max integer less then given
@@ -233,7 +235,7 @@ arctgTwo(1, 0) == pi / 2
 num = sqrt(5) - num is a constant
 lb = ld(x) - the same as ld(x) = logarithm of x with basis 2
 myfunc = sin(x) + cos(y) - use it like myfunc(x,y)
-help 4
+help 5
 part 11
 Warning:
 Grapher can answer the incomprehensible
@@ -270,6 +272,13 @@ setting goto means next constant will be on 'goto' position,
 goto calculates on 'goto' position.
 Use parameter 'gotoLen' to change max count of using 'goto'
 per one update or timer cycle.
+part 6
+Hot keys:
+When you are editing code in functions area,
+you can use the following combinations:
+Ctrl + Enter - like 'Update' button
+Ctrl + Shift + (Up/Down) - move line up or down
+Shift + Del - delete line
 part 34
 Saves:
 All saves are in xml format in java properties.

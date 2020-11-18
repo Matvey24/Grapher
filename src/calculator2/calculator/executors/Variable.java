@@ -27,9 +27,7 @@ public class Variable<T> implements Expression<T> {
     }
 
     @Override
-    public void free() {
-        name = null;
-    }
+    public void free() {}
 
     @Override
     public boolean equals(Object o) {

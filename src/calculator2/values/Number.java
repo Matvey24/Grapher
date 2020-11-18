@@ -38,9 +38,11 @@ public class Number extends AbstractType<Double> {
         return min;
     };
     private static final MultiFunc<Double> max = (a) -> {
-        double max = 0;
-        for (Expression<Double> ex : a) {
-            double b = ex.calculate();
+        if (a.length == 0)
+            return .0;
+        double max = a[0].calculate();
+        for (int i = 1; i < a.length; ++i) {
+            double b = a[i].calculate();
             if (b > max)
                 max = b;
         }
@@ -107,6 +109,17 @@ public class Number extends AbstractType<Double> {
         addFunction("cosd", a -> Math.cos(PI / 180 * a), 10);
         addFunction("tgd", a -> Math.tan(PI / 180 * a), 10);
         addFunction("ctgd", a -> 1 / Math.tan(PI / 180 * a), 10);
+
+        addFunction("sh", Math::sinh, 10);
+        addFunction("ch", Math::cosh, 10);
+        addFunction("th", Math::tanh, 10);
+        addFunction("cth", a -> 1 / Math.tanh(a), 10);
+        addFunction("shd", a -> Math.sinh(PI / 180 * a), 10);
+        addFunction("chd", a -> Math.cosh(PI / 180 * a), 10);
+        addFunction("thd", a -> Math.tanh(PI / 180 * a), 10);
+        addFunction("cthd", a -> 1 / Math.tanh(PI / 180 * a), 10);
+
+
         addFunction("arctgTwo", (a, b) -> Math.atan2(a.calculate(), b.calculate()), 10);
         addFunction("arcsin", Math::asin, 10);
         addFunction("arccos", Math::acos, 10);
@@ -117,7 +130,6 @@ public class Number extends AbstractType<Double> {
         addFunction("arctgd", a -> Math.atan(a) / PI * 180, 10);
         addFunction("arcctgd", a -> Math.atan(1 / a) / PI * 180, 10);
         addFunction("arctgTwod", (a, b) -> Math.atan2(a.calculate(), b.calculate()) / PI * 180, 10);
-
 
         addFunction("abs", (OneFunc<Double>) Math::abs, 10);
         addFunction("floor", Math::floor, 10);
