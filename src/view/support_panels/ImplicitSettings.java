@@ -51,7 +51,6 @@ public class ImplicitSettings extends Settings {
             }
         });
         btn_save = new JButton(Language.SAVE_PICTURE);
-        btn_save.setFocusPainted(false);
         btn_save.setBounds(OFFSET, HEIGHT + 2 * OFFSET + 2 * ComboBoxParameter.HEIGHT,
                 TextElement.WIDTH, TextElement.HEIGHT);
         btn_save.addActionListener((e) -> {

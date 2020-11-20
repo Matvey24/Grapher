@@ -1,5 +1,6 @@
 package view;
 
+import calculator2.calculator.Parser;
 import framesLib.screenables.InternalPanel;
 import model.Language;
 import controller.ModelUpdater;
@@ -11,6 +12,7 @@ import view.grapher.CoordinateSystem;
 import view.grapher.GraphicsView;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
 import javax.swing.*;
 import java.awt.*;
@@ -18,6 +20,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.*;
 import java.awt.event.*;
+import java.util.Set;
 
 import static view.elements.ElementsList.OFFSET;
 
@@ -38,26 +41,26 @@ public class MainPanel extends Screen {
     private final JButton btn_timer;
     private final JButton btn_settings;
     private final InternalPanel panel;
+
     static {
         rebounds(1280, 720);
     }
-    
+
     public MainPanel() {
         setLayout(null);
         updater = new ModelUpdater(this::paintGraphic, this);
         btn_help = new JButton(Language.HELP);
-        btn_help.setFocusPainted(false);
         add(btn_help);
         mousePosition = new Point();
 
         btn_help.addActionListener((e) -> updater.getSupportFrameManager().openHelperFrame());
 
-        graphics = new ElementsList(0, 0, updater::addVRemove, updater::startSettings);
+        graphics = new ElementsList(0, 0, updater::addVRemove, updater::startSettings, this::onTextElementCreate);
         graphics.setName(Language.GRAPHICS);
         graphics.addTo(this);
         graphicsView = new GraphicsView(graphics, updater);
         add(graphicsView);
-        calculator = new CalculatorView(updater::recalculate, this::calculatorResize);
+        calculator = new CalculatorView(updater::recalculate, this::calculatorResize, this::onTextFieldCreate);
         calculator.addTo(this);
 
         functions = new FunctionsView(updater::recalculate, updater);
@@ -94,7 +97,6 @@ public class MainPanel extends Screen {
 
         resizeType = 0;
         btn_resize = new JButton(Language.RESIZERS[resizeType]);
-        btn_resize.setFocusPainted(false);
         btn_resize.addActionListener(e -> {
             if (resizeType == 0) {
                 updater.rescaleBack();
@@ -112,7 +114,6 @@ public class MainPanel extends Screen {
         add(btn_resize);
 
         btn_timer = new JButton(Language.TIMER);
-        btn_timer.setFocusPainted(false);
         btn_timer.addActionListener(e -> updater.openTimer());
         btn_timer.addMouseListener(new MouseAdapter() {
             @Override
@@ -124,51 +125,14 @@ public class MainPanel extends Screen {
         });
         add(btn_timer);
         btn_settings = new JButton(Language.MAIN_SETTINGS);
-        btn_settings.setFocusPainted(false);
         btn_settings.addActionListener(e -> updater.getSupportFrameManager().openMainSettings());
         add(btn_settings);
         panel = new InternalPanel();
         updater.getSupportFrameManager().setPanel(panel);
         add(panel);
+        registerActions();
         setGraphicsHeight();
-        setDropTarget(new DropTarget(this, new DropTargetAdapter() {
-            @Override
-            public void drop(DropTargetDropEvent dtde) {
-                dtde.acceptDrop(DnDConstants.ACTION_COPY);
-                Transferable tr = dtde.getTransferable();
-                for (DataFlavor df : tr.getTransferDataFlavors()) {
-                    try {
-                        List<?> list = (List<?>) tr.getTransferData(df);
-                        if (list.size() > 0) {
-                            File f;
-                            if (list.get(0) instanceof File)
-                                f = (File) list.get(0);
-                            else
-                                f = new File(list.get(0).toString());
-                            if (f.exists() && f.isFile()) {
-                                updater.getSupportFrameManager().getMainSettings().getFileChooser().setSelectedFile(f);
-                                updater.dosave(false, f);
-                                return;
-                            }
-                        }
-                    } catch (Exception e) {
-                        updater.setState(e.toString());
-                    }
-                }
-            }
-        }));
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                WIDTH = getWidth();
-                HEIGHT = getHeight();
-                GRAPH_WIDTH = WIDTH - ElementsList.WIDTH;
-                panel.setBounds(0, height, ElementsList.WIDTH, HEIGHT - height);
-                updater.getSupportFrameManager().onPanelResize();
-                updater.runResize();
-                graphicsView.setBounds(ElementsList.WIDTH, 0, GRAPH_WIDTH, HEIGHT);
-            }
-        });
+        updater.recalculate();
     }
 
     public static void rebounds(int width, int height) {
@@ -255,5 +219,101 @@ public class MainPanel extends Screen {
 
     public void setTimerName(String name) {
         btn_timer.setText(name);
+    }
+
+    private void registerActions() {
+        registerKeyboardAction(
+                (e) -> updater.quick_save(true),
+                KeyStroke.getKeyStroke(
+                        KeyEvent.VK_S,
+                        InputEvent.CTRL_DOWN_MASK
+                ),
+                JComponent.WHEN_IN_FOCUSED_WINDOW);
+        registerKeyboardAction(
+                (e) -> updater.quick_save(false),
+                KeyStroke.getKeyStroke(
+                        KeyEvent.VK_L,
+                        InputEvent.CTRL_DOWN_MASK
+                ),
+                JComponent.WHEN_IN_FOCUSED_WINDOW);
+        registerKeyboardAction(
+                (e) -> updater.getSupportFrameManager().openFileChooser(true),
+                KeyStroke.getKeyStroke(
+                        KeyEvent.VK_S,
+                        InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK
+                ),
+                JComponent.WHEN_IN_FOCUSED_WINDOW);
+        registerKeyboardAction(
+                (e) -> updater.getSupportFrameManager().openFileChooser(false),
+                KeyStroke.getKeyStroke(
+                        KeyEvent.VK_L,
+                        InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK
+                ),
+                JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+        setDropTarget(new DropTarget(this, new DropTargetAdapter() {
+            @Override
+            public void drop(DropTargetDropEvent dtde) {
+                dtde.acceptDrop(DnDConstants.ACTION_COPY);
+                Transferable tr = dtde.getTransferable();
+                for (DataFlavor df : tr.getTransferDataFlavors()) {
+                    try {
+                        List<?> list = (List<?>) tr.getTransferData(df);
+                        if (list.size() > 0) {
+                            File f;
+                            if (list.get(0) instanceof File)
+                                f = (File) list.get(0);
+                            else
+                                f = new File(list.get(0).toString());
+                            if (f.exists() && f.isFile()) {
+                                updater.getSupportFrameManager().getMainSettings().getFileChooser().setSelectedFile(f);
+                                updater.dosave(false, f);
+                                return;
+                            }
+                        }
+                    } catch (Exception e) {
+                        updater.setState(e.toString());
+                    }
+                }
+            }
+        }));
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                WIDTH = getWidth();
+                HEIGHT = getHeight();
+                GRAPH_WIDTH = WIDTH - ElementsList.WIDTH;
+                panel.setBounds(0, height, ElementsList.WIDTH, HEIGHT - height);
+                updater.getSupportFrameManager().onPanelResize();
+                updater.runResize();
+                graphicsView.setBounds(ElementsList.WIDTH, 0, GRAPH_WIDTH, HEIGHT);
+            }
+        });
+    }
+
+    private void onTextElementCreate(TextElement e) {
+        onTextFieldCreate(e.getField());
+    }
+    public void onTextFieldCreate(JTextField e){
+        Set<KeyStroke> set = new HashSet<>();
+        set.add(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.CTRL_DOWN_MASK));
+        e.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, set);
+        final Parser.StringToken line = new Parser.StringToken();
+        e.registerKeyboardAction((ev) -> {
+                    line.replace = 0;
+                    String text = e.getText();
+                    line.text = text;
+                    updater.findEndOf(line);
+                    if (line.text.isEmpty())
+                        return;
+                    if (line.replace == 0) {
+                        e.setText(text + line.text);
+                    } else {
+                        e.setText(text.substring(0, text.length() - line.replace) + line.text);
+                    }
+                },
+                KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0),
+                JComponent.WHEN_FOCUSED
+        );
     }
 }

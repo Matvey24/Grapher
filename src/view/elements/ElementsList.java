@@ -1,7 +1,7 @@
 package view.elements;
 
-import model.help.IntFunc;
 import model.ViewElement;
+import model.help.TFunc;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,8 +28,11 @@ public class ElementsList extends ViewElement {
     private final Point pos;
     private Container c;
     private final ActionListener sizeChanged;
-    private final IntFunc settings;
-    public ElementsList(int x, int y, ActionListener sizeChanged, IntFunc settings) {
+    private final TFunc<Integer> settings;
+    private final TFunc<TextElement> otec;
+
+    public ElementsList(int x, int y, ActionListener sizeChanged, TFunc<Integer> settings, TFunc<TextElement> otec) {
+        this.otec = otec;
         this.sizeChanged = sizeChanged;
         this.settings = settings;
         elements = new ArrayList<>();
@@ -37,7 +40,6 @@ public class ElementsList extends ViewElement {
         this.name = new JLabel();
         this.name.setFont(name_font);
         btn_make_element = new JButton("+");
-        btn_make_element.setFocusPainted(false);
         state = new JTextField();
         state.setEditable(false);
         state.setFont(new Font("arial", Font.PLAIN, 12));
@@ -47,9 +49,7 @@ public class ElementsList extends ViewElement {
             sizeChanged.actionPerformed(new ActionEvent(0, elements.size() - 1, "add"));
         });
         btn_move_up = new JButton("˄");
-        btn_move_up.setFocusPainted(false);
         btn_move_down = new JButton("˅");
-        btn_move_down.setFocusPainted(false);
         btn_move_up.addActionListener((e)->move(-1));
         btn_move_down.addActionListener((e)->move(1));
         setBounds(x,y);
@@ -157,6 +157,7 @@ public class ElementsList extends ViewElement {
                 }
             }
         });
+        otec.execute(e);
         e.addTo(c);
         e.attached = true;
         elements.add(e);

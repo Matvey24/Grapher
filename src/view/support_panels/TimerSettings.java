@@ -97,13 +97,11 @@ public class TimerSettings extends Screen {
             updater.timerResize();
         });
         start = new JToggleButton(Language.BEGIN);
-        start.setFocusPainted(false);
         add(start);
         start.setBounds(OFFSET, 3 * OFFSET + 2 * ComboBoxParameter.HEIGHT,
                 TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
         start.addActionListener(e -> start());
         timeDir = new JToggleButton(Language.BOOMERANG);
-        timeDir.setFocusPainted(false);
         add(timeDir);
         timeDir.setBounds(OFFSET + TextElement.WIDTH / 2 + OFFSET / 2,
                 3 * OFFSET + 2 * ComboBoxParameter.HEIGHT,

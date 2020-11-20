@@ -1,5 +1,6 @@
 package view.elements;
 
+import calculator2.calculator.Parser;
 import controller.ModelUpdater;
 import model.Language;
 import model.ViewElement;
@@ -15,15 +16,27 @@ import static view.elements.TextElement.HEIGHT;
 import static view.elements.ElementsList.WIDTH;
 
 public class FunctionsView extends ViewElement {
-    private static final int AREA_HEIGHT = 150;
-    public static final int FUNC_HEIGHT = AREA_HEIGHT + HEIGHT + OFFSET;
+    private static int AREA_HEIGHT;
+    public static int FUNC_HEIGHT;
     private final JLabel name;
     private final JTextArea area;
     private final JButton btn_update;
     private final JScrollPane scrollPane;
     private final StringBuilder sb;
+    private final ModelUpdater updater;
+    private final Parser.StringToken line;
+
+    static {
+        setSizes(160);
+    }
+
+    private static void setSizes(int height) {
+        AREA_HEIGHT = height;
+        FUNC_HEIGHT = AREA_HEIGHT + HEIGHT + OFFSET;
+    }
 
     public FunctionsView(Runnable onUpdate, ModelUpdater updater) {
+        this.updater = updater;
         sb = new StringBuilder();
         area = new JTextArea();
         area.setLineWrap(true);
@@ -31,10 +44,11 @@ public class FunctionsView extends ViewElement {
         name = new JLabel();
         name.setFont(name_font);
         btn_update = new JButton();
-        btn_update.setFocusPainted(false);
         btn_update.addActionListener(e -> onUpdate.run());
+        area.setTabSize(4);
         updateLanguage();
-        registerActions(onUpdate, updater);
+        line = new Parser.StringToken();
+        registerActions(onUpdate);
     }
 
     @Override
@@ -63,7 +77,7 @@ public class FunctionsView extends ViewElement {
         btn_update.setText(Language.UPDATE);
     }
 
-    private void registerActions(Runnable onUpdate, ModelUpdater updater) {
+    private void registerActions(Runnable onUpdate) {
         area.registerKeyboardAction(
                 (e) -> onUpdate.run(),
                 KeyStroke.getKeyStroke(
@@ -157,6 +171,83 @@ public class FunctionsView extends ViewElement {
                         InputEvent.SHIFT_DOWN_MASK
                 ),
                 JComponent.WHEN_FOCUSED);
+        area.registerKeyboardAction((e) -> {
+                    try {
+                        String text = area.getSelectedText();
+                        if(text != null){
+                            int pos = area.getCaretPosition();
+                            area.insert(text, pos);
+                            area.setCaretPosition(pos + text.length());
+                            return;
+                        }
+                        int pos = area.getCaretPosition();
+                        int line = area.getLineOfOffset(pos);
+                        int start = area.getLineStartOffset(line);
+                        int end = area.getLineEndOffset(line);
+                        text = area.getText(start, end - start);
+                        if (text.length() > 0 && text.charAt(text.length() - 1) != '\n') {
+                            area.append("\n");
+                            end++;
+                        }
+                        area.insert(text, end);
+                        area.setCaretPosition(pos + end - start);
+                    } catch (Exception er) {
+                        updater.setState(er.toString());
+                    }
+                },
+                KeyStroke.getKeyStroke(
+                        KeyEvent.VK_D,
+                        InputEvent.CTRL_DOWN_MASK
+                ),
+                JComponent.WHEN_FOCUSED);
+        //resizes
+        area.registerKeyboardAction(
+                (e) -> resize_area(AREA_HEIGHT + 20),
+                KeyStroke.getKeyStroke(
+                        KeyEvent.VK_DOWN,
+                        InputEvent.CTRL_DOWN_MASK
+                ),
+                JComponent.WHEN_FOCUSED
+        );
+        area.registerKeyboardAction((e) -> {
+                    if (AREA_HEIGHT < 40) {
+                        return;
+                    }
+                    resize_area(AREA_HEIGHT - 20);
 
+                },
+                KeyStroke.getKeyStroke(
+                        KeyEvent.VK_UP,
+                        InputEvent.CTRL_DOWN_MASK
+                ),
+                JComponent.WHEN_FOCUSED
+        );
+        area.registerKeyboardAction((e) -> {
+                    try {
+                        int pos = area.getCaretPosition();
+                        int lineIdx = area.getLineOfOffset(pos);
+                        int start = area.getLineStartOffset(lineIdx);
+                        line.text = area.getText(start, pos - start);
+                        line.replace = 0;
+                        updater.findEndOf(line);
+                        if (line.text.isEmpty())
+                            return;
+                        if (line.replace == 0) {
+                            area.insert(line.text, pos);
+                        } else {
+                            area.replaceRange(line.text, pos - line.replace, pos);
+                        }
+                    } catch (Exception e1) {
+                        updater.setState(e1.toString());
+                    }
+                },
+                KeyStroke.getKeyStroke(KeyEvent.VK_TAB,0),
+                JComponent.WHEN_FOCUSED);
+    }
+
+    private void resize_area(int new_size) {
+        setSizes(new_size);
+        updater.getMainPanel().setGraphicsHeight();
+        area.updateUI();
     }
 }

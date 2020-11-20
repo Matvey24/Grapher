@@ -1,6 +1,7 @@
 package view.support_panels;
 
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 
 import framesLib.Screen;
@@ -16,6 +17,7 @@ public class FileChooser extends Screen {
     public static final int GRAPHER_PROJECT = 1;
     private final JFileChooser fileChooser;
     private ActionListener listener;
+    private String title = "";
     public FileChooser(){
         setLayout(null);
         fileChooser = new JFileChooser();
@@ -25,7 +27,13 @@ public class FileChooser extends Screen {
         fileChooser.setMultiSelectionEnabled(false);
         add(fileChooser);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        registerKeyboardAction((e)->{back();}, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
     }
+    public void setCurrTitle(String title) {
+        this.title = title;
+        setTitle(title);
+    }
+
     public void setSelectedFile(File f){
         fileChooser.setSelectedFile(f);
     }
@@ -41,6 +49,12 @@ public class FileChooser extends Screen {
         fileChooser.addActionListener(listener);
         this.listener = listener;
     }
+
+    @Override
+    public void onShow() {
+        setTitle(title);
+    }
+
     @Override
     public void onSetSize() {
         setSize(500 + 2 * OFFSET,350 + 2 * OFFSET);

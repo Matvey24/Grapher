@@ -28,8 +28,7 @@ Calculating..
 loaded
 Saved to</entry>
 <entry key = "updater_errors">We need 2 funcs in parametric and translation.
-graphic
-We need t or x and y vars in
+We need t or x and y vars in graphic
 Too long 'goto' recursion: len</entry>
 <entry key = "calculator_errors">in
 graphic
@@ -179,7 +178,7 @@ Signs:
 % - remainder of division
 &lt;, >, = return 1 if the expression
 is true else return 0
-part 26
+part 27
 Functions:
 sqrt, cbrt - quadratic and cubic roots
 pow - power
@@ -205,7 +204,8 @@ set(x, y, val) - sets value in array 'x' on 'y' position,
 returns this value
 get(x, y) - returns value in array 'x' on 'y' position
 for(start, end, func) - executes 'func' - lambda, gives
-func the index from start to end, returns 0.
+func the integer index from start to end,
+returns sum of returns of func.
 part 17
 Constants: (SI)
 pi - pi value = 3.14
@@ -272,13 +272,18 @@ setting goto means next constant will be on 'goto' position,
 goto calculates on 'goto' position.
 Use parameter 'gotoLen' to change max count of using 'goto'
 per one update or timer cycle.
-part 6
+part 11
 Hot keys:
+Ctrl + S/L - save/load project in/from last used file
+Ctrl + Shift + S/L - just save/load project
 When you are editing code in functions area,
 you can use the following combinations:
 Ctrl + Enter - like 'Update' button
 Ctrl + Shift + (Up/Down) - move line up or down
 Shift + Del - delete line
+Ctrl + (Вверх/Вниз) - narrow down/expand area
+Tab - in main fields will help (not help)
+to finish writing function or constant name.
 part 34
 Saves:
 All saves are in xml format in java properties.

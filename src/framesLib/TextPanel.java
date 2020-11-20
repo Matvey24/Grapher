@@ -22,7 +22,6 @@ public class TextPanel extends Screen {
         internal.setLayout(null);
 
         btn_back = new JButton(back_name);
-        btn_back.setFocusPainted(false);
         add(btn_back);
         btn_back.addActionListener((e) -> back());
 

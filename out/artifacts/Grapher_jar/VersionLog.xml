@@ -24,4 +24,9 @@ added opportunity of using external vars in lambdas
 fixed bug with 'max' function
 added hot keys for functions area
     </entry>
+    <entry key="26">Grapher3.6
+added more hot keys
+fixed bugs with russian language errors
+'for' cycle returns sum
+    </entry>
 </properties>

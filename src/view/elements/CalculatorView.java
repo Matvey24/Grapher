@@ -5,12 +5,12 @@ import calculator2.calculator.executors.LambdaInitializer;
 import calculator2.calculator.executors.actors.Expression;
 import model.Language;
 import model.ViewElement;
+import model.help.TFunc;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.math.BigDecimal;
 
 import static view.elements.ElementsList.OFFSET;
 import static view.elements.TextElement.HEIGHT;
@@ -21,10 +21,10 @@ public class CalculatorView extends ViewElement {
     private final JLabel name;
     private final JTextField field;
     private Expression<Double> func;
-    private StringBuilder sb;
+    private final StringBuilder sb;
     @SuppressWarnings("unchecked")
-    private FuncVariable<Double>[] var = new FuncVariable[1];
-    public CalculatorView(Runnable calculate, Runnable resize){
+    private final FuncVariable<Double>[] var = new FuncVariable[1];
+    public CalculatorView(Runnable calculate, Runnable resize, TFunc<JTextField> func){
         name = new JLabel();
         name.setFont(name_font);
         answer = new JTextField();
@@ -41,9 +41,11 @@ public class CalculatorView extends ViewElement {
                 }
             }
         });
+        func.execute(field);
         sb = new StringBuilder();
         var[0] = new FuncVariable<>();
         updateLanguage();
+
     }
     @Override
     public void addTo(Container c){

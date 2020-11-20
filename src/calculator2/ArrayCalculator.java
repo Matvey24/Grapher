@@ -3,6 +3,7 @@ package calculator2;
 import calculator2.calculator.CalcLanguage;
 import calculator2.calculator.Director;
 import calculator2.calculator.Element;
+import calculator2.calculator.Parser;
 import calculator2.calculator.executors.actors.Expression;
 import calculator2.calculator.executors.FuncVariable;
 import calculator2.calculator.executors.Variable;
@@ -206,7 +207,9 @@ public class ArrayCalculator<T> {
     public List<AbstractConst<T>> getConsts() {
         return consts;
     }
-
+    public void findEndOf(Parser.StringToken line){
+        director.findEndOf(line);
+    }
     public void resetConstant(String name, T val) {
         Variable<T> var = type.consts.get(name);
         if (var != null)

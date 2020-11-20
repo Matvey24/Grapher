@@ -20,7 +20,6 @@ public class TextElement {
         remove = new JButton("-");
         remove.setFont(new Font("arial", Font.PLAIN, 8));
         remove.setForeground(Color.RED);
-        remove.setFocusPainted(false);
     }
     public void setBounds(int x, int y){
         name.setBounds(x,y,NAME_WIDTH, HEIGHT);
@@ -47,7 +46,9 @@ public class TextElement {
     void addSettingsListener(MouseListener settingsListener) {
         remove.addMouseListener(settingsListener);
     }
-
+    public JTextField getField(){
+        return text;
+    }
     public void addTextChangedListener(ActionListener listener){
         text.addActionListener(listener);
     }

@@ -78,24 +78,32 @@ public class MainSettings extends Screen {
             }
         });
         btn_save = new JButton(Language.SAVE_PRJ);
-        btn_save.setFocusPainted(false);
         btn_save.addActionListener((e) -> {
             changeScreen(fileChooser);
-            selectionSave = true;
+            setSelectionSave(true);
         });
         btn_save.setBounds(OFFSET, OFFSET,
                 ComboBoxParameter.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
         add(btn_save);
         btn_load = new JButton(Language.LOAD_PRJ);
-        btn_load.setFocusPainted(false);
         btn_load.addActionListener((e) -> {
             changeScreen(fileChooser);
-            selectionSave = false;
+            setSelectionSave(false);
         });
         add(btn_load);
         btn_load.setBounds(3 * OFFSET / 2 + ComboBoxParameter.WIDTH / 2, OFFSET,
                 ComboBoxParameter.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
     }
+
+    public void setSelectionSave(boolean selectionSave) {
+        this.selectionSave = selectionSave;
+        if(selectionSave){
+            fileChooser.setCurrTitle(Language.SAVE_PRJ);
+        }else{
+            fileChooser.setCurrTitle(Language.LOAD_PRJ);
+        }
+    }
+
     public FileChooser getFileChooser(){
         return fileChooser;
     }

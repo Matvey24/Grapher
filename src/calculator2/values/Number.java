@@ -2,7 +2,6 @@ package calculator2.values;
 
 import calculator2.calculator.executors.FuncVariable;
 import calculator2.calculator.executors.LambdaInitializer;
-import calculator2.calculator.executors.actors.Expression;
 import calculator2.calculator.util.AbstractType;
 import calculator2.calculator.util.actions.Sign;
 import calculator2.calculator.util.actions.functions.BinarFunc;
@@ -60,6 +59,7 @@ public class Number extends AbstractType<Double> {
         }
         return a[idx].calculate();
     };
+
     private final double ln2 = Math.log(2);
     @SuppressWarnings("unchecked")
     private final FuncVariable<Double>[] tmp = new FuncVariable[1];
@@ -178,6 +178,7 @@ public class Number extends AbstractType<Double> {
             return val;
         }, 3, 10);
         addFunction("for", (a)->{
+            double sum = 0;
             if(a[2] instanceof LambdaInitializer) {
                 LambdaInitializer<Double> lam = (LambdaInitializer<Double>) a[2];
                 int s = a[0].calculate().intValue();
@@ -185,7 +186,7 @@ public class Number extends AbstractType<Double> {
                 boolean dir = s < e;
                 for (int i = s; i != e;) {
                     tmp[0].setValue(i+0.);
-                    lam.execute(tmp);
+                    sum += lam.execute(tmp);
                     if(dir){
                         ++i;
                     }else{
@@ -193,7 +194,7 @@ public class Number extends AbstractType<Double> {
                     }
                 }
             }
-            return 0.;
+            return sum;
         }, 3, 10);
     }
 
@@ -222,7 +223,6 @@ public class Number extends AbstractType<Double> {
         addConst("pc", 3.09e16);
 
         addConst("tm", .0);
-        addConst("default", 0.);
     }
 
     @Override

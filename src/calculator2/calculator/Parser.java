@@ -3,9 +3,7 @@ package calculator2.calculator;
 import calculator2.calculator.helpers.Helper;
 import calculator2.calculator.util.actions.Sign;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 import static calculator2.calculator.Element.ElementType.*;
 
@@ -295,6 +293,78 @@ public class Parser<T> {
             }
         }
         return varNames.size();
+    }
+    public void findEndOf(StringToken e){
+        if(helper.type == null){
+            e.text = "";
+            return;
+        }
+        sb.setLength(0);
+        String line = e.text;
+        e.text = "";
+        for(int i = 0; i < line.length(); ++i){
+            char c = line.charAt(line.length() - i - 1);
+            if(c != ' ' && c != '\t' && type(c) == FUNCTION){
+                sb.append(c);
+            }else{
+                break;
+            }
+        }
+        String name = sb.reverse().toString();
+        sb.setLength(0);
+        if(name.isEmpty())
+            return;
+        if(helper.isConst(name) || helper.getFunc(name) != null){
+            Set<String> set;
+            if(helper.isConst(name))
+                set = helper.type.consts.keySet();
+            else
+                set = helper.type.funcs.keySet();
+            Iterator<String> it = set.stream()
+                    .sorted()
+                    .iterator();
+            String first = null;
+            while(it.hasNext()){
+                String s = it.next();
+                if(s.length() == 1 && helper.getSign(s) != null)
+                    continue;
+                if(first == null)
+                    first = s;
+                if(s.equals(name)){
+                    if(it.hasNext())
+                        first = it.next();
+                    break;
+                }
+            }
+            if(first != null){
+                e.text = first;
+                e.replace = name.length();
+            }
+            return;
+        }
+        String t = helper.type.consts.keySet()
+                .stream()
+                .sorted()
+                .filter((s)->s.startsWith(name))
+                .findFirst()
+                .orElse("");
+        if(!t.isEmpty()) {
+            e.text = t.substring(name.length());
+            return;
+        }
+        t = helper.type.funcs.keySet()
+                .stream()
+                .sorted()
+                .filter(s->s.startsWith(name))
+                .findFirst()
+                .orElse("");
+        if(t.isEmpty())
+            return;
+        e.text = t.substring(name.length());
+    }
+    public static class StringToken{
+        public String text;
+        public int replace;
     }
 
     private boolean openBracket(Element e) {

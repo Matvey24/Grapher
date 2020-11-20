@@ -5,7 +5,6 @@ import calculator2.calculator.executors.FuncVariable;
 import calculator2.calculator.helpers.Helper;
 import calculator2.calculator.util.AbstractType;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
@@ -23,7 +22,7 @@ public class Director<T> {
         parser = new Parser<>(helper);
     }
     public void setType(AbstractType<T> type){
-        helper.setType(type);
+        helper.type = type;
     }
     public int parse(String str) {
         return parser.parse(str);
@@ -39,7 +38,6 @@ public class Director<T> {
         tree = calculator.getExpression();
         vars = calculator.getVars();
     }
-
     public Stack<Element> getStack() {
         return parser.getStack();
     }
@@ -50,5 +48,9 @@ public class Director<T> {
 
     public Expression<T> getTree() {
         return tree;
+    }
+
+    public void findEndOf(Parser.StringToken line){
+        parser.findEndOf(line);
     }
 }

@@ -1,5 +1,6 @@
 package controller;
 
+import calculator2.calculator.Parser;
 import model.Language;
 import model.help.FullModel;
 import view.MainPanel;
@@ -9,6 +10,7 @@ import view.grapher.graphics.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,6 +47,8 @@ public class ModelUpdater {
     private double scaleY = 100;
     boolean dangerState = false;
     public boolean mousePressed;
+
+    public File last_used_file;
 
     public ModelUpdater(Runnable repaint, MainPanel mainPanel) {
         this.mainPanel = mainPanel;
@@ -330,7 +334,9 @@ public class ModelUpdater {
     public void setStringElements(FunctionsView functions, CalculatorView calculator) {
         this.calculator.setElements(calculator, functions);
     }
-
+    public void findEndOf(Parser.StringToken line){
+        calculator.findEndOf(line);
+    }
     public void setState(String text) {
         list.setState(text);
     }
@@ -441,8 +447,15 @@ public class ModelUpdater {
         el.setColor(c);
         calculator.repaint();
     }
-    public void dosave(boolean selection, java.io.File f) {
-        if (selection) {
+    public void quick_save(boolean save){
+        if(last_used_file != null){
+            dosave(save, last_used_file);
+        }else{
+            supportFrameManager.openFileChooser(save);
+        }
+    }
+    public void dosave(boolean save, File f) {
+        if (save) {
             calculator.run(() -> {
                 FullModel m = new FullModel();
                 calculator.makeModel(m);
@@ -450,10 +463,12 @@ public class ModelUpdater {
                 mainPanel.makeModel(m);
                 supportFrameManager.getTimer().makeModel(m);
                 setState(dataBase.save(m, f));
+                last_used_file = f;
             });
         } else {
             calculator.run(() -> {
                 try {
+                    last_used_file = null;
                     supportFrameManager.getTimer().stop();
                     FullModel m = dataBase.load(f);
                     list.clear();
@@ -474,7 +489,10 @@ public class ModelUpdater {
                     }
                     mainPanel.setGraphicsHeight();
                     calculator.recalculate();
-                    calculator.run(() -> setState(f.getName() + " " + Language.LOADED));
+                    calculator.run(() -> {
+                        setState(f.getName() + " " + Language.LOADED);
+                        last_used_file = f;
+                    });
                 } catch (Exception e) {
                     setState(e.toString());
                 }

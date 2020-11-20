@@ -7,13 +7,10 @@ import calculator2.calculator.util.actions.Sign;
 
 public class Helper<T> {
     public final Brackets brackets;
-    private AbstractType<T> type;
+    public AbstractType<T> type;
 
     public Helper() {
         brackets = new Brackets();
-    }
-    public void setType(AbstractType<T> type){
-        this.type = type;
     }
     public boolean hasName(String name) {
         return isConst(name) || getFunc(name) != null || isVar(name) || isLambda(name) || type.funcNames.contains(name);

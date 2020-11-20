@@ -1,6 +1,7 @@
 package controller;
 
 import calculator2.ArrayCalculator;
+import calculator2.calculator.Parser;
 import calculator2.calculator.executors.actors.Expression;
 import calculator2.calculator.executors.FuncVariable;
 import calculator2.calculator.executors.Variable;
@@ -92,7 +93,7 @@ public class Calculator {
                                 || ax != -1 || ay != -1 || bx != -1 || by != -1) {
                             if (varsA.size() > 2 || varsB.size() > 2 || notContainsOnly(varsA, "x", "y")
                                     || notContainsOnly(varsB, "x", "y"))
-                                throw new RuntimeException(UPDATER_ERRORS[2] + " " + i + " " + UPDATER_ERRORS[1]);
+                                throw new RuntimeException(UPDATER_ERRORS[1] + " " + i);
                             FuncVariable<Double> varAX, varAY, varBX, varBY;
                             varAX = (ax != -1) ? varsA.get(ax) : new FuncVariable<>();
                             varAY = (ay != -1) ? varsA.get(ay) : new FuncVariable<>();
@@ -132,7 +133,7 @@ public class Calculator {
                             }
                             Expression<Double> func = calculator.getGraphics().get(funcs);
                             if (vars.size() > 2)
-                                throw new RuntimeException(UPDATER_ERRORS[2] + " " + Language.TYPE_TITLES[2]);
+                                throw new RuntimeException(UPDATER_ERRORS[1] + " " + i);
                             FuncVariable<Double> varX = null;
                             FuncVariable<Double> varY = null;
                             {
@@ -141,14 +142,14 @@ public class Calculator {
                                 } else if (vars.get(0).getName().equals("y")) {
                                     varY = vars.get(0);
                                 } else {
-                                    throw new RuntimeException(UPDATER_ERRORS[2]+ " " + Language.TYPE_TITLES[2]);
+                                    throw new RuntimeException(UPDATER_ERRORS[1]+ " " + i);
                                 }
                                 if (vars.get(1).getName().equals("x")) {
                                     varX = vars.get(1);
                                 } else if (vars.get(1).getName().equals("y")) {
                                     varY = vars.get(1);
                                 } else {
-                                    throw new RuntimeException(UPDATER_ERRORS[2]+ " " + Language.TYPE_TITLES[2]);
+                                    throw new RuntimeException(UPDATER_ERRORS[1]+ " " + i);
                                 }
                             }
                             g.update(func, varX);
@@ -258,7 +259,9 @@ public class Calculator {
         this.resize = resize;
         runResize();
     }
-
+    public void findEndOf(Parser.StringToken line){
+        calculator.findEndOf(line);
+    }
     public void resetConstant(String name, double time) {
         calculator.resetConstant(name, time);
     }
@@ -327,7 +330,7 @@ public class Calculator {
                 Calculator.this.const_idx = value.intValue() - 1;
                 goto_count++;
                 if (goto_count >= goto_len) {
-                    throw new RuntimeException(UPDATER_ERRORS[3] + " " + goto_count);
+                    throw new RuntimeException(UPDATER_ERRORS[2] + " " + goto_count);
                 }
             }
 

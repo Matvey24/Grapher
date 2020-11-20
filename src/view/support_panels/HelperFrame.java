@@ -24,7 +24,6 @@ public class HelperFrame extends Screen {
         height = OFFSET;
         for (int i = 0; i < btn_arr.length; ++i) {
             JButton btn = new JButton(Language.HELP_NAMES[i]);
-            btn.setFocusPainted(false);
             btn.setBounds(OFFSET, height, TextElement.WIDTH, TextElement.HEIGHT);
             height += OFFSET + TextElement.HEIGHT;
             add(btn);
@@ -33,7 +32,6 @@ public class HelperFrame extends Screen {
             btn_arr[i] = btn;
         }
         btn_versionLog = new JButton(Language.VERSION_LOG);
-        btn_versionLog.setFocusPainted(false);
         btn_versionLog.setBounds(OFFSET, height, TextElement.WIDTH, TextElement.HEIGHT);
         height += (OFFSET << 1) + TextElement.HEIGHT;
         add(btn_versionLog);

@@ -71,7 +71,11 @@ public class SupportFrameManager {
         pfo.changeScreenClearing(mainSettings, true);
         openedGraphic = false;
     }
-
+    public void openFileChooser(boolean save){
+        pfo.changeScreenClearing(mainSettings.getFileChooser(), true);
+        mainSettings.setSelectionSave(save);
+        openedGraphic = false;
+    }
     Double getTime(){
         return timerSettings.getT();
     }
