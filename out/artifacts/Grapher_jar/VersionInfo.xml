@@ -3,7 +3,7 @@
 <properties>
     <entry key="file_path">https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/Grapher.jar</entry>
     <entry key="log_path">https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/VersionLog.xml</entry>
-    <entry key="version">26</entry>
+    <entry key="version">27</entry>
     <entry key="changes">
 'arr' func returns length of array if idx is -1
 calculator lambda described
