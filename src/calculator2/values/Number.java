@@ -51,13 +51,13 @@ public class Number extends AbstractType<Double> {
         if (a.length < 2)
             return Double.NaN;
         int idx = (int) Math.round(a[0].calculate());
-        idx += 1;
-        if (idx < 1) {
-            idx = 1;
-        } else if (idx >= a.length) {
-            idx = a.length - 1;
-        }
-        return a[idx].calculate();
+        if(idx == -1)
+            return (double)a.length - 1;
+        if(idx < 0)
+            idx = 0;
+        if(idx >= a.length - 1)
+            idx = a.length - 2;
+        return a[idx+1].calculate();
     };
 
     private final double ln2 = Math.log(2);
@@ -142,6 +142,7 @@ public class Number extends AbstractType<Double> {
         addFunction("min", min, -1, 10);
         addFunction("max", max, -1, 10);
         addFunction("arr", arr, -1, 10);
+        addFunction("random", (a)->Math.random(), 0, 10);
         addFunction("get", (a, b)->{
             int id = a.calculate().intValue();
             if(array.containsKey(id)){

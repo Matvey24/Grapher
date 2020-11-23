@@ -5,8 +5,9 @@
     <entry key="log_path">https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/VersionLog.xml</entry>
     <entry key="version">26</entry>
     <entry key="changes">
-added more hot keys
-fixed bugs with russian language errors
-'for' cycle returns sum
+'arr' func returns length of array if idx is -1
+calculator lambda described
+added random function
+added function 'update_graphic'
     </entry>
 </properties>

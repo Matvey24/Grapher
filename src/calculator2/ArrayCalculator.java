@@ -57,14 +57,16 @@ public class ArrayCalculator<T> {
             type.addFuncName(graphs.get(i).substring(0, graphs.get(i).indexOf("=")));
         }
         int err = 0;
+        String name = null;
         try {
             for (; err < graphs.size(); ++err) {
                 String s = graphs.get(err);
                 int n = s.indexOf('=');
-                analise(s.substring(0, n), s.substring(n + 1), true);
+                name = s.substring(0, n);
+                analise(name, s.substring(n + 1), true);
             }
         } catch (RuntimeException e) {
-            throw new RuntimeException(e.getMessage() + " " + CalcLanguage.CALCULATOR_ERRORS[0] + " " + (err + 1) + " " + CalcLanguage.CALCULATOR_ERRORS[1]);
+            throw new RuntimeException(e.getMessage() + " " + CalcLanguage.CALCULATOR_ERRORS[0] + " '" + name + "' " +(err + 1) + " " + CalcLanguage.CALCULATOR_ERRORS[1]);
         }
         err = 0;
         try {
@@ -73,38 +75,40 @@ public class ArrayCalculator<T> {
                 int n = s.indexOf('=');
                 if (n == -1)
                     continue;
-                String start = s.substring(0, n);
-                if (type.consts.containsKey(start)) {
+                name = s.substring(0, n);
+                if (type.consts.containsKey(name)) {
                     int args = director.parse(s.substring(n + 1));
                     if (args != 0) {
                         throw new RuntimeException(CalcLanguage.CALCULATOR_ERRORS[6] + " " + CalcLanguage.CALCULATOR_ERRORS[0] + " " + CalcLanguage.CALCULATOR_ERRORS[7]);
                     }
-                    Variable<T> var = type.consts.get(start);
+                    Variable<T> var = type.consts.get(name);
                     AbstractConst<T> c = new AbstractConst<>(var);
                     c.stack = director.getStack();
                     consts.add(c);
                     continue;
                 }
-                analise(start, s.substring(n + 1), false);
+                analise(name, s.substring(n + 1), false);
             }
         } catch (RuntimeException e) {
             throw new RuntimeException(e.getMessage() + " " + CalcLanguage.CALCULATOR_ERRORS[0]
-                    + " " + (err + 1) + " " + CalcLanguage.CALCULATOR_ERRORS[2]);
+                    + " '" + name + "' " + (err + 1) + " " + CalcLanguage.CALCULATOR_ERRORS[2]);
         }
 
         for (int i = 0; i < this.funcs.size(); ++i) {
             try {
                 director.update(funcTexts.get(i));
             } catch (RuntimeException e) {
+                name = funcs.get(i).substring(0, funcs.get(i).indexOf("="));
                 throw new RuntimeException(e.getMessage() + " " + CalcLanguage.CALCULATOR_ERRORS[0]
-                        + " " + CalcLanguage.CALCULATOR_ERRORS[3] + " " + (i + 1)
+                        + " " + CalcLanguage.CALCULATOR_ERRORS[3] + " '" + name + "' " + (i + 1)
                         + " " + CalcLanguage.CALCULATOR_ERRORS[2]);
             }
             try {
                 this.funcs.get(i).setFunc(director.getTree(), director.getVars());
             } catch (RuntimeException e) {
+                name = funcs.get(i).substring(0, funcs.get(i).indexOf("="));
                 throw new RuntimeException(e.getMessage() + " " + CalcLanguage.CALCULATOR_ERRORS[0]
-                        + " " + CalcLanguage.CALCULATOR_ERRORS[4] + " "
+                        + " " + CalcLanguage.CALCULATOR_ERRORS[4] + " '" + name + "' "
                         + (i + 1) + " " + CalcLanguage.CALCULATOR_ERRORS[2]);
             }
             if (i < graphs.size()) {

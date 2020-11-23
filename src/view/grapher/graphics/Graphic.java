@@ -55,6 +55,9 @@ public abstract class Graphic {
         if(feelsTime)
             needResize = true;
     }
+    public void update_graphic(){
+        needResize = true;
+    }
     public void free(){
         map = null;
         func = null;

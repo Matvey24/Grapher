@@ -65,11 +65,11 @@ public class CalculatorView extends ViewElement {
         if(func != null) {
             if(func instanceof LambdaInitializer){
                 sb.setLength(0);
-                var[0].setValue(0.);
+                var[0].setValue(-1.);
                 int size = ((LambdaInitializer<Double>) func).execute(var).intValue();
-                sb.append(size);
-                for(int i = 1; i < size + 1; ++i){
-                    sb.append(',');
+                for(int i = 0; i < size; ++i){
+                    if(i != 0)
+                        sb.append(',');
                     var[0].setValue(i + .0);
                     double d = ((LambdaInitializer<Double>) func).execute(var);
                     sb.append(d);

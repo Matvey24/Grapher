@@ -248,8 +248,7 @@ public class Calculator {
                     resize.run();
                     repaint.run();
                 } catch (Throwable e) {
-                    updater.error(e.getClass().getName());
-                    e.printStackTrace();
+                    updater.error(e.getMessage());
                 }
             }
         });
@@ -360,6 +359,15 @@ public class Calculator {
         for (Variable<Double> param : params) {
             n.consts.put(param.getName(), param);
         }
+        n.addFunction("update_graphic", (a)->{
+            int idx = a.intValue();
+            if(idx < 0)
+                idx = 0;
+            if(idx >= updater.graphics.size())
+                idx = updater.graphics.size() - 1;
+            updater.graphics.get(idx).update_graphic();
+            return 0.;
+        }, 10);
         this.goto_len = gotoDefLen;
         return n;
     }

@@ -29,4 +29,10 @@ added more hot keys
 fixed bugs with russian language errors
 'for' cycle returns sum
     </entry>
+    <entry key="27">Grapher3.7
+'arr' func returns length of array if idx is -1
+calculator lambda described
+added random function
+added function 'update_graphic'
+    </entry>
 </properties>

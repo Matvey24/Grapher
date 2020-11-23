@@ -178,7 +178,7 @@ Signs:
 % - remainder of division
 &lt;, >, = return 1 if the expression
 is true else return 0
-part 27
+part 29
 Functions:
 sqrt, cbrt - quadratic and cubic roots
 pow - power
@@ -195,8 +195,10 @@ abs - absolute value
 floor - max integer less then given
 ceil - min integer bigger then given
 round - rounding according to mathematical rules
+random() - random value from 0 to 1
 min, max - min / max number from few given
 arr(idx, a...) - returns element from given array 'a'
+returns length of array, if idx = -1
 if(x, y, z) - returns z if x = 0 else y
 ifs(x) - returns 0 if x = 0 else 1
 arrays: the map of arrays of values
@@ -235,7 +237,7 @@ arctgTwo(1, 0) == pi / 2
 num = sqrt(5) - num is a constant
 lb = ld(x) - the same as ld(x) = logarithm of x with basis 2
 myfunc = sin(x) + cos(y) - use it like myfunc(x,y)
-help 5
+help 6
 part 11
 Warning:
 Grapher can answer the incomprehensible
@@ -248,11 +250,15 @@ following continuously, grapher think
 it is an argument (sinx), and r doesn't
 have arguments. xr all is a variable,
 xra (ra=2) is working good.
-part 4
+part 8
 Feels time:
 If "feels time" is turned off,
 timer won't update this graphic,
 grapher would work faster with hard animations.
+if you want to update this graphic rarely, use
+'update_graphic(idx)' function and
+grapher will update this graphic on timer iteration
+after call of this function.
 part 18
 Parameters:
 If you create constant with a name "lookX" or "lookY",
@@ -272,6 +278,12 @@ setting goto means next constant will be on 'goto' position,
 goto calculates on 'goto' position.
 Use parameter 'gotoLen' to change max count of using 'goto'
 per one update or timer cycle.
+part 5
+Lambda in calculator:
+Send lambda expression in calculator to get more
+than 1 answer. Lambda from -1 has to return count
+of answers. Use 'arr' as main func, like '{arr(x, 4, 5)}'.
+returns '4.0, 5.0'.
 part 11
 Hot keys:
 Ctrl + S/L - save/load project in/from last used file

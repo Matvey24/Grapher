@@ -62,7 +62,6 @@ public class ModelUpdater {
             }
         }).start();
     }
-
     public void addVRemove(ActionEvent e) {
         if (e.getActionCommand().equals("remove")) {
             supportFrameManager.close();

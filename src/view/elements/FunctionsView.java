@@ -76,7 +76,6 @@ public class FunctionsView extends ViewElement {
         name.setText(Language.FUNCTIONS);
         btn_update.setText(Language.UPDATE);
     }
-
     private void registerActions(Runnable onUpdate) {
         area.registerKeyboardAction(
                 (e) -> onUpdate.run(),
