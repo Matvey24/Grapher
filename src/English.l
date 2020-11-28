@@ -178,7 +178,7 @@ Signs:
 % - remainder of division
 &lt;, >, = return 1 if the expression
 is true else return 0
-part 29
+part 30
 Functions:
 sqrt, cbrt - quadratic and cubic roots
 pow - power
@@ -208,6 +208,7 @@ get(x, y) - returns value in array 'x' on 'y' position
 for(start, end, func) - executes 'func' - lambda, gives
 func the integer index from start to end,
 returns sum of returns of func.
+assert(x) - makes error with parameter x
 part 17
 Constants: (SI)
 pi - pi value = 3.14
@@ -259,7 +260,7 @@ if you want to update this graphic rarely, use
 'update_graphic(idx)' function and
 grapher will update this graphic on timer iteration
 after call of this function.
-part 18
+part 21
 Parameters:
 If you create constant with a name "lookX" or "lookY",
 Grapher will move camera to this position,
@@ -276,6 +277,9 @@ Use parameter 'goto' to change next
 calculating constant (constants numbers start with 0)
 setting goto means next constant will be on 'goto' position,
 goto calculates on 'goto' position.
+Use function 'finish' in 'goto = finish' to
+finish current iteration,
+'finish' returns number of calculating constants.
 Use parameter 'gotoLen' to change max count of using 'goto'
 per one update or timer cycle.
 part 5

@@ -75,9 +75,9 @@ public class Number extends AbstractType<Double> {
         addSign('*', mul, 3);
         addSign('/', (a, b) -> a.calculate() / b.calculate(), 3);
         addSign('%', (a, b) -> a.calculate() % b.calculate(), 3);
-        addSign('^', pow, 4);
+        addSign('^', pow, 5);
 
-        Sign<Double> mulp = addSign('!', mul, 11);
+        Sign<Double> mulp = addSign('!', mul, 4);
         array = new HashMap<>();
         tmp[0] = new FuncVariable<>();
         functions();
@@ -143,6 +143,7 @@ public class Number extends AbstractType<Double> {
         addFunction("max", max, -1, 10);
         addFunction("arr", arr, -1, 10);
         addFunction("random", (a)->Math.random(), 0, 10);
+        addFunction("assert", (a)->{throw new RuntimeException("assert: " + a);},10);
         addFunction("get", (a, b)->{
             int id = a.calculate().intValue();
             if(array.containsKey(id)){

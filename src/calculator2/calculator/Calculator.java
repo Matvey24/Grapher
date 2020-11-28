@@ -95,7 +95,7 @@ class Calculator<T> {
         for (String s : myvars) {
             if(s.length() == 0)
                 continue;
-            FuncVariable<T> var = findVar(old_vars, e.symbol);
+            FuncVariable<T> var = findVar(old_vars, s);
             if(var != null){
                 vars.add(var);
                 lep.add(var);

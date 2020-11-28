@@ -4,35 +4,34 @@
     <entry key = "22">Grapher3.2
 removed need writing := before overriding constants
 added 'goto' constant
-removed last bug with recursion
-    </entry>
+removed last bug with recursion</entry>
     <entry key="23">Grapher3.3
 added lambda expressions
 optimized calculating Implicit
 added version log file
 added usable arrays
-fixed bug with log file
-    </entry>
+fixed bug with log file</entry>
     <entry key="24">Grapher3.4
 fixed bug with function parameter lambda
 added color chooser for graphics
-changed default graphics colors
-    </entry>
+changed default graphics colors</entry>
     <entry key="25">Grapher3.5
 fixed bug with nullable parameters
 added opportunity of using external vars in lambdas
 fixed bug with 'max' function
-added hot keys for functions area
-    </entry>
+added hot keys for functions area</entry>
     <entry key="26">Grapher3.6
 added more hot keys
 fixed bugs with russian language errors
-'for' cycle returns sum
-    </entry>
+'for' cycle returns sum</entry>
     <entry key="27">Grapher3.7
 'arr' func returns length of array if idx is -1
 calculator lambda described
 added random function
-added function 'update_graphic'
-    </entry>
+added function 'update_graphic'</entry>
+    <entry key="28">Grapher3.8
+fixed one bug with external vars in lambda
+added painting last dot in translation
+added function 'finish'
+added function 'assert'</entry>
 </properties>

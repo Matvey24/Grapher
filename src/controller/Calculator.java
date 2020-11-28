@@ -24,6 +24,8 @@ import static view.MainPanel.GRAPH_WIDTH;
 import static view.MainPanel.HEIGHT;
 
 public class Calculator {
+    private static final int gotoDefLen = 100000;
+
     private final ModelUpdater updater;
     private final ArrayCalculator<Double> calculator;
     private final Runnable repaint;
@@ -36,7 +38,6 @@ public class Calculator {
     private int const_idx;
     private int goto_count;
     private int goto_len;
-    private static final int gotoDefLen = 100000;
 
     public Calculator(ModelUpdater updater, Runnable repaint) {
         this.updater = updater;
@@ -214,9 +215,8 @@ public class Calculator {
 
     public void updateConstants() {
         goto_count = 0;
-        for (const_idx = 0; const_idx < calculator.getConsts().size(); ++const_idx) {
+        for (const_idx = 0; const_idx < calculator.getConsts().size(); ++const_idx)
             calculator.getConsts().get(const_idx).run();
-        }
     }
     public void repaint(){
         tasks.clearTasks();
@@ -231,7 +231,7 @@ public class Calculator {
                     resize.run();
                     repaint.run();
                 } catch (Throwable t) {
-                    updater.error(t.toString());
+                    updater.error(t.getMessage());
                 }
             });
     }
@@ -368,6 +368,7 @@ public class Calculator {
             updater.graphics.get(idx).update_graphic();
             return 0.;
         }, 10);
+        n.addFunction("finish", (a)->(double)calculator.getConsts().size(), 0, 10);
         this.goto_len = gotoDefLen;
         return n;
     }

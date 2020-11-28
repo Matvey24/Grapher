@@ -10,6 +10,7 @@ import java.awt.*;
 import static view.MainPanel.GRAPH_WIDTH;
 import static view.MainPanel.HEIGHT;
 import static view.grapher.CoordinateSystem.mod;
+
 public class Translation extends Graphic {
     private double[][] dataX;
     private double[][] dataY;
@@ -21,15 +22,16 @@ public class Translation extends Graphic {
     private FuncVariable<Double> yy;
     private int multiplyer = 2;
 
-    public Translation(CoordinateSystem cs, int map_size, boolean feelsTime){
+    public Translation(CoordinateSystem cs, int map_size, boolean feelsTime) {
         this.cs = cs;
         MAP_SIZE = map_size;
         this.feelsTime = feelsTime;
         super.type = GraphType.TRANSLATION;
     }
+
     @Override
     public synchronized void resize(double offsetX, double offsetY, double scaleX, double scaleY) {
-        if(dataX.length/multiplyer < cs.MAX_LINES)
+        if (dataX.length / multiplyer < cs.MAX_LINES)
             resetMAP_SIZE();
         if (needResize || offsetX != this.offsetX || this.scaleX != scaleX
                 || offsetY != this.offsetY || this.scaleY != scaleY || this.graph_height != HEIGHT || this.graph_width != GRAPH_WIDTH) {
@@ -45,13 +47,13 @@ public class Translation extends Graphic {
             endY = (int) (GRAPH_WIDTH / scaleX / deltaX) + 3;
             int endX = (int) (HEIGHT / scaleY / deltaY) + 3;
             double lineStart = -mod(offsetX, deltaX) + offsetX;
-            double lineEnd = lineStart + (endY - 1)*deltaX;
+            double lineEnd = lineStart + (endY - 1) * deltaX;
             for (int n = 0; n < endX; ++n) {
                 double[] mapX = dataX[n];
                 double[] mapY = dataY[n];
                 double y = -(mod(offsetY, deltaY) + (endX - n - 2) * deltaY) + offsetY;
                 for (int i = 0; i < MAP_SIZE; ++i) {
-                    double x = (i*lineStart + (MAP_SIZE - i - 1)*lineEnd)/MAP_SIZE;
+                    double x = (i * lineStart + (MAP_SIZE - i - 1) * lineEnd) / (MAP_SIZE - 1);
                     var.setValue(x);
                     xy.setValue(y);
                     mapX[i] = func.calculate();
@@ -60,14 +62,14 @@ public class Translation extends Graphic {
                     mapY[i] = yFunc.calculate();
                 }
             }
-            lineStart = -mod(offsetY, deltaY)+ offsetY + deltaX;
-            lineEnd = lineStart - (endX -1)*deltaY;
+            lineStart = -mod(offsetY, deltaY) + offsetY + deltaX;
+            lineEnd = lineStart - (endX - 1) * deltaY;
             for (int n = 0; n < endY; ++n) {
                 double[] mapX = dataX[n + endX];
                 double[] mapY = dataY[n + endX];
                 double x = (-mod(offsetX, deltaX) + n * deltaX) + offsetX;
                 for (int i = 0; i < MAP_SIZE; ++i) {
-                    double y = (i*lineStart + (MAP_SIZE - i - 1)*lineEnd)/MAP_SIZE;
+                    double y = (i * lineStart + (MAP_SIZE - i - 1) * lineEnd) / (MAP_SIZE - 1);
                     var.setValue(x);
                     xy.setValue(y);
                     mapX[i] = func.calculate();
@@ -81,7 +83,7 @@ public class Translation extends Graphic {
     }
 
     public void setMultiplyer(int multiplyer) {
-        if(this.multiplyer != multiplyer) {
+        if (this.multiplyer != multiplyer) {
             this.multiplyer = multiplyer;
             this.needResize = true;
         }
@@ -94,10 +96,10 @@ public class Translation extends Graphic {
     @Override
     public synchronized void paint(Graphics g) {
         g.setColor(color);
-        for(int n = 0; n < endY; ++n){
+        for (int n = 0; n < endY; ++n) {
             double[] map = dataY[n];
             double[] xMap = dataX[n];
-            for (int i = 0; i < MAP_SIZE-1; ++i) {
+            for (int i = 0; i < MAP_SIZE - 1; ++i) {
                 if (Double.isNaN(map[i] + map[i + 1] + xMap[i] + xMap[i + 1]))
                     continue;
                 int y1 = (int) ((offsetY - map[i]) * scaleY);
@@ -118,22 +120,26 @@ public class Translation extends Graphic {
         dataY = new double[cs.MAX_LINES * multiplyer][dataY[0].length];
         needResize = true;
     }
-    public void updateY(Expression<Double> funcY, FuncVariable<Double> xy, FuncVariable<Double> yx, FuncVariable<Double> yy){
+
+    public void updateY(Expression<Double> funcY, FuncVariable<Double> xy, FuncVariable<Double> yx, FuncVariable<Double> yy) {
         this.yFunc = funcY;
         this.xy = xy;
         this.yx = yx;
         this.yy = yy;
     }
+
     @Override
     public void setMAP_SIZE(int map_size) {
         int size = 1;
-        if(dataX != null)
+        if (dataX != null) {
             size = dataX[0].length;
+            if (size == map_size)
+                return;
+        }
         while (size < map_size)
             size *= 2;
         this.MAP_SIZE = map_size;
-        if(size == map_size)
-            return;
+        needResize = true;
         dataX = new double[cs.MAX_LINES * multiplyer][size];
         dataY = new double[cs.MAX_LINES * multiplyer][size];
     }
