@@ -1,6 +1,8 @@
 package view.support_panels;
 
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 
@@ -18,16 +20,26 @@ public class FileChooser extends Screen {
     private final JFileChooser fileChooser;
     private ActionListener listener;
     private String title = "";
+    private int width = 500+2*OFFSET;
+    private int height = 350+2*OFFSET;
+
     public FileChooser(){
         setLayout(null);
         fileChooser = new JFileChooser();
-        fileChooser.setBounds(OFFSET, OFFSET, 500, 350);
         FileFilter ff = new FileNameExtensionFilter("Grapher project (.gr)", "gr");
         fileChooser.addChoosableFileFilter(ff);
         fileChooser.setMultiSelectionEnabled(false);
         add(fileChooser);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        registerKeyboardAction((e)->{back();}, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
+        registerKeyboardAction((e)->back(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                width = getWidth();
+                height = getHeight();
+                fileChooser.setBounds(OFFSET, OFFSET, width-2*OFFSET, height-2*OFFSET);
+            }
+        });
     }
     public void setCurrTitle(String title) {
         this.title = title;
@@ -57,6 +69,6 @@ public class FileChooser extends Screen {
 
     @Override
     public void onSetSize() {
-        setSize(500 + 2 * OFFSET,350 + 2 * OFFSET);
+        setSize(width,height);
     }
 }

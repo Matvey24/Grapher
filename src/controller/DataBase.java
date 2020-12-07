@@ -23,6 +23,7 @@ public class DataBase {
         properties.setProperty("timer_info", m.timer_info);
         properties.setProperty("resize_idx", m.resize_idx);
         properties.setProperty("view_params", m.view_params);
+        properties.setProperty("main_settings", m.main_settings);
         try (FileOutputStream fos = new FileOutputStream(f)){
             properties.storeToXML(fos, "Edit it if you are a geek!");
         }catch (IOException e){
@@ -48,7 +49,7 @@ public class DataBase {
         m.functions = properties.getProperty("functions", "");
         m.calculator = properties.getProperty("calculator", "");
         m.timer_info = properties.getProperty("timer_info", "");
-        m.language = properties.getProperty("language", null);
+        m.main_settings = properties.getProperty("main_settings","");
         m.resize_idx = properties.getProperty("resize_idx", "");
         m.view_params = properties.getProperty("view_params", "");
         return m;

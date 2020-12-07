@@ -141,12 +141,14 @@ cos(x) + cos(y) - pretty picture
 in functions:
 deriv = (fa(x+d)-fa(x))/d
 d = 0.000001 - derivate of function, use like deriv({t^2}, x)
-part 7
+part 9
 Settings:
 Changing language in settings.
 Save/load grapher project here.
 Lines &lt;-> is minimum distance
-between lines of net on view.
+between lines of net on view,
+Put '~' before number and
+grapher won't show coordinates.
 Graphics max count - number of visible
 functions of graphics.
 help 7
@@ -178,7 +180,7 @@ Signs:
 % - remainder of division
 &lt;, >, = return 1 if the expression
 is true else return 0
-part 29
+part 30
 Functions:
 sqrt, cbrt - quadratic and cubic roots
 pow - power
@@ -208,6 +210,7 @@ get(x, y) - returns value in array 'x' on 'y' position
 for(start, end, func) - executes 'func' - lambda, gives
 func the integer index from start to end,
 returns sum of returns of func.
+assert(x) - makes error with parameter x
 part 17
 Constants: (SI)
 pi - pi value = 3.14
@@ -259,7 +262,7 @@ if you want to update this graphic rarely, use
 'update_graphic(idx)' function and
 grapher will update this graphic on timer iteration
 after call of this function.
-part 18
+part 26
 Parameters:
 If you create constant with a name "lookX" or "lookY",
 Grapher will move camera to this position,
@@ -276,8 +279,16 @@ Use parameter 'goto' to change next
 calculating constant (constants numbers start with 0)
 setting goto means next constant will be on 'goto' position,
 goto calculates on 'goto' position.
+Use function 'finish' in 'goto = finish' to
+finish current iteration,
+'finish' returns number of calculating constants.
 Use parameter 'gotoLen' to change max count of using 'goto'
 per one update or timer cycle.
+view_movable - if 0, you can't move view by clicking mouse
+buttons (for better view), but you can by moving wheel.
+Use functions getMouseX(), getMouseY(), isMousePressed()
+to know about mouse. Coords don't update while mouse
+is not pressed.
 part 5
 Lambda in calculator:
 Send lambda expression in calculator to get more
@@ -306,9 +317,8 @@ resize_idx - way to resize - number in range 0-3
 timer_info - four numbers, like in timer settings:
 duration:fps and interval on new line
 view_params - four numbers, each on its own line:
-offset x, offset y, scale x, scale y
-offset x, y - coordinates of left bottom
-corner of image
+lookX, lookY, scale x, scale y
+look x, y - coordinates of center of view
 scale x, y - number of pixels of display,
 which graphic unit contains
 graphs_count - count of graphics -
@@ -329,7 +339,8 @@ if it is a Parametric, interval,
 Implicit, sensitivity and on next line
 type of rainbow(0-rainbow,1-infrared imager)
 Translation, count of lines in cell on graphic
-if you want, you can add language:
-language - name of language, for example, >Русский&lt;.
+main_settings - information of the app:
+first line - lines_space
+second line - language, for example, 'Русский'.
 </entry>
 </properties>

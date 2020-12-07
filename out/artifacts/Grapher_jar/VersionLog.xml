@@ -34,4 +34,13 @@ fixed one bug with external vars in lambda
 added painting last dot in translation
 added function 'finish'
 added function 'assert'</entry>
+    <entry key="29">Grapher3.9
+fixed bug with unsorted log
+added main_settings in saves
+added opportunity not to draw coordinates
+saves now contain central point of view (not left up)
+added functions for mouse:
+    isMousePressed, getMouseX, getMouseY
+and parameter view_movable
+</entry>
 </properties>

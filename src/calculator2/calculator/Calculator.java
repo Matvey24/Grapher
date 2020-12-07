@@ -156,8 +156,7 @@ class Calculator<T> {
     }
 
     private void nextBracket(Element el) {
-        boolean opens = helper.brackets.brOpens(el.symbol);
-        if (!opens) {
+        if (!helper.brackets.brOpens(el.symbol)) {
             for (int i = other.size() - 2; i >= 0; --i) {
                 Element e = other.elementAt(i);
                 if (e.type == BRACKET) {
@@ -211,7 +210,7 @@ class Calculator<T> {
                     nextArgs = Integer.parseInt(e.symbol.substring(1));
                 }
                 if (helper.brackets.brLambda(e.symbol)) {
-                    LambdaInitializer<T> init = new LambdaInitializer<>();
+                    LambdaContainer<T> init = new LambdaContainer<>();
                     List<FuncVariable<T>> lep = lambda_params.pop();
                     lambda_params_free.push(lep);
                     for(int i = lep.size() - 1; i >= 0; --i){
@@ -272,7 +271,7 @@ class Calculator<T> {
                     //this is initializer
                     LambdaParameter<T> param = (LambdaParameter<T>) findVar(vars, e.symbol);
 
-                    LambdaInitializer<T> init = new LambdaInitializer<>();
+                    LambdaContainer<T> init = new LambdaContainer<>();
                     init.setValues(param, null);
                     values.push(init);
                     count(priority);

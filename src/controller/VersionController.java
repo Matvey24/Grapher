@@ -10,7 +10,7 @@ import java.util.Properties;
 import java.util.Set;
 
 public class VersionController {
-    public static final int VERSION_CODE = 28;
+    public static final int VERSION_CODE = 29;
     public static String VERSION_NAME = getFullName(getName(VERSION_CODE));
     private static final String URL_VERSION =
             "https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/VersionInfo.xml";
@@ -63,10 +63,10 @@ public class VersionController {
             properties.loadFromXML(input);
             Set<String> names = properties.stringPropertyNames();
             String[][] log = new String[names.size()][];
-            Iterator<String> s = names.iterator();
+            Iterator<String> s = names.stream().sorted().iterator();
             for(int i = 0; s.hasNext(); ++i){
                 String text = s.next();
-                log[i] = properties.getProperty(text).split("\\n");
+                log[names.size() - i - 1] = properties.getProperty(text).split("\\n");
             }
             return log;
         }catch (Exception e){

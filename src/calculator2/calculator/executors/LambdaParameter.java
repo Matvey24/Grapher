@@ -6,9 +6,9 @@ import calculator2.calculator.util.actions.functions.MultiFunc;
 import java.util.Stack;
 
 public class LambdaParameter<T> extends FuncVariable<T> implements MultiFunc<T>{
-    private final Stack<LambdaInitializer<T>> funcs;
+    private final Stack<LambdaContainer<T>> funcs;
     private final Stack<Boolean> isVar;
-    private LambdaInitializer<T> func;
+    private LambdaContainer<T> func;
     private boolean isLambda;
     private final Expression<T>[] empty;
     public LambdaParameter(Expression<T>[] empty) {
@@ -29,13 +29,13 @@ public class LambdaParameter<T> extends FuncVariable<T> implements MultiFunc<T>{
 
     @Override
     public void setValue(Expression<T> exp) {
-        boolean lam = exp instanceof LambdaInitializer;
+        boolean lam = exp instanceof LambdaContainer;
         if(lam){
-            LambdaInitializer<T> e = (LambdaInitializer<T>) exp;
+            LambdaContainer<T> e = (LambdaContainer<T>) exp;
             if(e.getFunc() instanceof LambdaParameter)
                 funcs.push(((LambdaParameter<T>) e.getFunc()).func);
             else
-                funcs.push((LambdaInitializer<T>) exp);
+                funcs.push((LambdaContainer<T>) exp);
         }else{
             super.setValue(exp);
         }

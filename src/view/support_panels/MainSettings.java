@@ -3,6 +3,7 @@ package view.support_panels;
 import controller.ModelUpdater;
 import framesLib.Screen;
 import model.Language;
+import model.help.FullModel;
 import view.elements.ComboBoxParameter;
 import view.elements.Parameter;
 import view.elements.TextElement;
@@ -19,21 +20,13 @@ public class MainSettings extends Screen {
     private final FileChooser fileChooser;
     private final JButton btn_load;
     private final JButton btn_save;
-    private Parameter lineSpace;
+    private final Parameter lineSpace;
     private Parameter graphics_count;
     private boolean selectionSave;
     public MainSettings(ModelUpdater modelUpdater) {
         this.modelUpdater = modelUpdater;
         setLayout(null);
-        lineSpace = new Parameter(Language.SETTINGS[1], (s) -> {
-            int space = Integer.parseInt(s);
-            if(space < 10) {
-                lineSpace.setDefault("" + modelUpdater.getCoordinateSystem().getMinDelta());
-                return;
-            }
-            modelUpdater.getCoordinateSystem().setMIN_DELTA(space);
-            modelUpdater.runResize();
-        });
+        lineSpace = new Parameter(Language.SETTINGS[1], this::setLineSpace);
         lineSpace.setBounds(OFFSET, 2 * OFFSET + TextElement.HEIGHT, ComboBoxParameter.WIDTH);
         lineSpace.addTo(this);
 
@@ -51,7 +44,6 @@ public class MainSettings extends Screen {
                 3 * OFFSET + TextElement.HEIGHT + ComboBoxParameter.HEIGHT,
                 ComboBoxParameter.WIDTH);
         graphics_count.addTo(this);
-
         language = new ComboBoxParameter(Language.SETTINGS[0], Language.language_Names);
         language.setBounds(OFFSET, OFFSET*4 + 2*ComboBoxParameter.HEIGHT + TextElement.HEIGHT);
         language.setSelectedIndex(Language.LANGUAGE_INDEX);
@@ -94,7 +86,29 @@ public class MainSettings extends Screen {
         btn_load.setBounds(3 * OFFSET / 2 + ComboBoxParameter.WIDTH / 2, OFFSET,
                 ComboBoxParameter.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
     }
-
+    private void setLineSpace(String s){
+        if(s.charAt(0) == '~'){
+            s = s.substring(1);
+            modelUpdater.getMainPanel().getGraphicsView().draw_coords = false;
+        }else{
+            modelUpdater.getMainPanel().getGraphicsView().draw_coords = true;
+        }
+        int space = Integer.parseInt(s);
+        if(space < 10) {
+            lineSpace.setDefault("" + modelUpdater.getCoordinateSystem().getMinDelta());
+            return;
+        }
+        modelUpdater.getCoordinateSystem().setMIN_DELTA(space);
+        modelUpdater.runResize();
+    }
+    private String getLineSpaceText(){
+        String s = String.valueOf(modelUpdater.getCoordinateSystem().getMinDelta());
+        if(modelUpdater.getMainPanel().getGraphicsView().draw_coords){
+            return s;
+        }else{
+            return "~" + s;
+        }
+    }
     public void setSelectionSave(boolean selectionSave) {
         this.selectionSave = selectionSave;
         if(selectionSave){
@@ -110,7 +124,7 @@ public class MainSettings extends Screen {
     @Override
     public void onShow(){
         setTitle(Language.MAIN_SETTINGS);
-        lineSpace.setDefault(String.valueOf(modelUpdater.getCoordinateSystem().getMinDelta()));
+        lineSpace.setDefault(getLineSpaceText());
         graphics_count.setDefault(String.valueOf(modelUpdater.list.getMAX_SIZE()));
     }
 
@@ -120,7 +134,25 @@ public class MainSettings extends Screen {
     public void setLanguage(int idx) {
         language.setSelectedIndex(idx);
     }
-
+    public void makeModel(FullModel m){
+        m.main_settings = getLineSpaceText();
+    }
+    public void fromModel(FullModel fm){
+        String st = fm.main_settings;
+        if(st.isEmpty())
+            return;
+        String[] arr = st.split("\n");
+        if(arr.length > 0){
+            String space = arr[0];
+            setLineSpace(space);
+        }
+        if(arr.length > 1){
+            String name = arr[1];
+            int idx = Language.language_Names.indexOf(name);
+            if(idx != -1)
+                setLanguage(idx);
+        }
+    }
     @Override
     public void onSetSize() {
         setSize(TextElement.WIDTH + 2 * OFFSET, 4 * OFFSET + 3* ComboBoxParameter.HEIGHT + TextElement.HEIGHT + 40);

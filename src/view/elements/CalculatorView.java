@@ -1,7 +1,7 @@
 package view.elements;
 
 import calculator2.calculator.executors.FuncVariable;
-import calculator2.calculator.executors.LambdaInitializer;
+import calculator2.calculator.executors.LambdaContainer;
 import calculator2.calculator.executors.actors.Expression;
 import model.Language;
 import model.ViewElement;
@@ -63,15 +63,15 @@ public class CalculatorView extends ViewElement {
     }
     public void update(){
         if(func != null) {
-            if(func instanceof LambdaInitializer){
+            if(func instanceof LambdaContainer){
                 sb.setLength(0);
                 var[0].setValue(-1.);
-                int size = ((LambdaInitializer<Double>) func).execute(var).intValue();
+                int size = ((LambdaContainer<Double>) func).execute(var).intValue();
                 for(int i = 0; i < size; ++i){
                     if(i != 0)
                         sb.append(',');
                     var[0].setValue(i + .0);
-                    double d = ((LambdaInitializer<Double>) func).execute(var);
+                    double d = ((LambdaContainer<Double>) func).execute(var);
                     sb.append(d);
                 }
                 answer.setText(sb.toString());

@@ -8,7 +8,6 @@ import controller.VersionController;
 import framesLib.Screen;
 import model.help.FullModel;
 import view.elements.*;
-import view.grapher.CoordinateSystem;
 import view.grapher.GraphicsView;
 
 import java.io.File;
@@ -41,7 +40,7 @@ public class MainPanel extends Screen {
     private final JButton btn_timer;
     private final JButton btn_settings;
     private final InternalPanel panel;
-
+    public boolean view_movable;
     static {
         rebounds(1280, 720);
     }
@@ -83,7 +82,9 @@ public class MainPanel extends Screen {
         addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
-                updater.translate(e.getX() - mousePosition.x, e.getY() - mousePosition.y);
+                if(view_movable) {
+                    updater.translate(e.getX() - mousePosition.x, e.getY() - mousePosition.y);
+                }
                 mousePosition.setLocation(e.getX(), e.getY());
             }
         });
@@ -133,6 +134,7 @@ public class MainPanel extends Screen {
         registerActions();
         setGraphicsHeight();
         updater.recalculate();
+        view_movable = true;
     }
 
     public static void rebounds(int width, int height) {
@@ -194,16 +196,18 @@ public class MainPanel extends Screen {
         setTitle(VersionController.VERSION_NAME + " by Math_way");
     }
 
-    public CoordinateSystem getCoordinateSystem() {
-        return graphicsView.getCoordinateSystem();
-    }
-
     private void paintGraphic() {
-        graphicsView.repaint();
+        graphicsView.myrepaint();
     }
-
+    public GraphicsView getGraphicsView(){
+        return graphicsView;
+    }
     public void makeModel(FullModel m) {
         m.resize_idx = String.valueOf(resizeType);
+    }
+    @Override
+    public Point getMousePosition() {
+        return mousePosition;
     }
 
     public void fromModel(FullModel m) {

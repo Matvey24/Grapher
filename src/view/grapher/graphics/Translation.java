@@ -21,7 +21,7 @@ public class Translation extends Graphic {
     private FuncVariable<Double> yx;
     private FuncVariable<Double> yy;
     private int multiplyer = 2;
-
+    private int max_lines;
     public Translation(CoordinateSystem cs, int map_size, boolean feelsTime) {
         this.cs = cs;
         MAP_SIZE = map_size;
@@ -30,11 +30,12 @@ public class Translation extends Graphic {
     }
 
     @Override
-    public synchronized void resize(double offsetX, double offsetY, double scaleX, double scaleY) {
+    public void resize(double offsetX, double offsetY, double scaleX, double scaleY) {
         if (dataX.length / multiplyer < cs.MAX_LINES)
             resetMAP_SIZE();
         if (needResize || offsetX != this.offsetX || this.scaleX != scaleX
-                || offsetY != this.offsetY || this.scaleY != scaleY || this.graph_height != HEIGHT || this.graph_width != GRAPH_WIDTH) {
+                || offsetY != this.offsetY || this.scaleY != scaleY || this.graph_height != HEIGHT || this.graph_width != GRAPH_WIDTH || this.max_lines != cs.MAX_LINES) {
+            this.max_lines = cs.MAX_LINES;
             this.offsetY = offsetY;
             this.scaleY = scaleY;
             this.offsetX = offsetX;
@@ -94,7 +95,7 @@ public class Translation extends Graphic {
     }
 
     @Override
-    public synchronized void paint(Graphics g) {
+    public void paint(Graphics g) {
         g.setColor(color);
         for (int n = 0; n < endY; ++n) {
             double[] map = dataY[n];

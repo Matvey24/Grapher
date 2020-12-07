@@ -377,7 +377,20 @@ public class ModelUpdater {
         if (Double.isFinite(y))
             offsetY = y + HEIGHT / scaleY / 2d;
     }
-
+    public double getLookAtX(){
+        return offsetX + GRAPH_WIDTH / scaleX / 2d;
+    }
+    public double getLookAtY(){
+        return offsetY - HEIGHT / scaleY / 2d;
+    }
+    public double getMouseX(){
+        int x = mainPanel.getMousePosition().x - ElementsList.WIDTH;
+        return offsetX + x / scaleX;
+    }
+    public double getMouseY(){
+        int y = mainPanel.getMousePosition().y;
+        return offsetY - y / scaleY;
+    }
     public void setScaleX(double x) {
         if (Double.isFinite(x) && x > 0) {
             double sX = offsetX + GRAPH_WIDTH / scaleX / 2d;
@@ -411,7 +424,7 @@ public class ModelUpdater {
     }
 
     public CoordinateSystem getCoordinateSystem() {
-        return mainPanel.getCoordinateSystem();
+        return mainPanel.getGraphicsView().getCoordinateSystem();
     }
 
     public void error(String message) {
@@ -458,9 +471,10 @@ public class ModelUpdater {
             calculator.run(() -> {
                 FullModel m = new FullModel();
                 calculator.makeModel(m);
-                m.view_params = offsetX + "\n" + offsetY + "\n" + scaleX + "\n" + scaleY;
+                m.view_params = getLookAtX() + "\n" + getLookAtY() + "\n" + scaleX + "\n" + scaleY;
                 mainPanel.makeModel(m);
                 supportFrameManager.getTimer().makeModel(m);
+                supportFrameManager.getMainSettings().makeModel(m);
                 setState(dataBase.save(m, f));
                 last_used_file = f;
             });
@@ -476,22 +490,18 @@ public class ModelUpdater {
                     list.updateGUI();
                     if (!m.view_params.isEmpty()) {
                         String[] view_params = m.view_params.split("\n");
-                        offsetX = Double.parseDouble(view_params[0]);
-                        offsetY = Double.parseDouble(view_params[1]);
                         scaleX = Double.parseDouble(view_params[2]);
                         scaleY = Double.parseDouble(view_params[3]);
+                        lookAtX(Double.parseDouble(view_params[0]));
+                        lookAtY(Double.parseDouble(view_params[1]));
                     }
                     mainPanel.fromModel(m);
                     supportFrameManager.getTimer().fromModel(m);
-                    if (m.language != null && Language.language_Names.contains(m.language)) {
-                        supportFrameManager.getMainSettings().setLanguage(Language.language_Names.indexOf(m.language));
-                    }
+                    supportFrameManager.getMainSettings().fromModel(m);
                     mainPanel.setGraphicsHeight();
                     calculator.recalculate();
-                    calculator.run(() -> {
-                        setState(f.getName() + " " + Language.LOADED);
-                        last_used_file = f;
-                    });
+                    calculator.run(() -> setState(f.getName() + " " + Language.LOADED));
+                    last_used_file = f;
                 } catch (Exception e) {
                     setState(e.toString());
                 }

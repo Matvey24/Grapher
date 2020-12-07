@@ -1,7 +1,7 @@
 package calculator2.values;
 
 import calculator2.calculator.executors.FuncVariable;
-import calculator2.calculator.executors.LambdaInitializer;
+import calculator2.calculator.executors.LambdaContainer;
 import calculator2.calculator.util.AbstractType;
 import calculator2.calculator.util.actions.Sign;
 import calculator2.calculator.util.actions.functions.BinarFunc;
@@ -9,7 +9,6 @@ import calculator2.calculator.util.actions.functions.MultiFunc;
 import calculator2.calculator.util.actions.functions.OneFunc;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static java.lang.Math.PI;
@@ -63,7 +62,7 @@ public class Number extends AbstractType<Double> {
     private final double ln2 = Math.log(2);
     @SuppressWarnings("unchecked")
     private final FuncVariable<Double>[] tmp = new FuncVariable[1];
-    private final HashMap<Integer, List<Double>> array;
+    private final List<List<Double>> array;
     public Number() {
         super(10, .0);
         addSign('<', (a, b) -> ((a.calculate() < b.calculate()) ? 1d : 0), 1);
@@ -78,7 +77,7 @@ public class Number extends AbstractType<Double> {
         addSign('^', pow, 5);
 
         Sign<Double> mulp = addSign('!', mul, 4);
-        array = new HashMap<>();
+        array = new ArrayList<>();
         tmp[0] = new FuncVariable<>();
         functions();
         constants();
@@ -146,54 +145,53 @@ public class Number extends AbstractType<Double> {
         addFunction("assert", (a)->{throw new RuntimeException("assert: " + a);},10);
         addFunction("get", (a, b)->{
             int id = a.calculate().intValue();
-            if(array.containsKey(id)){
-                List<Double> arr = array.get(id);
-                int idx = b.calculate().intValue();
-                if(idx >= 0 && idx < arr.size()){
-                    return arr.get(idx);
-                }
-                return .0;
-            }
-            return .0;
+            if(id < 0 || id >= array.size())
+                return 0d;
+            List<Double> arr = array.get(id);
+            id = b.calculate().intValue();
+            if(id < 0 || id >= arr.size())
+                return 0d;
+            return arr.get(id);
         }, 10);
         addFunction("set", (a)->{
-            int id = a[0].calculate().intValue();
-            List<Double> l;
-            if(array.containsKey(id)){
-                l = array.get(id);
-            }else{
-                l = new ArrayList<>();
-                array.put(id, l);
-            }
-            int idx = a[1].calculate().intValue();
+            int idx = a[0].calculate().intValue();
             if(idx < 0)
-                return .0;
+                return 0d;
+            List<Double> l;
+            if(idx >= array.size()){
+                for(int i = 0; i < idx - array.size(); ++i)
+                    array.add(new ArrayList<>());
+                l = new ArrayList<>();
+                array.add(l);
+            }else{
+                l = array.get(idx);
+            }
+            idx = a[1].calculate().intValue();
+            if(idx < 0)
+                return 0d;
             double val = a[2].calculate();
             if(idx >= l.size()){
-                for(int i = 0; i < idx - l.size(); ++i){
-                    l.add(.0);
-                }
+                for(int i = 0; i < idx - l.size(); ++i)
+                    l.add(0d);
                 l.add(val);
-            }else{
+            }else
                 l.set(idx, val);
-            }
             return val;
         }, 3, 10);
         addFunction("for", (a)->{
             double sum = 0;
-            if(a[2] instanceof LambdaInitializer) {
-                LambdaInitializer<Double> lam = (LambdaInitializer<Double>) a[2];
+            if(a[2] instanceof LambdaContainer) {
+                LambdaContainer<Double> lam = (LambdaContainer<Double>) a[2];
                 int s = a[0].calculate().intValue();
                 int e = a[1].calculate().intValue();
                 boolean dir = s < e;
                 for (int i = s; i != e;) {
-                    tmp[0].setValue(i+0.);
+                    tmp[0].setValue((double)i);
                     sum += lam.execute(tmp);
-                    if(dir){
+                    if(dir)
                         ++i;
-                    }else{
+                    else
                         --i;
-                    }
                 }
             }
             return sum;

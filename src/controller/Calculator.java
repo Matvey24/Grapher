@@ -20,8 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static model.Language.UPDATER_ERRORS;
-import static view.MainPanel.GRAPH_WIDTH;
-import static view.MainPanel.HEIGHT;
 
 public class Calculator {
     private static final int gotoDefLen = 100000;
@@ -52,6 +50,7 @@ public class Calculator {
         tasks.runTask(() -> {
             try {
                 updater.setState(Language.CONVERTING);
+                updater.getMainPanel().view_movable = true;
                 List<String> graphs = new ArrayList<>();
                 List<String> calc = new ArrayList<>();
                 calc.add(calculatorView.getText());
@@ -283,7 +282,7 @@ public class Calculator {
 
             @Override
             public Double calculate() {
-                return updater.getOffsetX() + GRAPH_WIDTH / updater.getScaleX() / 2d;
+                return updater.getLookAtX();
             }
         };
         params.add(lookX);
@@ -295,7 +294,7 @@ public class Calculator {
 
             @Override
             public Double calculate() {
-                return updater.getOffsetY() - HEIGHT / updater.getScaleY() / 2d;
+                return updater.getLookAtY();
             }
         };
         params.add(lookY);
@@ -353,6 +352,18 @@ public class Calculator {
             }
         };
         params.add(goto_len);
+        Variable<Double> mouse = new Variable<Double>("view_movable", null){
+            @Override
+            public void setValue(Double value) {
+                updater.getMainPanel().view_movable = value != 0;
+            }
+
+            @Override
+            public Double calculate() {
+                return updater.getMainPanel().view_movable?1d:0d;
+            }
+        };
+        params.add(mouse);
     }
     private Number makeNumber() {
         Number n = new Number();
@@ -366,9 +377,12 @@ public class Calculator {
             if(idx >= updater.graphics.size())
                 idx = updater.graphics.size() - 1;
             updater.graphics.get(idx).update_graphic();
-            return 0.;
+            return 0d;
         }, 10);
         n.addFunction("finish", (a)->(double)calculator.getConsts().size(), 0, 10);
+        n.addFunction("isMousePressed", (a)->updater.mousePressed?1d:0d, 0, 10);
+        n.addFunction("getMouseX", (a)->updater.getMouseX(), 0, 10);
+        n.addFunction("getMouseY", (a)->updater.getMouseY(), 0, 10);
         this.goto_len = gotoDefLen;
         return n;
     }
