@@ -183,6 +183,7 @@ public class Calculator {
                 resetConstant("tm", updater.getSupportFrameManager().getTime());
                 updateConstants();
                 calculatorView.update();
+                updater.setState(Language.FINE);
                 resize.run();
                 repaint.run();
             } catch (Throwable e) {

@@ -43,4 +43,8 @@ added functions for mouse:
     isMousePressed, getMouseX, getMouseY
 and parameter view_movable
 </entry>
+    <entry key="30">Grapher4.0
+fixed bug with calculator size state
+added function of painting
+graphic on paper by mouse</entry>
 </properties>

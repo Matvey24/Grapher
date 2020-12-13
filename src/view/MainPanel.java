@@ -57,7 +57,9 @@ public class MainPanel extends Screen {
         graphics = new ElementsList(0, 0, updater::addVRemove, updater::startSettings, this::onTextElementCreate);
         graphics.setName(Language.GRAPHICS);
         graphics.addTo(this);
-        graphicsView = new GraphicsView(graphics, updater);
+        updater.setList(graphics);
+
+        graphicsView = new GraphicsView(updater);
         add(graphicsView);
         calculator = new CalculatorView(updater::recalculate, this::calculatorResize, this::onTextFieldCreate);
         calculator.addTo(this);
