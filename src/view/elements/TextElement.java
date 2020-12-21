@@ -6,14 +6,21 @@ import java.awt.event.*;
 
 public class TextElement {
     private static final int NAME_WIDTH = 30;
-    private static final int TEXT_WIDTH = 160;
+    private static int TEXT_WIDTH;
     private static final int REMOVE_WIDTH = 25;
     public static final int HEIGHT = 25;
-    public static final int WIDTH = NAME_WIDTH + TEXT_WIDTH + REMOVE_WIDTH;
+    public static int WIDTH = NAME_WIDTH + TEXT_WIDTH + REMOVE_WIDTH;
     private final JLabel name;
     private final JTextField text;
     private final JButton remove;
     boolean attached;
+    static {
+        setTextWidth(160);
+    }
+    public static void setTextWidth(int width){
+        TEXT_WIDTH = width;
+        WIDTH = NAME_WIDTH + TEXT_WIDTH + REMOVE_WIDTH;
+    }
     TextElement(){
         this.name = new JLabel("");
         text = new JTextField();

@@ -28,23 +28,23 @@ Calculating..
 loaded
 Saved to</entry>
 <entry key = "updater_errors">We need 2 funcs in parametric and translation.
-We need t or x and y vars in graphic
+We need t or x and y vars in %d graphic
 Too long 'goto' recursion: len</entry>
-<entry key = "calculator_errors">in
+<entry key = "calculator_errors">%s in '%s' %s
+%s in calculator
+%s in grammar of '%s' %s
 graphic
 function
-grammar of
-vars of
-calculator
 Too many vars
-constant</entry>
-<entry key = "parser_errors">Undefined symbol
+constant
+</entry>
+<entry key = "parser_errors">Undefined symbol '%s'
+%s in %s
 Too little arguments
 Too many arguments
+Bad location of %s
 brackets
-in
-Bad location of
-Only vars and lambdas can be in $..$: </entry>
+Only vars and lambdas can be in $..$: '%s'</entry>
 <entry key="version_controller">Can't load log!</entry>
 <entry key = "buttons">Begin
 Settings
@@ -295,7 +295,7 @@ Send lambda expression in calculator to get more
 than 1 answer. Lambda from -1 has to return count
 of answers. Use 'arr' as main func, like '{arr(x, 4, 5)}'.
 returns '4.0, 5.0'.
-part 11
+part 21
 Hot keys:
 Ctrl + S/L - save/load project in/from last used file
 Ctrl + Shift + S/L - just save/load project
@@ -307,6 +307,16 @@ Shift + Del - delete line
 Ctrl + (Вверх/Вниз) - narrow down/expand area
 Tab - in main fields will help (not help)
 to finish writing function or constant name.
+Ctrl + P - use this combination careful,
+It paints graphic on screen by mouse.
+How does it work? - paints all lines from
+graphic, but it can't paint Implicits and letters (numbers).
+Drawing line: moving mouse to the line start,
+pressing, moving to the end and releasing.
+Ensure, that your app can understand this mechanics.
+Graphic left up will be on mouse position
+at start of this function, size of graphic will be
+the same as in grapher.
 part 34
 Saves:
 All saves are in xml format in java properties.

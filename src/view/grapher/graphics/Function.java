@@ -9,7 +9,7 @@ import static view.MainPanel.HEIGHT;
 public class Function extends Graphic {
     public boolean abscissa = true;
     public Function(){
-        super();
+        map = new double[MAP_SIZE];
         type = GraphType.FUNCTION;
     }
     public Function(int map_size, boolean feelsTime){

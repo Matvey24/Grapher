@@ -1,12 +1,12 @@
-package view.support_panels;
+package view.support_panels.graphics;
 
 import model.GraphType;
 import model.Language;
 import controller.ModelUpdater;
-import model.Settings;
 import view.elements.TextElement;
 import view.grapher.graphics.Function;
 import view.grapher.graphics.Graphic;
+
 public class FunctionSettings extends Settings {
     private Function f;
 

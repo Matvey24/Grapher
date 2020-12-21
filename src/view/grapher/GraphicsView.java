@@ -26,6 +26,7 @@ public class GraphicsView extends JPanel {
         coordinateSystem = new CoordinateSystem();
         updater.setGraphics(graphics);
         draw_coords = true;
+
         registerKeyboardAction((e) -> {
                     try {
                         updater.setState(Language.UPDATING);

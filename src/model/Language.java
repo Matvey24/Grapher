@@ -64,37 +64,14 @@ public class Language {
     public static List<String> language_Names;
     public static int LANGUAGE_INDEX;
     private static Property property;
-    public static final String DEFAULT_LANGUAGE = "English";
-    public static void init(Property _property){
-        property = _property;
+    public static String DEFAULT_LANGUAGE = "English";
+
+    public static void onCreate(Property p){
+        property = p;
         language_Names = new ArrayList<>();
-        try {
-            Properties properties = property.getProperties("settings.xml");
-            Iterator<String> set = properties.stringPropertyNames().iterator();
-            String def = DEFAULT_LANGUAGE;
-            int main_width = MainPanel.WIDTH, main_height = MainPanel.HEIGHT;
-            while(set.hasNext()){
-                String lan = set.next();
-                switch (lan){
-                    case "default":
-                        def = properties.getProperty(lan);
-                        continue;
-                    case "width":
-                        main_width = Integer.parseInt(properties.getProperty(lan));
-                        continue;
-                    case "height":
-                        main_height = Integer.parseInt(properties.getProperty(lan));
-                        continue;
-                }
-                language_Names.add(properties.getProperty(lan));
-            }
-            MainPanel.rebounds(main_width, main_height);
-            System.out.println(loadLanguage(def));
-        }catch (IOException e){
-            e.printStackTrace();
-        }
     }
-    public static String loadLanguage(String name){
+
+    public static String loadLanguage(String name) {
         try {
             Properties properties = property.getProperties(name + ".l");
             String[] arr;
@@ -148,14 +125,14 @@ public class Language {
             List<String> list = Arrays.asList(s.split("\n"));
             Iterator<String> it = list.iterator();
             HELPERS = new String[3][][];
-            for(int i = 0; i < 3; ++i){
+            for (int i = 0; i < 3; ++i) {
                 arr = it.next().split(" ");
-                if(!arr[0].equals("help")) {
+                if (!arr[0].equals("help")) {
                     return "no part 'help'";
                 }
                 int n = Integer.parseInt(arr[1]);
                 HELPERS[i] = new String[n][];
-                for(int j = 0; j < n; ++j) {
+                for (int j = 0; j < n; ++j) {
                     arr = it.next().split(" ");
                     if (!arr[0].equals("part")) {
                         return "no part 'part'";
@@ -169,7 +146,7 @@ public class Language {
             }
             LANGUAGE_INDEX = language_Names.indexOf(name);
             return name + " " + LOADED;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return "Error: " + e.toString();
         }

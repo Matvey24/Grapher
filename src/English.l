@@ -28,23 +28,23 @@ Calculating..
 loaded
 Saved to</entry>
 <entry key = "updater_errors">We need 2 funcs in parametric and translation.
-We need t or x and y vars in graphic
+We need t or x and y vars in %d graphic
 Too long 'goto' recursion: len</entry>
-<entry key = "calculator_errors">in
+<entry key = "calculator_errors">%s in '%s' %s
+%s in calculator
+%s in grammar of '%s' %s
 graphic
 function
-grammar of
-vars of
-calculator
 Too many vars
-constant</entry>
-<entry key = "parser_errors">Undefined symbol
+constant
+</entry>
+<entry key = "parser_errors">Undefined symbol '%s'
+%s in %s
 Too little arguments
 Too many arguments
+Bad location of %s
 brackets
-in
-Bad location of
-Only vars and lambdas can be in $..$: </entry>
+Only vars and lambdas can be in $..$: '%s'</entry>
 <entry key="version_controller">Can't load log!</entry>
 <entry key = "buttons">Begin
 Settings

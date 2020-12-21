@@ -4,8 +4,9 @@ import controller.MyTimer;
 import model.Language;
 import controller.ModelUpdater;
 import framesLib.Screen;
-import model.help.FullModel;
+import model.FullModel;
 import view.elements.ComboBoxParameter;
+import view.elements.ElementsList;
 import view.elements.Parameter;
 import view.elements.TextElement;
 
@@ -14,7 +15,6 @@ import javax.swing.*;
 import static view.elements.ElementsList.OFFSET;
 
 public class TimerSettings extends Screen {
-    private static final int WIDTH = TextElement.WIDTH + 2 * OFFSET;
     private static final int HEIGHT = 4 * OFFSET + 2 * ComboBoxParameter.HEIGHT
             + TextElement.HEIGHT;
 
@@ -176,6 +176,6 @@ public class TimerSettings extends Screen {
 
     @Override
     public void onSetSize() {
-        setSize(WIDTH, HEIGHT);
+        setSize(ElementsList.WIDTH, HEIGHT);
     }
 }

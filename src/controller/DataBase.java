@@ -1,7 +1,7 @@
 package controller;
 
 import model.Language;
-import model.help.FullModel;
+import model.FullModel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

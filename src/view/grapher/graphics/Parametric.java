@@ -17,6 +17,7 @@ public class Parametric extends Graphic {
     private FuncVariable<Double> xVar;
 
     public Parametric(int map_size, boolean feelsTime) {
+        map = new double[map_size];
         setMAP_SIZE(map_size);
         this.feelsTime = feelsTime;
         startT = 0;

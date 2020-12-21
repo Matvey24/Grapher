@@ -8,7 +8,7 @@ import calculator2.calculator.executors.Variable;
 import calculator2.values.Number;
 import model.GraphType;
 import model.Language;
-import model.help.FullModel;
+import model.FullModel;
 import threads.Tasks;
 import view.elements.CalculatorView;
 import view.elements.FunctionsView;
@@ -93,7 +93,7 @@ public class Calculator {
                                 || ax != -1 || ay != -1 || bx != -1 || by != -1) {
                             if (varsA.size() > 2 || varsB.size() > 2 || notContainsOnly(varsA, "x", "y")
                                     || notContainsOnly(varsB, "x", "y"))
-                                throw new RuntimeException(UPDATER_ERRORS[1] + " " + i);
+                                throw new RuntimeException(String.format(UPDATER_ERRORS[1], i));
                             FuncVariable<Double> varAX, varAY, varBX, varBY;
                             varAX = (ax != -1) ? varsA.get(ax) : new FuncVariable<>();
                             varAY = (ay != -1) ? varsA.get(ay) : new FuncVariable<>();
@@ -133,7 +133,7 @@ public class Calculator {
                             }
                             Expression<Double> func = calculator.getGraphics().get(funcs);
                             if (vars.size() > 2)
-                                throw new RuntimeException(UPDATER_ERRORS[1] + " " + i);
+                                throw new RuntimeException(String.format(UPDATER_ERRORS[1], i));
                             FuncVariable<Double> varX = null;
                             FuncVariable<Double> varY = null;
                             {
@@ -142,14 +142,14 @@ public class Calculator {
                                 } else if (vars.get(0).getName().equals("y")) {
                                     varY = vars.get(0);
                                 } else {
-                                    throw new RuntimeException(UPDATER_ERRORS[1]+ " " + i);
+                                    throw new RuntimeException(String.format(UPDATER_ERRORS[1], i));
                                 }
                                 if (vars.get(1).getName().equals("x")) {
                                     varX = vars.get(1);
                                 } else if (vars.get(1).getName().equals("y")) {
                                     varY = vars.get(1);
                                 } else {
-                                    throw new RuntimeException(UPDATER_ERRORS[1]+ " " + i);
+                                    throw new RuntimeException(String.format(UPDATER_ERRORS[1], i));
                                 }
                             }
                             g.update(func, varX);

@@ -6,7 +6,7 @@ import model.Language;
 import controller.ModelUpdater;
 import controller.VersionController;
 import framesLib.Screen;
-import model.help.FullModel;
+import model.FullModel;
 import view.elements.*;
 import view.grapher.GraphicsView;
 
@@ -41,9 +41,6 @@ public class MainPanel extends Screen {
     private final JButton btn_settings;
     private final InternalPanel panel;
     public boolean view_movable;
-    static {
-        rebounds(1280, 720);
-    }
 
     public MainPanel() {
         setLayout(null);
@@ -68,71 +65,24 @@ public class MainPanel extends Screen {
         functions.addTo(this);
 
         updater.setStringElements(functions, calculator);
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                mousePosition.setLocation(e.getX(), e.getY());
-                updater.mousePressed = true;
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                updater.mousePressed = false;
-                updater.translate(e.getX() - mousePosition.x, e.getY() - mousePosition.y);
-            }
-        });
-        addMouseMotionListener(new MouseAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                if(view_movable) {
-                    updater.translate(e.getX() - mousePosition.x, e.getY() - mousePosition.y);
-                }
-                mousePosition.setLocation(e.getX(), e.getY());
-            }
-        });
-
-        addMouseWheelListener(e -> {
-            int line = 0;
-            if (resizeType == 1 || resizeType == 2)
-                line = resizeType;
-            updater.rescale(e.getPreciseWheelRotation(), e.getX() - ElementsList.WIDTH, e.getY(), line);
-        });
 
         resizeType = 0;
+
         btn_resize = new JButton(Language.RESIZERS[resizeType]);
-        btn_resize.addActionListener(e -> {
-            if (resizeType == 0) {
-                updater.rescaleBack();
-            }
-        });
-        btn_resize.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON3) {
-                    resizeType = (resizeType + 1) % 3;
-                    btn_resize.setText(Language.RESIZERS[resizeType]);
-                }
-            }
-        });
         add(btn_resize);
 
         btn_timer = new JButton(Language.TIMER);
         btn_timer.addActionListener(e -> updater.openTimer());
-        btn_timer.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON3) {
-                    updater.getSupportFrameManager().getTimer().onClick();
-                }
-            }
-        });
         add(btn_timer);
+
         btn_settings = new JButton(Language.MAIN_SETTINGS);
         btn_settings.addActionListener(e -> updater.getSupportFrameManager().openMainSettings());
         add(btn_settings);
+
         panel = new InternalPanel();
         updater.getSupportFrameManager().setPanel(panel);
         add(panel);
+
         registerActions();
         setGraphicsHeight();
         updater.recalculate();
@@ -148,9 +98,9 @@ public class MainPanel extends Screen {
         height = graphics.getHeight();
         height += OFFSET;
         functions.setBounds(0, height);
-        height += 2 * OFFSET + FunctionsView.FUNC_HEIGHT;
+        height += 2 * OFFSET + functions.FUNC_HEIGHT;
         calculator.setBounds(0, height);
-        height += CalculatorView.CALC_HEIGHT;
+        height += calculator.CALC_HEIGHT;
         btn_help.setBounds(OFFSET, height,
                 TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
         btn_settings.setBounds(3 * OFFSET / 2 + TextElement.WIDTH / 2,
@@ -228,6 +178,58 @@ public class MainPanel extends Screen {
     }
 
     private void registerActions() {
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                mousePosition.setLocation(e.getX(), e.getY());
+                updater.mousePressed = true;
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                updater.mousePressed = false;
+                updater.translate(e.getX() - mousePosition.x, e.getY() - mousePosition.y);
+            }
+        });
+        addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if(view_movable) {
+                    updater.translate(e.getX() - mousePosition.x, e.getY() - mousePosition.y);
+                }
+                mousePosition.setLocation(e.getX(), e.getY());
+            }
+        });
+
+        addMouseWheelListener(e -> {
+            int line = 0;
+            if (resizeType == 1 || resizeType == 2)
+                line = resizeType;
+            updater.rescale(e.getPreciseWheelRotation(), e.getX() - ElementsList.WIDTH, e.getY(), line);
+        });
+
+        btn_resize.addActionListener(e -> {
+            if (resizeType == 0) {
+                updater.rescaleBack();
+            }
+        });
+        btn_resize.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    resizeType = (resizeType + 1) % 3;
+                    btn_resize.setText(Language.RESIZERS[resizeType]);
+                }
+            }
+        });
+        btn_timer.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    updater.getSupportFrameManager().getTimer().onClick();
+                }
+            }
+        });
         registerKeyboardAction(
                 (e) -> updater.quick_save(true),
                 KeyStroke.getKeyStroke(
@@ -286,6 +288,8 @@ public class MainPanel extends Screen {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
+                if(updater.dangerState)
+                    return;
                 WIDTH = getWidth();
                 HEIGHT = getHeight();
                 GRAPH_WIDTH = WIDTH - ElementsList.WIDTH;

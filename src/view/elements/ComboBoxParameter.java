@@ -7,10 +7,9 @@ import java.awt.*;
 import java.awt.event.ItemListener;
 
 import static view.elements.ElementsList.OFFSET;
-
+import static view.elements.TextElement.WIDTH;
 public class ComboBoxParameter extends ViewElement {
     public static final int HEIGHT = TextElement.HEIGHT * 2 + OFFSET;
-    public static final int WIDTH = TextElement.WIDTH;
     private final JLabel name;
     private final JComboBox<Item> items;
 

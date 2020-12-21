@@ -7,6 +7,10 @@ import model.GraphType;
 import java.awt.*;
 
 public abstract class Graphic {
+    public static int FUNCTION_MAP_SIZE = 500;
+    public static int PARAMETRIC_MAP_SIZE = 500;
+    public static int IMPLICIT_MAP_SIZE = 400;
+    public static int TRANSLATION_MAP_SIZE = 100;
     public GraphType type;
     public int MAP_SIZE = 500;
     public String name;
@@ -25,7 +29,6 @@ public abstract class Graphic {
     public boolean feelsTime;
     public boolean colorChanged;
     Graphic() {
-        map = new double[MAP_SIZE];
         color = Color.BLACK;
         feelsTime = true;
     }
@@ -67,5 +70,8 @@ public abstract class Graphic {
         MAP_SIZE = map_size;
         needResize = true;
         map = new double[map_size];
+    }
+    public static boolean checkValidDiscretization(int desc){
+        return desc > 1;
     }
 }

@@ -14,7 +14,12 @@ public class AbstractFunc<T> {
     private FuncVariable<T> a;
     private FuncVariable<T> b;
     private List<FuncVariable<T>> vars;
+    public final String name;
     private int args;
+
+    public AbstractFunc(String name){
+        this.name = name;
+    }
 
     private T execute(Expression<T> _a) {
         a.save();
@@ -54,7 +59,7 @@ public class AbstractFunc<T> {
     public void setFunc(Expression<T> expression, List<FuncVariable<T>> vars) {
         this.expression = expression;
         if (vars.size() != args) {
-            throw new RuntimeException(String.format("We need %d vars, now %d", args, vars.size()));
+            throw new RuntimeException(String.format("Internal exception: we need %d vars, now %d", args, vars.size()));
         }
         switch (vars.size()) {
             case 2:

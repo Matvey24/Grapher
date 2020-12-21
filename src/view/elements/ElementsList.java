@@ -12,6 +12,10 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class ElementsList extends ViewElement {
+    public static int DEFAULT_MAX_SIZE = 10;
+    public static int OFFSET = 5;
+    private static final int NAME_HEIGHT = 30;
+    public static int WIDTH = -1;
     private final JLabel name;
     private final JTextField state;
     private final JButton btn_make_element;
@@ -21,17 +25,19 @@ public class ElementsList extends ViewElement {
     private int position;
     private final ArrayList<TextElement> elements;
     private int height;
-    private int MAX_SIZE = 10;
-    public static final int OFFSET = 5;
-    private static final int NAME_HEIGHT = 30;
-    public static final int WIDTH = TextElement.WIDTH + 2 * OFFSET;
+    private int MAX_SIZE = DEFAULT_MAX_SIZE;
     private final Point pos;
+    private int state_offset;
     private Container c;
     private final ActionListener sizeChanged;
     private final TFunc<Integer> settings;
     private final TFunc<TextElement> otec;
-
+    public static void setWidth(){
+        WIDTH = TextElement.WIDTH + 2 * OFFSET;
+    }
     public ElementsList(int x, int y, ActionListener sizeChanged, TFunc<Integer> settings, TFunc<TextElement> otec) {
+        if(WIDTH == -1)
+            setWidth();
         this.otec = otec;
         this.sizeChanged = sizeChanged;
         this.settings = settings;
@@ -52,10 +58,16 @@ public class ElementsList extends ViewElement {
         btn_move_down = new JButton("˅");
         btn_move_up.addActionListener((e)->move(-1));
         btn_move_down.addActionListener((e)->move(1));
+        state_offset = OFFSET;
         setBounds(x,y);
+    }
+    public static boolean checkValidCount(int graphics_max_count){
+        return graphics_max_count > 1 && graphics_max_count < 301;
     }
     public void setName(String name){
         this.name.setText(name);
+        state_offset = 2 * OFFSET + this.name.getPreferredSize().width;
+        state.setBounds(pos.x + state_offset, pos.y + OFFSET, TextElement.WIDTH + OFFSET - state_offset, NAME_HEIGHT);
     }
     public void addTo(Container c){
         c.add(name);
@@ -70,7 +82,7 @@ public class ElementsList extends ViewElement {
     public void setBounds(int x, int y){
         pos.setLocation(x,y);
         name.setBounds(x + OFFSET,y + OFFSET, TextElement.WIDTH, NAME_HEIGHT);
-        state.setBounds(x + 2 * OFFSET + TextElement.WIDTH * 2 / 5, y + OFFSET, 3*TextElement.WIDTH / 5 - OFFSET, NAME_HEIGHT);
+        state.setBounds(pos.x + state_offset, pos.y + OFFSET, TextElement.WIDTH + OFFSET - state_offset, NAME_HEIGHT);
         height = 2 * OFFSET + NAME_HEIGHT;
         {
             if(position > elements.size() - MAX_SIZE)
@@ -175,6 +187,7 @@ public class ElementsList extends ViewElement {
     }
     public void setState(String text){
         this.state.setText(text);
+        this.state.setToolTipText(text);
     }
     public void setMAX_SIZE(int max_size){
         this.MAX_SIZE = max_size;

@@ -1,28 +1,30 @@
-package model;
+package view.support_panels.graphics;
 
 import controller.ModelUpdater;
 import framesLib.Screen;
+import model.Language;
 import view.elements.ComboBoxParameter;
+import view.elements.ElementsList;
 import view.elements.Parameter;
 import view.elements.TextElement;
 import view.grapher.graphics.Graphic;
 import view.support_panels.ColorChooser;
 
+
 import javax.swing.*;
 
-import java.awt.*;
 import java.awt.event.ActionListener;
 
 import static view.elements.ElementsList.OFFSET;
 
 public abstract class Settings extends Screen {
+    protected final int WIDTH = ElementsList.WIDTH;
     private Parameter mapSize;
     protected final JToggleButton feels_time;
     protected final JButton open_cc;
     protected TextElement el;
     protected static final int HEIGHT = 3 * OFFSET
             + ComboBoxParameter.HEIGHT + TextElement.HEIGHT;
-    protected static final int WIDTH = ComboBoxParameter.WIDTH + 2 * OFFSET;
     private final ActionListener changeColor;
 
     public Settings(ModelUpdater updater) {
@@ -30,7 +32,7 @@ public abstract class Settings extends Screen {
         mapSize = new Parameter(Language.DISCRETIZATION, (s) -> {
             if (getGraphic() != null) {
                 int n = Integer.parseInt(s);
-                if (n < 2) {
+                if (!Graphic.checkValidDiscretization(n)) {
                     mapSize.setDefault(String.valueOf(getGraphic().MAP_SIZE));
                 } else {
                     getGraphic().setMAP_SIZE(Integer.parseInt(s));
@@ -39,12 +41,12 @@ public abstract class Settings extends Screen {
             }
         });
         mapSize.addTo(this);
-        mapSize.setBounds(OFFSET, OFFSET, ComboBoxParameter.WIDTH);
+        mapSize.setBounds(OFFSET, OFFSET, TextElement.WIDTH);
         feels_time = new JToggleButton(Language.FEELS_TIME);
         feels_time.setFocusPainted(false);
         add(feels_time);
         feels_time.setBounds(OFFSET, 2 * OFFSET + ComboBoxParameter.HEIGHT,
-                ComboBoxParameter.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
+                TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
         feels_time.addActionListener((e) -> {
             if (getGraphic() != null)
                 getGraphic().feelsTime = feels_time.isSelected();
@@ -54,8 +56,8 @@ public abstract class Settings extends Screen {
         open_cc = new JButton(Language.COLOR_CHOOSER);
         open_cc.setFocusPainted(false);
         add(open_cc);
-        open_cc.setBounds(OFFSET + ComboBoxParameter.WIDTH / 2 + OFFSET / 2, 2 * OFFSET + ComboBoxParameter.HEIGHT,
-                ComboBoxParameter.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
+        open_cc.setBounds(OFFSET + TextElement.WIDTH / 2 + OFFSET / 2, 2 * OFFSET + ComboBoxParameter.HEIGHT,
+                TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
         open_cc.addActionListener((e) -> {
             if (getGraphic() != null) {
                 ColorChooser cc = updater.getSupportFrameManager().getColorc();

@@ -47,4 +47,8 @@ and parameter view_movable
 fixed bug with calculator size state
 added function of painting
 graphic on paper by mouse</entry>
+    <entry key="31">Grapher4.1
+refactored error messages
+added some more parameters in settings.xml
+(open Grapher.jar like zip archive)</entry>
 </properties>

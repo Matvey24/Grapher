@@ -5,6 +5,7 @@ import calculator2.calculator.util.actions.Sign;
 
 import java.util.*;
 
+import static calculator2.calculator.CalcLanguage.PARSER_ERRORS;
 import static calculator2.calculator.Element.ElementType.*;
 
 public class Parser<T> {
@@ -88,7 +89,7 @@ public class Parser<T> {
                         list.add(0, new Element(helper.brackets.getOpposit(e.symbol), BRACKET));
                         ++i;
                     } else if (!bracketCheck.pop().equals(e.symbol)) {
-                        throw new RuntimeException(CalcLanguage.PARSER_ERRORS[5] + " " + CalcLanguage.PARSER_ERRORS[3]);
+                        throw new RuntimeException(String.format(PARSER_ERRORS[4], PARSER_ERRORS[5]));
                     }
                 }
             }
@@ -118,7 +119,7 @@ public class Parser<T> {
                         }
                     }
                     if (e.symbol.length() != 0) {
-                        throw new RuntimeException(CalcLanguage.PARSER_ERRORS[0] + " '" + e + "'");
+                        throw new RuntimeException(String.format(PARSER_ERRORS[0], e.symbol));
                     }
                 } else if (helper.isVar(e.symbol)) {
                     e.type = VAR;
@@ -205,7 +206,7 @@ public class Parser<T> {
                             && (i == 0
                             || stack.get(i - 1).type != BRACKET
                             || !helper.brackets.brOpens(stack.get(i - 1).symbol))) {
-                        throw new RuntimeException(CalcLanguage.PARSER_ERRORS[5] + " " + e.symbol);
+                        throw new RuntimeException(String.format(PARSER_ERRORS[4], "'" + e.symbol + "'"));
                     }
                 case VAR:
                 case NUMBER:
@@ -229,9 +230,9 @@ public class Parser<T> {
                                 }
                                 if (needArgs != -1) {
                                     if (returns < needArgs)
-                                        throw new RuntimeException(CalcLanguage.PARSER_ERRORS[1] + " " + CalcLanguage.PARSER_ERRORS[4] + " " + e1);
+                                        throw new RuntimeException(String.format(PARSER_ERRORS[1], PARSER_ERRORS[2], "'" + e1.symbol + "'"));
                                     else if (returns > needArgs)
-                                        throw new RuntimeException(CalcLanguage.PARSER_ERRORS[2] + " " + CalcLanguage.PARSER_ERRORS[4] + " " + e1);
+                                        throw new RuntimeException(String.format(PARSER_ERRORS[1], PARSER_ERRORS[3], "'" + e1.symbol + "'"));
                                 } else {
                                     e.symbol += returns;
                                 }
@@ -240,17 +241,17 @@ public class Parser<T> {
                             }
                         }
                         if (returns < 1)
-                            throw new RuntimeException(CalcLanguage.PARSER_ERRORS[1] + " " + CalcLanguage.PARSER_ERRORS[4] + " " + CalcLanguage.PARSER_ERRORS[3]);
+                            throw new RuntimeException(String.format(PARSER_ERRORS[1], PARSER_ERRORS[2], PARSER_ERRORS[5]));
                         else if (returns > 1)
-                            throw new RuntimeException(CalcLanguage.PARSER_ERRORS[2] + " " + CalcLanguage.PARSER_ERRORS[4] + " " + CalcLanguage.PARSER_ERRORS[3]);
+                            throw new RuntimeException(String.format(PARSER_ERRORS[1], PARSER_ERRORS[3], PARSER_ERRORS[5]));
                         returns = ints.pop() + 1;
                     }
             }
         }
         if (returns < 1)
-            throw new RuntimeException(CalcLanguage.PARSER_ERRORS[1]);
+            throw new RuntimeException(PARSER_ERRORS[2]);
         else if (returns > 1)
-            throw new RuntimeException(CalcLanguage.PARSER_ERRORS[2]);
+            throw new RuntimeException(PARSER_ERRORS[3]);
     }
 
     private int calculateVars(List<Element> list) {
@@ -262,7 +263,7 @@ public class Parser<T> {
             if (element.type == BRACKET && helper.brackets.brLambda(element.symbol)) {
                 if (helper.brackets.brOpens(element.symbol)) {
                     ++level;
-                    if(i == 0 || list.get(i - 1).type != LAMBDA_PARAM){
+                    if (i == 0 || list.get(i - 1).type != LAMBDA_PARAM) {
                         list.add(i, new Element("", LAMBDA_PARAM));
                         ++i;
                     }
@@ -276,15 +277,17 @@ public class Parser<T> {
                 }
             } else if (element.type == LAMBDA_PARAM) {
                 list.remove(i);
+                if(list.size() <= i)
+                    throw new RuntimeException(String.format(PARSER_ERRORS[6], element.symbol));
                 while (list.get(i).type != LAMBDA_PARAM) {
                     Element e = list.get(i);
-                    if(e.type == VAR || e.type == LAMBDA) {
+                    if (e.type == VAR || e.type == LAMBDA) {
                         sb.append(e.symbol).append(",");
-                        if(!varNames.contains(e.symbol) && level == 0){
+                        if (!varNames.contains(e.symbol) && level == 0) {
                             varNames.add(e.symbol);
                         }
-                    }else if(e.type != DIVIDER){
-                        throw new RuntimeException(CalcLanguage.PARSER_ERRORS[6] + e);
+                    } else if (e.type != DIVIDER) {
+                        throw new RuntimeException(String.format(PARSER_ERRORS[6], e.symbol));
                     }
                     list.remove(i);
                 }
@@ -294,29 +297,30 @@ public class Parser<T> {
         }
         return varNames.size();
     }
-    public void findEndOf(StringToken e){
-        if(helper.type == null){
+
+    public void findEndOf(StringToken e) {
+        if (helper.type == null) {
             e.text = "";
             return;
         }
         sb.setLength(0);
         String line = e.text;
         e.text = "";
-        for(int i = 0; i < line.length(); ++i){
+        for (int i = 0; i < line.length(); ++i) {
             char c = line.charAt(line.length() - i - 1);
-            if(c != ' ' && c != '\t' && type(c) == FUNCTION){
+            if (c != ' ' && c != '\t' && type(c) == FUNCTION) {
                 sb.append(c);
-            }else{
+            } else {
                 break;
             }
         }
         String name = sb.reverse().toString();
         sb.setLength(0);
-        if(name.isEmpty())
+        if (name.isEmpty())
             return;
-        if(helper.isConst(name) || helper.getFunc(name) != null){
+        if (helper.isConst(name) || helper.getFunc(name) != null) {
             Set<String> set;
-            if(helper.isConst(name))
+            if (helper.isConst(name))
                 set = helper.type.consts.keySet();
             else
                 set = helper.type.funcs.keySet();
@@ -324,19 +328,19 @@ public class Parser<T> {
                     .sorted()
                     .iterator();
             String first = null;
-            while(it.hasNext()){
+            while (it.hasNext()) {
                 String s = it.next();
-                if(s.length() == 1 && helper.getSign(s) != null)
+                if (s.length() == 1 && helper.getSign(s) != null)
                     continue;
-                if(first == null)
+                if (first == null)
                     first = s;
-                if(s.equals(name)){
-                    if(it.hasNext())
+                if (s.equals(name)) {
+                    if (it.hasNext())
                         first = it.next();
                     break;
                 }
             }
-            if(first != null){
+            if (first != null) {
                 e.text = first;
                 e.replace = name.length();
             }
@@ -345,24 +349,25 @@ public class Parser<T> {
         String t = helper.type.consts.keySet()
                 .stream()
                 .sorted()
-                .filter((s)->s.startsWith(name))
+                .filter((s) -> s.startsWith(name))
                 .findFirst()
                 .orElse("");
-        if(!t.isEmpty()) {
+        if (!t.isEmpty()) {
             e.text = t.substring(name.length());
             return;
         }
         t = helper.type.funcs.keySet()
                 .stream()
                 .sorted()
-                .filter(s->s.startsWith(name))
+                .filter(s -> s.startsWith(name))
                 .findFirst()
                 .orElse("");
-        if(t.isEmpty())
+        if (t.isEmpty())
             return;
         e.text = t.substring(name.length());
     }
-    public static class StringToken{
+
+    public static class StringToken {
         public String text;
         public int replace;
     }

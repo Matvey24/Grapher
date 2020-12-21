@@ -6,4 +6,11 @@
     <entry key="l2">Русский</entry>
     <entry key="width">1280</entry>
     <entry key="height">720</entry>
+    <entry key="graphics_count">10</entry>
+    <entry key="function_disc">500</entry>
+    <entry key="parametric_disc">500</entry>
+    <entry key="implicit_disc">400</entry>
+    <entry key="translation_disc">100</entry>
+    <entry key="default_offset">5</entry>
+    <entry key="graphic_field_width">160</entry>
 </properties>

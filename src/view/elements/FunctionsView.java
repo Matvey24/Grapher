@@ -16,8 +16,8 @@ import static view.elements.TextElement.HEIGHT;
 import static view.elements.ElementsList.WIDTH;
 
 public class FunctionsView extends ViewElement {
-    private static int AREA_HEIGHT;
-    public static int FUNC_HEIGHT;
+    private int AREA_HEIGHT;
+    public int FUNC_HEIGHT;
     private final JLabel name;
     private final JTextArea area;
     private final JButton btn_update;
@@ -26,16 +26,8 @@ public class FunctionsView extends ViewElement {
     private final ModelUpdater updater;
     private final Parser.StringToken line;
 
-    static {
-        setSizes(160);
-    }
-
-    private static void setSizes(int height) {
-        AREA_HEIGHT = height;
-        FUNC_HEIGHT = AREA_HEIGHT + HEIGHT + OFFSET;
-    }
-
     public FunctionsView(Runnable onUpdate, ModelUpdater updater) {
+        setSizes(160);
         this.updater = updater;
         sb = new StringBuilder();
         area = new JTextArea();
@@ -49,6 +41,11 @@ public class FunctionsView extends ViewElement {
         updateLanguage();
         line = new Parser.StringToken();
         registerActions(onUpdate);
+    }
+
+    private void setSizes(int height) {
+        AREA_HEIGHT = height;
+        FUNC_HEIGHT = AREA_HEIGHT + HEIGHT + OFFSET;
     }
 
     @Override
@@ -67,8 +64,8 @@ public class FunctionsView extends ViewElement {
     }
 
     public void setBounds(int x, int y) {
-        name.setBounds(x + OFFSET, y, WIDTH / 2 - OFFSET, HEIGHT);
-        btn_update.setBounds(x + WIDTH / 2 + OFFSET, y, WIDTH / 2 - 2 * OFFSET, HEIGHT);
+        name.setBounds(x + OFFSET, y, TextElement.WIDTH / 2 - OFFSET / 2, HEIGHT);
+        btn_update.setBounds(x + TextElement.WIDTH / 2 + 3 * OFFSET / 2, y, TextElement.WIDTH / 2 - OFFSET / 2, HEIGHT);
         scrollPane.setBounds(x + OFFSET, y + HEIGHT + OFFSET, TextElement.WIDTH, AREA_HEIGHT);
     }
 
@@ -76,6 +73,7 @@ public class FunctionsView extends ViewElement {
         name.setText(Language.FUNCTIONS);
         btn_update.setText(Language.UPDATE);
     }
+
     private void registerActions(Runnable onUpdate) {
         area.registerKeyboardAction(
                 (e) -> onUpdate.run(),
@@ -173,7 +171,7 @@ public class FunctionsView extends ViewElement {
         area.registerKeyboardAction((e) -> {
                     try {
                         String text = area.getSelectedText();
-                        if(text != null){
+                        if (text != null) {
                             int pos = area.getCaretPosition();
                             area.insert(text, pos);
                             area.setCaretPosition(pos + text.length());
@@ -240,7 +238,7 @@ public class FunctionsView extends ViewElement {
                         updater.setState(e1.toString());
                     }
                 },
-                KeyStroke.getKeyStroke(KeyEvent.VK_TAB,0),
+                KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0),
                 JComponent.WHEN_FOCUSED);
     }
 

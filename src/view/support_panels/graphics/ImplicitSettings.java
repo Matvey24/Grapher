@@ -1,15 +1,15 @@
-package view.support_panels;
+package view.support_panels.graphics;
 
 import model.GraphType;
 import model.Language;
 import controller.ModelUpdater;
-import model.Settings;
 import view.elements.ComboBoxParameter;
 import view.elements.Item;
 import view.elements.Parameter;
 import view.elements.TextElement;
 import view.grapher.graphics.Graphic;
 import view.grapher.graphics.Implicit;
+import view.support_panels.FileChooser;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 
 import static view.elements.ElementsList.OFFSET;
-
 public class ImplicitSettings extends Settings {
     private final Parameter sensitivity;
     private final ComboBoxParameter viewType;
@@ -36,7 +35,7 @@ public class ImplicitSettings extends Settings {
             }
         });
         sensitivity.addTo(this);
-        sensitivity.setBounds(OFFSET,HEIGHT,ComboBoxParameter.WIDTH);
+        sensitivity.setBounds(OFFSET, HEIGHT, TextElement.WIDTH);
         viewType = new ComboBoxParameter(Language.VIEW_COLOR, Language.COLORS);
         viewType.addTo(this);
         viewType.setBounds(OFFSET, HEIGHT + OFFSET + ComboBoxParameter.HEIGHT);
@@ -64,7 +63,7 @@ public class ImplicitSettings extends Settings {
                     if (a.getActionCommand().equals(JFileChooser.APPROVE_SELECTION)) {
                         File f = fileChooser.getSelectedFile();
                         fileChooser.back();
-                        updater.run(()-> {
+                        updater.run(() -> {
                             try {
                                 updater.setState(Language.CONVERTING);
                                 BufferedImage image = imp.getData1();
@@ -100,10 +99,12 @@ public class ImplicitSettings extends Settings {
         setSize(WIDTH,
                 HEIGHT + 3 * OFFSET + 2 * ComboBoxParameter.HEIGHT + TextElement.HEIGHT);
     }
+
     @Override
     public void onShow() {
         setTitle(Language.TYPE_TITLES[GraphType.IMPLICIT.ordinal()]);
     }
+
     public void updateLanguage() {
         super.updateLanguage();
         sensitivity.setName(Language.SENSITIVITY);

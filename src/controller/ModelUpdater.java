@@ -2,7 +2,7 @@ package controller;
 
 import calculator2.calculator.Parser;
 import model.Language;
-import model.help.FullModel;
+import model.FullModel;
 import view.MainPanel;
 import view.elements.*;
 import view.grapher.CoordinateSystem;
@@ -45,7 +45,7 @@ public class ModelUpdater {
     private double offsetY = 5.5;
     private double scaleX = 100;
     private double scaleY = 100;
-    boolean dangerState = false;
+    public boolean dangerState = false;
     public boolean mousePressed;
 
     public File last_used_file;
@@ -192,7 +192,7 @@ public class ModelUpdater {
 
     public void makeFunction(int idx, TextElement e) {
         Graphic g = graphics.get(idx);
-        Function function = new Function(g.MAP_SIZE, g.feelsTime);
+        Function function = new Function(Graphic.FUNCTION_MAP_SIZE, g.feelsTime);
         int lo = start_make(idx);
         function.setColor(g);
         graphics.set(idx, function);
@@ -204,7 +204,7 @@ public class ModelUpdater {
 
     public void makeParametric(int idx, TextElement e) {
         Graphic g = graphics.get(idx);
-        Parametric parametric = new Parametric(g.MAP_SIZE, g.feelsTime);
+        Parametric parametric = new Parametric(Graphic.PARAMETRIC_MAP_SIZE, g.feelsTime);
         int lo = start_make(idx);
         parametric.setColor(g);
         graphics.set(idx, parametric);
@@ -215,7 +215,7 @@ public class ModelUpdater {
 
     public void makeImplicit(int idx, TextElement e) {
         Graphic g = graphics.get(idx);
-        Implicit implicit = new Implicit(mainPanel, this::isMousePressed, g.MAP_SIZE, g.feelsTime);
+        Implicit implicit = new Implicit(mainPanel, this::isMousePressed, Graphic.IMPLICIT_MAP_SIZE, g.feelsTime);
         int lo = start_make(idx);
         implicit.setColor(g);
         graphics.set(idx, implicit);
@@ -227,7 +227,7 @@ public class ModelUpdater {
 
     public void makeTranslation(int idx, TextElement e) {
         Graphic g = graphics.get(idx);
-        Translation translation = new Translation(getCoordinateSystem(), g.MAP_SIZE, g.feelsTime);
+        Translation translation = new Translation(getCoordinateSystem(), Graphic.TRANSLATION_MAP_SIZE, g.feelsTime);
         translation.setMAP_SIZE(translation.MAP_SIZE);
         int lo = start_make(idx);
         translation.setColor(g);

@@ -9,6 +9,10 @@ import view.grapher.graphics.Implicit;
 import view.grapher.graphics.Parametric;
 import view.grapher.graphics.Translation;
 import view.support_panels.*;
+import view.support_panels.graphics.FunctionSettings;
+import view.support_panels.graphics.ImplicitSettings;
+import view.support_panels.graphics.ParametricSettings;
+import view.support_panels.graphics.TranslationSettings;
 
 public class SupportFrameManager {
     private PanelFrameOperator pfo;

@@ -1,4 +1,4 @@
-package model.help;
+package model;
 
 import java.util.List;
 

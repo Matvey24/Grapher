@@ -1,5 +1,5 @@
 import framesLib.screenables.MyFrame;
-import model.Language;
+import model.SettingsInitializer;
 import model.help.Property;
 import view.MainPanel;
 
@@ -8,7 +8,7 @@ import java.util.Properties;
 
 public class Main implements Property {
     public static void main(String[] args) {
-        Language.init(new Main());
+        SettingsInitializer.init(new Main());
         MyFrame frame = new MyFrame();
         frame.changeScreen(new MainPanel());
     }

@@ -1,6 +1,5 @@
 package calculator2;
 
-import calculator2.calculator.CalcLanguage;
 import calculator2.calculator.Director;
 import calculator2.calculator.Element;
 import calculator2.calculator.Parser;
@@ -12,6 +11,8 @@ import calculator2.calculator.util.actions.AbstractConst;
 import calculator2.calculator.util.actions.AbstractFunc;
 
 import java.util.*;
+
+import static calculator2.calculator.CalcLanguage.CALCULATOR_ERRORS;
 
 public class ArrayCalculator<T> {
     private final Director<T> director;
@@ -66,7 +67,7 @@ public class ArrayCalculator<T> {
                 analise(name, s.substring(n + 1), true);
             }
         } catch (RuntimeException e) {
-            throw new RuntimeException(e.getMessage() + " " + CalcLanguage.CALCULATOR_ERRORS[0] + " '" + name + "' " +(err + 1) + " " + CalcLanguage.CALCULATOR_ERRORS[1]);
+            throw new RuntimeException(String.format(CALCULATOR_ERRORS[0], e.getMessage(), name, CALCULATOR_ERRORS[3]));
         }
         err = 0;
         try {
@@ -78,9 +79,8 @@ public class ArrayCalculator<T> {
                 name = s.substring(0, n);
                 if (type.consts.containsKey(name)) {
                     int args = director.parse(s.substring(n + 1));
-                    if (args != 0) {
-                        throw new RuntimeException(CalcLanguage.CALCULATOR_ERRORS[6] + " " + CalcLanguage.CALCULATOR_ERRORS[0] + " " + CalcLanguage.CALCULATOR_ERRORS[7]);
-                    }
+                    if (args != 0)
+                        throw new RuntimeException(String.format(CALCULATOR_ERRORS[0], CALCULATOR_ERRORS[5], name, CALCULATOR_ERRORS[6]));
                     Variable<T> var = type.consts.get(name);
                     AbstractConst<T> c = new AbstractConst<>(var);
                     c.stack = director.getStack();
@@ -90,43 +90,38 @@ public class ArrayCalculator<T> {
                 analise(name, s.substring(n + 1), false);
             }
         } catch (RuntimeException e) {
-            throw new RuntimeException(e.getMessage() + " " + CalcLanguage.CALCULATOR_ERRORS[0]
-                    + " '" + name + "' " + (err + 1) + " " + CalcLanguage.CALCULATOR_ERRORS[2]);
+            throw new RuntimeException(String.format(CALCULATOR_ERRORS[0], e.getMessage(), name, CALCULATOR_ERRORS[4]));
         }
-
-        for (int i = 0; i < this.funcs.size(); ++i) {
-            try {
-                director.update(funcTexts.get(i));
-            } catch (RuntimeException e) {
-                name = funcs.get(i).substring(0, funcs.get(i).indexOf("="));
-                throw new RuntimeException(e.getMessage() + " " + CalcLanguage.CALCULATOR_ERRORS[0]
-                        + " " + CalcLanguage.CALCULATOR_ERRORS[3] + " '" + name + "' " + (i + 1)
-                        + " " + CalcLanguage.CALCULATOR_ERRORS[2]);
+        try {
+            for (err = 0; err < this.funcs.size(); ++err) {
+                director.update(funcTexts.get(err));
+                this.funcs.get(err).setFunc(director.getTree(), director.getVars());
+                if (err < graphs.size()) {
+                    this.graphics.add(director.getTree());
+                    if (this.vars.size() == err)
+                        this.vars.add(new ArrayList<>());
+                    this.vars.get(err).clear();
+                    this.vars.get(err).addAll(director.getVars());
+                }
             }
-            try {
-                this.funcs.get(i).setFunc(director.getTree(), director.getVars());
-            } catch (RuntimeException e) {
-                name = funcs.get(i).substring(0, funcs.get(i).indexOf("="));
-                throw new RuntimeException(e.getMessage() + " " + CalcLanguage.CALCULATOR_ERRORS[0]
-                        + " " + CalcLanguage.CALCULATOR_ERRORS[4] + " '" + name + "' "
-                        + (i + 1) + " " + CalcLanguage.CALCULATOR_ERRORS[2]);
-            }
-            if (i < graphs.size()) {
-                this.graphics.add(director.getTree());
-                if (this.vars.size() == i)
-                    this.vars.add(new ArrayList<>());
-                this.vars.get(i).clear();
-                this.vars.get(i).addAll(director.getVars());
-            }
+        } catch (RuntimeException e) {
+            throw new RuntimeException(String.format(CALCULATOR_ERRORS[2], e.getMessage(), this.funcs.get(err).name, CALCULATOR_ERRORS[4]));
         }
-        for (AbstractConst<T> aConst : consts) {
-            director.update(aConst.stack);
-            aConst.setExpression(director.getTree());
+        AbstractConst<T> aConst = null;
+        try {
+            for (AbstractConst<T> tAbstractConst : consts) {
+                aConst = tAbstractConst;
+                director.update(aConst.stack);
+                aConst.setExpression(director.getTree());
+            }
+        } catch (RuntimeException e) {
+            assert aConst != null;
+            throw new RuntimeException(String.format(CALCULATOR_ERRORS[0], e.getMessage(), aConst.getVar().getName(), CALCULATOR_ERRORS[6]));
         }
         try {
             int n = director.parse(calc.get(0));
             if (n != 0) {
-                throw new RuntimeException(CalcLanguage.CALCULATOR_ERRORS[6]);
+                throw new RuntimeException(String.format(CALCULATOR_ERRORS[5], CALCULATOR_ERRORS[6]));
             }
             director.update(director.getStack());
             expressions.add(director.getTree());
@@ -140,8 +135,7 @@ public class ArrayCalculator<T> {
                 expressionVars.get(i - 1).addAll(director.getVars());
             }
         } catch (RuntimeException e) {
-            throw new RuntimeException(e.getMessage() + " " + CalcLanguage.CALCULATOR_ERRORS[0]
-                    + " " + CalcLanguage.CALCULATOR_ERRORS[5]);
+            throw new RuntimeException(String.format(CALCULATOR_ERRORS[1], e.getMessage()));
         }
     }
 
@@ -164,7 +158,7 @@ public class ArrayCalculator<T> {
             type.addFunction(start, c, 0, 10);
             return;
         }
-        AbstractFunc<T> func = new AbstractFunc<>();
+        AbstractFunc<T> func = new AbstractFunc<>(start);
         switch (args) {
             case 1:
                 type.addFunctionUnary(start, func.getUnary(), 10);
@@ -178,7 +172,8 @@ public class ArrayCalculator<T> {
         funcs.add(func);
         funcTexts.add(director.getStack());
     }
-    private void clear(){
+
+    private void clear() {
         funcTexts.clear();
         this.funcs.clear();
         for (Expression<T> graphic : graphics) {
@@ -186,12 +181,13 @@ public class ArrayCalculator<T> {
         }
         this.graphics.clear();
         consts.clear();
-        for(Expression<T> c: expressions){
+        for (Expression<T> c : expressions) {
             c.free();
         }
         expressions.clear();
         System.gc();
     }
+
     public List<Expression<T>> getGraphics() {
         return graphics;
     }
@@ -211,9 +207,11 @@ public class ArrayCalculator<T> {
     public List<AbstractConst<T>> getConsts() {
         return consts;
     }
-    public void findEndOf(Parser.StringToken line){
+
+    public void findEndOf(Parser.StringToken line) {
         director.findEndOf(line);
     }
+
     public void resetConstant(String name, T val) {
         Variable<T> var = type.consts.get(name);
         if (var != null)
@@ -221,4 +219,5 @@ public class ArrayCalculator<T> {
         else
             type.addConst(name, val);
     }
+
 }

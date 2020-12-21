@@ -1,9 +1,8 @@
-package view.support_panels;
+package view.support_panels.graphics;
 
 import model.GraphType;
 import model.Language;
 import controller.ModelUpdater;
-import model.Settings;
 import view.elements.ComboBoxParameter;
 import view.elements.Parameter;
 import view.elements.TextElement;
@@ -11,7 +10,6 @@ import view.grapher.graphics.Graphic;
 import view.grapher.graphics.Parametric;
 
 import static view.elements.ElementsList.OFFSET;
-
 public class ParametricSettings extends Settings {
     private final Parameter dimension;
     private Parametric p;
@@ -28,7 +26,7 @@ public class ParametricSettings extends Settings {
             }
         });
         dimension.addTo(this);
-        dimension.setBounds(OFFSET, HEIGHT, ComboBoxParameter.WIDTH);
+        dimension.setBounds(OFFSET, HEIGHT, TextElement.WIDTH);
     }
 
     public void setInfo(Parametric p, TextElement e) {
