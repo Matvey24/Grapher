@@ -10,7 +10,7 @@ import java.util.Properties;
 import java.util.Set;
 
 public class VersionController {
-    public static final int VERSION_CODE = 31;
+    public static final int VERSION_CODE = 32;
     public static String VERSION_NAME = getFullName(getName(VERSION_CODE));
     private static final String URL_VERSION =
             "https://github.com/Matvey24/Grapher/raw/master/out/artifacts/Grapher_jar/VersionInfo.xml";

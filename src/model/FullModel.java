@@ -9,7 +9,6 @@ public class FullModel {
     public String calculator;
 
     public String timer_info;
-    public String resize_idx;
     public String view_params;
     public String main_settings;
 }

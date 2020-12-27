@@ -4,10 +4,7 @@ import framesLib.screenables.InternalPanel;
 
 import framesLib.screenables.PanelFrameOperator;
 import view.elements.TextElement;
-import view.grapher.graphics.Function;
-import view.grapher.graphics.Implicit;
-import view.grapher.graphics.Parametric;
-import view.grapher.graphics.Translation;
+import view.grapher.graphics.*;
 import view.support_panels.*;
 import view.support_panels.graphics.FunctionSettings;
 import view.support_panels.graphics.ImplicitSettings;
@@ -25,7 +22,8 @@ public class SupportFrameManager {
     private final MainSettings mainSettings;
     private final ColorChooser colorc;
     private boolean openedGraphic;
-    SupportFrameManager(ModelUpdater updater){
+
+    SupportFrameManager(ModelUpdater updater) {
         functionSettings = new FunctionSettings(updater);
         parametricSettings = new ParametricSettings(updater);
         timerSettings = new TimerSettings(updater);
@@ -35,55 +33,64 @@ public class SupportFrameManager {
         mainSettings = new MainSettings(updater);
         colorc = new ColorChooser();
     }
-    public void setPanel(InternalPanel panel){
+
+    public void setPanel(InternalPanel panel) {
         this.pfo = new PanelFrameOperator(panel);
     }
 
-    void openFunctionSettings(Function f, TextElement e){
-        functionSettings.setInfo(f, e);
-        pfo.changeScreenClearing(functionSettings, true);
+    void openGraphicSettings(Graphic g, TextElement e) {
+        switch (g.type) {
+            case FUNCTION:
+                functionSettings.setInfo((Function) g, e);
+                pfo.changeScreenClearing(functionSettings, true);
+                break;
+            case PARAMETRIC:
+                parametricSettings.setInfo((Parametric) g, e);
+                pfo.changeScreenClearing(parametricSettings, true);
+                break;
+            case IMPLICIT:
+                implicitSettings.setInfo((Implicit) g, e);
+                pfo.changeScreenClearing(implicitSettings, true);
+                break;
+            case TRANSLATION:
+                translationSettings.setInfo((Translation) g, e);
+                pfo.changeScreenClearing(translationSettings, true);
+                break;
+        }
         openedGraphic = true;
     }
-    void openParameterSettings(Parametric p, TextElement e){
-        parametricSettings.setInfo(p, e);
-        pfo.changeScreenClearing(parametricSettings, true);
-        openedGraphic = true;
-    }
-    void openImplicitSettings(Implicit imp, TextElement e){
-        implicitSettings.setInfo(imp, e);
-        pfo.changeScreenClearing(implicitSettings, true);
-        openedGraphic = true;
-    }
-    void openTranslationSettings(Translation tr, TextElement e){
-        translationSettings.setInfo(tr, e);
-        pfo.changeScreenClearing(translationSettings, true);
-        openedGraphic = true;
-    }
-    void openTimerSettings(){
+
+    void openTimerSettings() {
         pfo.changeScreenClearing(timerSettings, true);
         openedGraphic = false;
     }
-    void openUpdaterFrame(VersionController.UpdateInfo info){
+
+    void openUpdaterFrame(VersionController.UpdateInfo info) {
         pfo.changeScreen(new UpdaterFrame(info));
         openedGraphic = false;
     }
-    public void openHelperFrame(){
+
+    public void openHelperFrame() {
         pfo.changeScreenClearing(helperFrame, true);
         openedGraphic = false;
     }
-    public void openMainSettings(){
+
+    public void openMainSettings() {
         pfo.changeScreenClearing(mainSettings, true);
         openedGraphic = false;
     }
-    public void openFileChooser(boolean save){
+
+    public void openFileChooser(boolean save) {
         pfo.changeScreenClearing(mainSettings.getFileChooser(), true);
         mainSettings.setSelectionSave(save);
         openedGraphic = false;
     }
-    Double getTime(){
+
+    Double getTime() {
         return timerSettings.getT();
     }
-    public TimerSettings getTimer(){
+
+    public TimerSettings getTimer() {
         return timerSettings;
     }
 
@@ -94,10 +101,12 @@ public class SupportFrameManager {
     public MainSettings getMainSettings() {
         return mainSettings;
     }
-    public void onPanelResize(){
+
+    public void onPanelResize() {
         pfo.onPanelResize();
     }
-    public void close(){
+
+    public void close() {
         pfo.clearStack();
         openedGraphic = false;
     }
@@ -106,7 +115,7 @@ public class SupportFrameManager {
         return colorc;
     }
 
-    public void updateLanguage(){
+    public void updateLanguage() {
         helperFrame.updateLanguage();
         mainSettings.updateLanguage();
         functionSettings.updateLanguage();

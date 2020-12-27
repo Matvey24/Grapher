@@ -27,7 +27,7 @@ public class MainSettings extends Screen {
     public MainSettings(ModelUpdater modelUpdater) {
         this.modelUpdater = modelUpdater;
         setLayout(null);
-        lineSpace = new Parameter(Language.SETTINGS[1], this::setLineSpace);
+        lineSpace = new Parameter(Language.SETTINGS[1], this::setNetWidth);
         lineSpace.setBounds(OFFSET, 2 * OFFSET + TextElement.HEIGHT, TextElement.WIDTH);
         lineSpace.addTo(this);
 
@@ -87,8 +87,9 @@ public class MainSettings extends Screen {
         btn_load.setBounds(3 * OFFSET / 2 + TextElement.WIDTH / 2, OFFSET,
                 TextElement.WIDTH / 2 - OFFSET / 2, TextElement.HEIGHT);
     }
-    private void setLineSpace(String s){
-        if(s.charAt(0) == '~'){
+    private void setNetWidth(String s){
+        s = s.replaceAll("[ \n\t\r]", "");
+        if(s.charAt(0) == '-'){
             s = s.substring(1);
             modelUpdater.getMainPanel().getGraphicsView().draw_coords = false;
         }else{
@@ -107,7 +108,7 @@ public class MainSettings extends Screen {
         if(modelUpdater.getMainPanel().getGraphicsView().draw_coords){
             return s;
         }else{
-            return "~" + s;
+            return "-" + s;
         }
     }
     public void setSelectionSave(boolean selectionSave) {
@@ -145,7 +146,7 @@ public class MainSettings extends Screen {
         String[] arr = st.split("\n");
         if(arr.length > 0){
             String space = arr[0];
-            setLineSpace(space);
+            setNetWidth(space);
         }
         if(arr.length > 1){
             String name = arr[1];

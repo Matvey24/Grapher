@@ -137,24 +137,19 @@ public class ModelUpdater {
         e.setColor(color);
         e.addTextChangedListener((e1) -> calculator.recalculate());
         e.setText(func);
+        setFuncName(gr, name, e);
         switch (type) {
-            case "Function":
-                e.setName(name + "(x)");
-                break;
             case "Parametric":
-                e.setName("xy(t)");
                 String startEnd = arr[4];
                 String[] st = startEnd.split(":");
                 ((Parametric) gr).updateBoards(Double.parseDouble(st[0]), Double.parseDouble(st[1]));
                 break;
             case "Implicit":
-                e.setName(name + "(xy)");
                 ((Implicit) gr).setSensitivity(Double.parseDouble(arr[4]));
                 if (arr.length > 5)
                     ((Implicit) gr).setViewType(Integer.parseInt(arr[5]));
                 break;
             case "Translation":
-                e.setName("Tran");
                 ((Translation) gr).setMultiplyer(Integer.parseInt(arr[4]));
                 gr.setMAP_SIZE(gr.MAP_SIZE);
                 break;
@@ -178,15 +173,7 @@ public class ModelUpdater {
 
     public void startSettings(int id) {
         Graphic g = graphics.get(id);
-        if (g instanceof Function) {
-            supportFrameManager.openFunctionSettings((Function) g, list.getElements().get(id));
-        } else if (g instanceof Parametric) {
-            supportFrameManager.openParameterSettings((Parametric) g, list.getElements().get(id));
-        } else if (g instanceof Implicit) {
-            supportFrameManager.openImplicitSettings((Implicit) g, list.getElements().get(id));
-        } else if (g instanceof Translation) {
-            supportFrameManager.openTranslationSettings((Translation) g, list.getElements().get(id));
-        }
+        supportFrameManager.openGraphicSettings(g, list.getElements().get(id));
         lOG = g;
     }
 
@@ -237,14 +224,19 @@ public class ModelUpdater {
         checkClosed(idx, lo);
     }
     private void setFuncName(Graphic g, String name, TextElement e){
-        if(g instanceof Function){
-            e.setName(name + "(x)");
-        }else if(g instanceof Parametric){
-            e.setName("xy(t)");
-        }else if(g instanceof Implicit){
-            e.setName(name + "(xy)");
-        }else if(g instanceof Translation){
-            e.setName("Tran");
+        switch (g.type){
+            case FUNCTION:
+                e.setName(name + "(x)");
+                break;
+            case PARAMETRIC:
+                e.setName("xy(t)");
+                break;
+            case IMPLICIT:
+                e.setName(name + "(xy)");
+                break;
+            case TRANSLATION:
+                e.setName("Tran");
+                break;
         }
     }
     private int start_make(int idx) {
@@ -472,7 +464,6 @@ public class ModelUpdater {
                 FullModel m = new FullModel();
                 calculator.makeModel(m);
                 m.view_params = getLookAtX() + "\n" + getLookAtY() + "\n" + scaleX + "\n" + scaleY;
-                mainPanel.makeModel(m);
                 supportFrameManager.getTimer().makeModel(m);
                 supportFrameManager.getMainSettings().makeModel(m);
                 setState(dataBase.save(m, f));
@@ -495,16 +486,15 @@ public class ModelUpdater {
                         lookAtX(Double.parseDouble(view_params[0]));
                         lookAtY(Double.parseDouble(view_params[1]));
                     }
-                    mainPanel.fromModel(m);
                     supportFrameManager.getTimer().fromModel(m);
                     supportFrameManager.getMainSettings().fromModel(m);
-                    mainPanel.setGraphicsHeight();
                     calculator.recalculate();
                     calculator.run(() -> setState(f.getName() + " " + Language.LOADED));
                     last_used_file = f;
                 } catch (Exception e) {
                     setState(e.toString());
                 }
+                mainPanel.setGraphicsHeight();
             });
         }
     }

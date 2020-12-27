@@ -7,13 +7,14 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 public class TextPanel extends Screen {
-    private int height;
-    private final int width = 400;
-    private static final int MAX_HEIGHT = 500;
+    private int height = 500;
+    private int width = 400;
     private final JPanel internal;
     private String title;
     private final JButton btn_back;
     private final JScrollPane scrollPane;
+    private final JLabel[] labels;
+    private final JTextArea[] areas;
 
     public TextPanel(String[][] text, String title, String back_name) {
         setLayout(null);
@@ -24,7 +25,8 @@ public class TextPanel extends Screen {
         btn_back = new JButton(back_name);
         add(btn_back);
         btn_back.addActionListener((e) -> back());
-
+        labels = new JLabel[text.length];
+        areas = new JTextArea[text.length];
         scrollPane = new JScrollPane(internal);
         add(scrollPane);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
@@ -32,46 +34,58 @@ public class TextPanel extends Screen {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                scrollPane.setBounds(0, 0, width, Math.min(height, getHeight()) - 30);
-                btn_back.setBounds(20, Math.min(height, getHeight()) - 25, 100, 20);
+                width = getWidth();
+                height = getHeight();
+                setBounds();
             }
         });
     }
 
     private void makeText(String[][] text) {
-        int offset = 10;
-        if(text != null)
-        for (String[] strings : text) {
-            if(strings == null)
+        for (int i = 0; i < text.length; ++i) {
+            String[] strings = text[i];
+            if (strings == null)
                 break;
-            offset = makeTheme(strings, offset);
+            makeTheme(strings, i);
         }
-        height = offset + 30;
-        internal.setBounds(0, 0, width - 20, offset);
-        internal.setPreferredSize(internal.getSize());
-        scrollPane.setBounds(0, 0, width, Math.min(height, MAX_HEIGHT) - 30);
-        btn_back.setBounds(20, Math.min(height, MAX_HEIGHT) - 25, 100, 20);
-        setSize(width, Math.min(height, MAX_HEIGHT));
     }
 
-    private int makeTheme(String[] lines, int offsetY) {
-        JLabel main = new JLabel(lines[0]);
-        main.setBounds(10, offsetY, width - 20, 25);
+    private void makeTheme(String[] text, int idx) {
+        JLabel main = new JLabel(text[0]);
         main.setFont(new Font("arial", Font.PLAIN, 20));
         internal.add(main);
-        offsetY += 20;
-        for (int i = 1; i < lines.length; ++i) {
-            if(lines[i] == null)
-                break;
-            JLabel label = new JLabel(lines[i]);
-            label.setBounds(30, offsetY, width - 40, 20);
-            offsetY += 20;
-            internal.add(label);
+        labels[idx] = main;
+        JTextArea area = new JTextArea();
+        areas[idx] = area;
+        area.setFont(area.getFont().deriveFont(Font.BOLD));
+        area.setText("");
+        for (int i = 1; i < text.length; ++i) {
+            area.append(text[i]);
+            if (i != text.length - 1)
+                area.append("\n");
         }
-        offsetY += 5;
-        return offsetY;
+        area.setLineWrap(true);
+        area.setWrapStyleWord(true);
+        area.setEditable(false);
+        area.setBackground(getBackground());
+        internal.add(area);
     }
-
+    private void setBounds(){
+        int offset = 10;
+        for(int i = 0; i < labels.length; ++i){
+            JLabel name = labels[i];
+            JTextArea area = areas[i];
+            name.setBounds(10, offset, width - 20, 25);
+            offset += 20;
+            area.setBounds(30, offset, width - 60, 50);
+            area.setSize(area.getPreferredSize());
+            offset += area.getHeight() + 5;
+        }
+        internal.setBounds(0, 0, width - 20, offset);
+        internal.setPreferredSize(internal.getSize());
+        scrollPane.setBounds(0, 0, width, height - 30);
+        btn_back.setBounds(20, height - 25, 100, 20);
+    }
     @Override
     public void onShow() {
         setTitle(title);
@@ -80,7 +94,7 @@ public class TextPanel extends Screen {
 
     @Override
     public void onSetSize() {
-        setSize(width, Math.min(height, getHeight()));
+        setSize(width, height);
     }
 
     public void updateLanguage(String[][] text, String title, String back) {

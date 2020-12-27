@@ -41,8 +41,7 @@ added opportunity not to draw coordinates
 saves now contain central point of view (not left up)
 added functions for mouse:
     isMousePressed, getMouseX, getMouseY
-and parameter view_movable
-</entry>
+and parameter view_movable</entry>
     <entry key="30">Grapher4.0
 fixed bug with calculator size state
 added function of painting
@@ -51,4 +50,10 @@ graphic on paper by mouse</entry>
 refactored error messages
 added some more parameters in settings.xml
 (open Grapher.jar like zip archive)</entry>
+    <entry key="32">Grapher4.2
+removed resize_idx from saves
+mouse wheel can't move view, while view_movable = 0
+edited view of help
+changed '~' to '-' (for coordinates don't shown)
+    </entry>
 </properties>

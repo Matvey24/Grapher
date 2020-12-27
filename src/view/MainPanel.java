@@ -6,7 +6,6 @@ import model.Language;
 import controller.ModelUpdater;
 import controller.VersionController;
 import framesLib.Screen;
-import model.FullModel;
 import view.elements.*;
 import view.grapher.GraphicsView;
 
@@ -154,23 +153,9 @@ public class MainPanel extends Screen {
     public GraphicsView getGraphicsView(){
         return graphicsView;
     }
-    public void makeModel(FullModel m) {
-        m.resize_idx = String.valueOf(resizeType);
-    }
     @Override
     public Point getMousePosition() {
         return mousePosition;
-    }
-
-    public void fromModel(FullModel m) {
-        if (m.resize_idx.isEmpty())
-            return;
-        resizeType = Integer.parseInt(m.resize_idx);
-        if (resizeType < 0)
-            resizeType = 0;
-        if (resizeType > 2)
-            resizeType = 2;
-        btn_resize.setText(Language.RESIZERS[resizeType]);
     }
 
     public void setTimerName(String name) {
@@ -188,7 +173,8 @@ public class MainPanel extends Screen {
             @Override
             public void mouseReleased(MouseEvent e) {
                 updater.mousePressed = false;
-                updater.translate(e.getX() - mousePosition.x, e.getY() - mousePosition.y);
+                if(view_movable)
+                    updater.translate(e.getX() - mousePosition.x, e.getY() - mousePosition.y);
             }
         });
         addMouseMotionListener(new MouseAdapter() {
@@ -202,23 +188,23 @@ public class MainPanel extends Screen {
         });
 
         addMouseWheelListener(e -> {
-            int line = 0;
-            if (resizeType == 1 || resizeType == 2)
-                line = resizeType;
-            updater.rescale(e.getPreciseWheelRotation(), e.getX() - ElementsList.WIDTH, e.getY(), line);
+            if(view_movable) {
+                int line = 0;
+                if (resizeType == 1 || resizeType == 2)
+                    line = resizeType;
+                updater.rescale(e.getPreciseWheelRotation(), e.getX() - ElementsList.WIDTH, e.getY(), line);
+            }
         });
 
         btn_resize.addActionListener(e -> {
-            if (resizeType == 0) {
-                updater.rescaleBack();
-            }
+            resizeType = (resizeType + 1) % 3;
+            btn_resize.setText(Language.RESIZERS[resizeType]);
         });
         btn_resize.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON3) {
-                    resizeType = (resizeType + 1) % 3;
-                    btn_resize.setText(Language.RESIZERS[resizeType]);
+                    updater.rescaleBack();
                 }
             }
         });

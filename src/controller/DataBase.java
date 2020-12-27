@@ -21,11 +21,10 @@ public class DataBase {
         properties.setProperty("functions", m.functions);
         properties.setProperty("calculator", m.calculator);
         properties.setProperty("timer_info", m.timer_info);
-        properties.setProperty("resize_idx", m.resize_idx);
         properties.setProperty("view_params", m.view_params);
         properties.setProperty("main_settings", m.main_settings);
         try (FileOutputStream fos = new FileOutputStream(f)){
-            properties.storeToXML(fos, "Edit it if you are a geek!");
+            properties.storeToXML(fos, "Edit it if you are a geek!, " + VersionController.VERSION_NAME);
         }catch (IOException e){
             return e.getMessage();
         }
@@ -50,7 +49,6 @@ public class DataBase {
         m.calculator = properties.getProperty("calculator", "");
         m.timer_info = properties.getProperty("timer_info", "");
         m.main_settings = properties.getProperty("main_settings","");
-        m.resize_idx = properties.getProperty("resize_idx", "");
         m.view_params = properties.getProperty("view_params", "");
         return m;
     }
