@@ -70,10 +70,11 @@ part 3
 Make a graphic
 Click "+" and write function in the text field.
 Then press ENTER.
-part 4
+part 5
 Timer:
 Write a graphic using time var 'tm', then click 'Timer' and click 'Begin' in the shown panel.
 You can change some settings in this panel.
+Write '0' as duration and 'tm' will be seconds from timer start.
 You can also do right click on button 'Timer' to stop or start it.
 part 4
 Resize:

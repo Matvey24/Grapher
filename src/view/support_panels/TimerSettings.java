@@ -35,15 +35,29 @@ public class TimerSettings extends Screen {
     private final JToggleButton start;
     private final JToggleButton timeDir;
     private final ModelUpdater updater;
-
+    private Runnable timer_iteration;
     public TimerSettings(ModelUpdater updater) {
         setLayout(null);
         this.updater = updater;
         duration = new Parameter(Language.DURATION_FPS, (s) -> {
             String[] vars = s.split(":");
-            if (vars.length == 0)
+            if (vars.length == 0){
                 duration.setDefault(dur + ":" + FPS);
-            dur = Double.parseDouble(vars[0]);
+                return;
+            }
+            double durat = Double.parseDouble(vars[0]);
+            if(durat < 0){
+                duration.setDefault(dur + ":" + FPS);
+                return;
+            }
+            dur = durat;
+            if(dur == 0){
+                timer_iteration = this::timer_real_time;
+                updater.setTime(0);
+                updater.timerResize();
+            }else{
+                timer_iteration = this::timer_update;
+            }
             if (vars.length == 1) {
                 FPS = 60;
             } else {
@@ -58,12 +72,14 @@ public class TimerSettings extends Screen {
         duration.setBounds(OFFSET, OFFSET, TextElement.WIDTH);
         dimension = new Parameter(Language.DIMENSION, (s) -> {
             String[] vars = s.split(":");
-            if (vars.length == 0)
+            if (vars.length == 0) {
                 dimension.setDefault(startT + ":" + endT);
+                return;
+            }
             startT = Double.parseDouble(vars[0]);
             endT = Double.parseDouble(vars[1]);
             value = startT;
-            if (!timer.isRunning() && !dont_resize) {
+            if (!timer.isRunning() && !dont_resize && dur != 0) {
                 updater.setTime(startT);
                 updater.timerResize();
             }
@@ -72,30 +88,9 @@ public class TimerSettings extends Screen {
         dimension.addTo(this);
         dimension.setBounds(OFFSET, 2 * OFFSET + ComboBoxParameter.HEIGHT,
                 TextElement.WIDTH);
-        timer = new MyTimer((int) (delay * 1000), () -> {
-            long t = System.currentTimeMillis();
-            double delta = (t - timeBefore) / 1000d;
-            timeBefore = t;
-            double len = endT - startT;
-            value = time / dur * len + startT;
-            updater.setTime(value);
-            if (fTimeDirection)
-                time += delta;
-            else
-                time -= delta;
-            if (time > dur) {
-                if (boomerang) {
-                    time = dur;
-                    fTimeDirection = false;
-                } else {
-                    time -= dur;
-                }
-            } else if (time < 0) {
-                time = 0;
-                fTimeDirection = true;
-            }
-            updater.timerResize();
-        });
+        timer = new MyTimer((int) (delay * 1000), () -> timer_iteration.run());
+        timer_iteration = this::timer_update;
+
         start = new JToggleButton(Language.BEGIN);
         add(start);
         start.setBounds(OFFSET, 3 * OFFSET + 2 * ComboBoxParameter.HEIGHT,
@@ -110,7 +105,40 @@ public class TimerSettings extends Screen {
         dimension.setDefault(startT + ":" + endT);
         timeDir.addActionListener(e -> boomerang = timeDir.isSelected());
     }
+    private void timer_update(){
+        long t = System.currentTimeMillis();
+        double delta = (t - timeBefore) / 1000d;
+        timeBefore = t;
+        double len = endT - startT;
+        value = time / dur * len + startT;
+        updater.setTime(value);
+        if (fTimeDirection)
+            time += delta;
+        else
+            time -= delta;
+        if (time > dur) {
+            if (boomerang) {
+                time = dur;
+                fTimeDirection = false;
+            } else {
+                time -= dur;
+            }
+        } else if (time < 0) {
+            time = 0;
+            fTimeDirection = true;
+        }
+        updater.timerResize();
+    }
 
+    private void timer_real_time(){
+        long t = System.currentTimeMillis();
+        double delta = (t - timeBefore) / 1000d;
+        timeBefore = t;
+        time += delta;
+        value = time;
+        updater.setTime(value);
+        updater.timerResize();
+    }
     private void start() {
         if (start.isSelected()) {
             timer.start();
