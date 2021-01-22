@@ -31,16 +31,18 @@ public class CoordinateSystem {
     public void resize(double offsetX, double offsetY, double scaleX, double scaleY) {
         this.offsetX = offsetX;
         this.offsetY = offsetY;
-        this.scaleX = scaleX;
-        this.scaleY = scaleY;
-        if (deltaX <= 0.5001 && deltaX >= 0.4999) {
-            deltaX = 0.5;
+        if(this.scaleX != scaleX || this.scaleY != scaleY) {
+            this.scaleX = scaleX;
+            this.scaleY = scaleY;
+            MAX_LINES = HEIGHT / MIN_DELTA + GRAPH_WIDTH / MIN_DELTA + 6;
+            resizeNet();
+            if (deltaX <= 0.5001 && deltaX >= 0.4999) {
+                deltaX = 0.5;
+            }
+            if (deltaY <= 0.5001 && deltaY >= 0.4999) {
+                deltaY = 0.5;
+            }
         }
-        if (deltaY <= 0.5001 && deltaY >= 0.4999) {
-            deltaY = 0.5;
-        }
-        MAX_LINES = HEIGHT / MIN_DELTA + GRAPH_WIDTH / MIN_DELTA + 6;
-        resizeNet();
     }
     public void setMIN_DELTA(int min_delta){
         MIN_DELTA = min_delta;
@@ -54,10 +56,10 @@ public class CoordinateSystem {
         return MIN_DELTA;
     }
     private void resizeNet(){
-        boolean redo = true;
-        while (redo){
-            redo = false;
-            if(deltaX * scaleX > maxDeltaX) {
+        boolean up = false;
+        boolean down = false;
+        do{
+            if((deltaX * scaleX > maxDeltaX) && !down) {
                 if ((deltaXpow - 2) % 3 == 0) {
                     deltaX *= 0.4;
                 } else {
@@ -69,8 +71,8 @@ public class CoordinateSystem {
                 } else {
                     maxDeltaX = MAX_DELTA * 4 / 5;
                 }
-                redo = true;
-            }else if (deltaX * scaleX < MIN_DELTA) {
+                up = true;
+            }else if ((deltaX * scaleX < MIN_DELTA) && !up) {
                 if ((deltaXpow - 1) % 3 == 0) {
                     deltaX *= 2.5;
                 } else {
@@ -82,13 +84,14 @@ public class CoordinateSystem {
                 } else {
                     maxDeltaX = MAX_DELTA * 4 / 5;
                 }
-                redo = true;
+                down = true;
+            }else{
+                up = false;
+                down = false;
             }
-        }
-        redo = true;
-        while (redo){
-            redo = false;
-            if (deltaY * scaleY > maxDeltaY) {
+        }while(down || up);
+        do{
+            if (deltaY * scaleY > maxDeltaY && !down) {
                 if ((deltaYpow - 2) % 3 == 0) {
                     deltaY *= 0.4;
                 } else {
@@ -100,8 +103,8 @@ public class CoordinateSystem {
                 } else {
                     maxDeltaY = MAX_DELTA * 4 / 5;
                 }
-                redo = true;
-            } else if (deltaY * scaleY < MIN_DELTA) {
+                up = true;
+            } else if (deltaY * scaleY < MIN_DELTA && !up) {
                 if ((deltaYpow - 1) % 3 == 0) {
                     deltaY *= 2.5;
                 } else {
@@ -113,9 +116,12 @@ public class CoordinateSystem {
                 } else {
                     maxDeltaY = MAX_DELTA * 4 / 5;
                 }
-                redo = true;
+                down = true;
+            }else{
+                up = false;
+                down = false;
             }
-        }
+        }while(up || down);
     }
     public void draw(Graphics gr) {
         gr.setColor(MAIN_COLOR);

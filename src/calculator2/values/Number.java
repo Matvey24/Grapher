@@ -2,6 +2,7 @@ package calculator2.values;
 
 import calculator2.calculator.executors.FuncVariable;
 import calculator2.calculator.executors.LambdaContainer;
+import calculator2.calculator.executors.actors.Expression;
 import calculator2.calculator.util.AbstractType;
 import calculator2.calculator.util.actions.Sign;
 import calculator2.calculator.util.actions.functions.BinarFunc;
@@ -58,7 +59,21 @@ public class Number extends AbstractType<Double> {
             idx = a.length - 2;
         return a[idx+1].calculate();
     };
-
+    private static final MultiFunc<Double> hypot = (a)->{
+        switch (a.length){
+            case 0:
+                return 0d;
+            case 1:
+                return a[0].calculate();
+            default:
+                double d = 0;
+                for(Expression<Double> e: a){
+                    double val = e.calculate();
+                    d += val * val;
+                }
+                return Math.sqrt(d);
+        }
+    };
     private final double ln2 = Math.log(2);
     @SuppressWarnings("unchecked")
     private final FuncVariable<Double>[] tmp = new FuncVariable[1];
@@ -98,7 +113,7 @@ public class Number extends AbstractType<Double> {
         addFunction("lg", Math::log10, 10);
         addFunction("log", (a, b) -> Math.log(a.calculate()) / Math.log(b.calculate()), 10);
         addFunction("sigm", a -> 1 / (1 + Math.exp(-a)), 10);
-        addFunction("hypot", (a, b) -> Math.hypot(a.calculate(), b.calculate()), 10);
+        addFunction("hypot", hypot,-1, 10);
 
         addFunction("sin", Math::sin, 10);
         addFunction("cos", Math::cos, 10);
@@ -143,6 +158,7 @@ public class Number extends AbstractType<Double> {
         addFunction("arr", arr, -1, 10);
         addFunction("random", (a)->Math.random(), 0, 10);
         addFunction("assert", (a)->{throw new RuntimeException("assert: " + a);},10);
+
         addFunction("get", (a, b)->{
             int id = a.calculate().intValue();
             if(id < 0 || id >= array.size())
@@ -159,7 +175,7 @@ public class Number extends AbstractType<Double> {
                 return 0d;
             List<Double> l;
             if(idx >= array.size()){
-                for(int i = 0; i < idx - array.size(); ++i)
+                while(idx != array.size())
                     array.add(new ArrayList<>());
                 l = new ArrayList<>();
                 array.add(l);
@@ -171,7 +187,7 @@ public class Number extends AbstractType<Double> {
                 return 0d;
             double val = a[2].calculate();
             if(idx >= l.size()){
-                for(int i = 0; i < idx - l.size(); ++i)
+                while(idx != l.size())
                     l.add(0d);
                 l.add(val);
             }else

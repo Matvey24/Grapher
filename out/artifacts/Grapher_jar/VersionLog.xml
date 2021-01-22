@@ -54,6 +54,9 @@ added some more parameters in settings.xml
 removed resize_idx from saves
 mouse wheel can't move view, while view_movable = 0
 edited view of help
-changed '~' to '-' (for coordinates don't shown)
-    </entry>
+changed '~' to '-' (for coordinates don't shown)</entry>
+    <entry key="33">Grapher4.3
+now 'hypot' from many arguments
+fixed bug with 'set' func
+fixed stopping app because of small net width</entry>
 </properties>
