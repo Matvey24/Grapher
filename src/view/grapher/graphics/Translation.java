@@ -7,8 +7,7 @@ import view.grapher.CoordinateSystem;
 
 import java.awt.*;
 
-import static view.MainPanel.GRAPH_WIDTH;
-import static view.MainPanel.HEIGHT;
+import static view.MainPanel.*;
 import static view.grapher.CoordinateSystem.mod;
 
 public class Translation extends Graphic {
@@ -131,17 +130,17 @@ public class Translation extends Graphic {
 
     @Override
     public void setMAP_SIZE(int map_size) {
-        int size = 1;
+        int size = map_size;
         if (dataX != null) {
             size = dataX[0].length;
             if (size == map_size)
                 return;
+            while (size < map_size)
+                size *= 2;
         }
-        while (size < map_size)
-            size *= 2;
         this.MAP_SIZE = map_size;
-        needResize = true;
         dataX = new double[cs.MAX_LINES * multiplyer][size];
         dataY = new double[cs.MAX_LINES * multiplyer][size];
+        needResize = true;
     }
 }

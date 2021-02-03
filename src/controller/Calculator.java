@@ -260,7 +260,6 @@ public class Calculator {
 
     public void setResize(Runnable resize) {
         this.resize = resize;
-        runResize();
     }
     public void findEndOf(Parser.StringToken line){
         calculator.findEndOf(line);

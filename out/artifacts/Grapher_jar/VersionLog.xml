@@ -60,4 +60,7 @@ now 'hypot' from many arguments
 fixed bug with 'set' func
 fixed stopping app because of small net width
 added timer function 'real time'</entry>
+    <entry key="34">Grapher4.4
+help now is little better
+fixed bug with translation</entry>
 </properties>

@@ -26,7 +26,7 @@ public class CoordinateSystem {
         MAX_DELTA = MIN_DELTA * 5 / 2;
         maxDeltaY = MAX_DELTA * 4 / 5;
         maxDeltaX = MAX_DELTA * 4 / 5;
-        MAX_LINES = HEIGHT / MIN_DELTA + GRAPH_WIDTH / MIN_DELTA + 6;
+        setMAX_LINES();
     }
     public void resize(double offsetX, double offsetY, double scaleX, double scaleY) {
         this.offsetX = offsetX;
@@ -34,7 +34,7 @@ public class CoordinateSystem {
         if(this.scaleX != scaleX || this.scaleY != scaleY) {
             this.scaleX = scaleX;
             this.scaleY = scaleY;
-            MAX_LINES = HEIGHT / MIN_DELTA + GRAPH_WIDTH / MIN_DELTA + 6;
+            setMAX_LINES();
             resizeNet();
             if (deltaX <= 0.5001 && deltaX >= 0.4999) {
                 deltaX = 0.5;
@@ -49,8 +49,11 @@ public class CoordinateSystem {
         MAX_DELTA = MIN_DELTA * 5 / 2;
         maxDeltaY = MAX_DELTA * 4 / 5;
         maxDeltaX = MAX_DELTA * 4 / 5;
-        MAX_LINES = HEIGHT / MIN_DELTA + GRAPH_WIDTH / MIN_DELTA + 6;
+        setMAX_LINES();
         resizeNet();
+    }
+    private void setMAX_LINES(){
+        MAX_LINES = (HEIGHT + GRAPH_WIDTH) / MIN_DELTA + 6;
     }
     public int getMinDelta(){
         return MIN_DELTA;

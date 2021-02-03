@@ -65,15 +65,16 @@ Calculator</entry>
 <entry key = "main_settings">Language
 Net width
 Graphics max count</entry>
-<entry key = "help">help 11
+<entry key = "help">help 9
 part 3
 Make a graphic
-Click "+" and write function in the text field.
+Click '+' and write function of 'x' in the text field.
 Then press ENTER.
-part 4
+part 5
 Timer:
-Write a graphic using time var 'tm', then click 'Timer' and click 'Begin' in the shown panel.
+Write a graphic using time var 'tm', then click button 'Timer' and click 'Begin' in the shown panel.
 You can change some settings in this panel.
+Write '0' as duration and 'tm' will be seconds from timer start.
 You can also do right click on button 'Timer' to stop or start it.
 part 4
 Resize:
@@ -82,17 +83,17 @@ Resize:
 Abscissa/Ordinate - mouse wheel rotation / touchPad gestures will change only abscissa's/ordinate's scale.
 part 2
 Extra:
-'Right' click on '-' button in expression in graphics. Extra info panel will be shown.
+Do 'Right' click on '-' button in expression in graphics. Extra info panel will be shown.
 part 2
 Parametric:
-Using var t write an expression for x, then put ':' and then write an expression for y, click ENTER.
+Using var 't' write an expression for x, then put ':' and then write an expression for y, click ENTER.
 part 11
 Implicit:
 Equality:
 Grapher will show, where the expression is true (sensitivity is maximum difference between two neighboring pixels close to 0)
 f(x,y)=g(x,y)
 Inequality:
-Write an inequality using x, y and grapher will show color, where this expression is true.
+Write an inequality using 'x' and 'y' and grapher will show color, where this expression is true.
 f(x,y)&lt;g(x,y)
 Spectrum:
 Write a function like z(x, y) and grapher will show color which depends on expression value from blue to red like in infrared imager, or from red to purple like in rainbow.
@@ -100,23 +101,13 @@ Use sensitivity to control rainbow thickness.
 z(x,y)
 part 2
 Translation:
-Translation is moving dot, write expressions for x and y, in relation to original coordinates of dot, divide them by ":", this is like parametric but use x and y instead of t.
-part 2
-Recursion:
-You can use recursion, but be careful: long recursion can produce stack over flow errors.
-part 3
-Lambdas:
-Instead of parameter in function write an expression for any variable in '{..}', like '{x^2}', if you use external vars or lambdas here, write them in '$..$' before brackets, like '$x${x^y}'.
-Then in function use 'f' + 'some letter', like function, for example 'fa(x)', you can send this function in other, like 'func(fa, 4)' - without brackets.
-part 8
+Translation is moving dot, write expressions for x and y in relation to original coordinates of dot, divide them by ":", this is like parametric but use 'x' and 'y' instead of t.
+part 5
 Examples:
 f(x)=if(x&lt;1,1,x*f(x-1)) - factorial
-2sin(t):cos(t) - draws ellipse
+2sin(t):cos(t) - ellipse
 cos(t)*sin(tm*t):sin(t)*sin(tm*t) - polar r(a)=sin(tm*a)
 cos(x) + cos(y) - pretty picture
-in functions:
-deriv = (fa(x+d)-fa(x))/d
-d = 0.000001 - derivate of function, use like deriv({t^2}, x)
 part 6
 Settings:
 Changing language in settings.
@@ -124,14 +115,14 @@ Save/load grapher project here.
 Net width is minimum distance between lines of net on view.
 Put '-' before number and grapher won't show coordinates.
 Graphics max count - number of visible functions of graphics.
-help 7
+help 9
 part 3
 How to use?
 Enter an example in calculator field and press Enter. Do 'right' click on calculator field to compress Grapher frame.
-If you want, you also can add your own functions and constants, you can write them in 'Functions' area, separate each one by pressing ENTER.
+If you want, you can also add your own functions and constants, you can write them in 'Functions' area, separate each one by pressing ENTER.
 part 3
 Your constants:
-On functions area write name + "=" + write an example. You can override internal functions and constants.
+In functions area write name + '=' + write an example. You can override internal functions and constants.
 Constants are calculating in order they are written.
 part 3
 How to write your own functions?
@@ -151,7 +142,7 @@ exp - exponent (it works faster than 'e^x')
 sign - signum of number (1, 0, -1)
 lg, ln, ld, log - logarithms
 sigm - sigmoid - sigm(x) = 1 / (1 + e^-x)
-hypot - hypotenuse - sqrt(x^2 + y^2)
+hypot - hypotenuse - sqrt(x^2 + y^2 + ...)
 sin, cos, tg, ctg, arcsin, arccos, arctg, arcctg, arctgTwo, sh, ch, th, cth - trigonometric functions, put 'd' after them to convert radians to degrees.
 abs - absolute value
 floor - max integer less then given
@@ -162,7 +153,7 @@ min, max - min / max number from few given
 arr(idx, a...) - returns element from given array 'a', returns length of array, if idx = -1
 if(x, y, z) - returns z if x = 0 else y
 ifs(x) - returns 0 if x = 0 else 1
-arrays: the map of arrays of values
+arrays: two dimensional array of values
 set(x, y, val) - sets value in array 'x' on 'y' position, returns this val
 get(x, y) - returns value in array 'x' on 'y' position
 for(start, end, func) - executes 'func' - lambda, gives func the integer index from [start to end), returns sum of returns of func.
@@ -185,7 +176,14 @@ ELCT - mass of electron = 9.1 * 10 ^ -31
 eCHARGE - elementary charge = 1.6 * 10 ^ -19
 au - astronomical unit = 1.5 * 10 ^ 11
 pc - parsec = 3.1 * 10 ^ 16
-part 10
+part 2
+Recursion:
+You can use recursion, but be careful: long recursion can produce stack over flow errors.
+part 3
+Lambdas:
+Instead of parameter in function write an expression for any variable in '{..}', like '{x^2}', if you use external vars or lambdas here, write them in '$..$' before brackets, like '$x,y${x*z+y}'.
+Then in function use 'f' + 'some letter', like function, for example 'fa(x)', you can send this function in other, like 'func(fa, 4)' - without brackets.
+part 14
 Examples:
 sqrt(4) == 2
 pow(2, 4) == 16
@@ -193,9 +191,13 @@ ln(e) == 1
 log(8, 2) == 3
 arcsind(1) == 90
 arctgTwo(1, 0) == pi / 2
+In functions area:
 num = sqrt(5) - num is a constant
 lb = ld(x) - the same as ld(x) = logarithm of x with basis 2
 myfunc = sin(x) + cos(y) - use it like myfunc(x,y)
+
+deriv = (fa(x+d)-fa(x))/d
+d = 0.000001 - derivate of function, use like deriv({t^2}, x)
 help 6
 part 4
 Warning:
@@ -250,7 +252,7 @@ graphs_count - count of graphics - any natural number or 0
 graphic+number - field of graphic
 graphic_info+the same number - information of graphic:
 1) name of graphic - for example f for f(x), purport of name is to define color of graphic, there can be also hex value of color, like 'f ffff0000' - 'name aarrggbb'
-2) discretization (natural number > 2)
+2) discretization (natural number >= 2)
 3) feels time (true/false)
 4) type of graphic (Function/Parametric/Implicit/Translation)
 further depends on type of graphic

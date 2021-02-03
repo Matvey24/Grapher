@@ -84,8 +84,8 @@ public class MainPanel extends Screen {
 
         registerActions();
         setGraphicsHeight();
-        updater.recalculate();
         view_movable = true;
+        updater.recalculate();
     }
 
     public static void rebounds(int width, int height) {
